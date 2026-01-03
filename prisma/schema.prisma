@@ -1,0 +1,171 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ============================================
+// AUTH & USER MANAGEMENT
+// ============================================
+
+enum UserRole {
+  ADMIN
+  SUPER_ADMIN
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  password      String
+  role          UserRole  @default(ADMIN)
+  image         String?
+  emailVerified DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  posts Post[]
+
+  @@map("users")
+}
+
+// ============================================
+// UNIT PENDIDIKAN (SMP, SMA, Tafaqquh, Tahfidz)
+// ============================================
+
+model Unit {
+  id               String   @id @default(cuid())
+  name             String   @unique // SMP, SMA, Tafaqquh, Tahfidz
+  slug             String   @unique // smp, sma, tafaqquh, tahfidz
+  description      String?  @db.Text // Deskripsi lengkap unit
+  curriculum       String?  @db.Text // Kurikulum yang digunakan
+  facilities       String?  @db.Text // Fasilitas yang tersedia (JSON atau text)
+  registrationLink String?  // Link pendaftaran
+  image            String?  // Gambar utama unit
+  isActive         Boolean  @default(true)
+  order            Int      @default(0) // Urutan tampilan
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  // Relations
+  posts     Post[]
+  galleries Gallery[]
+
+  @@map("units")
+}
+
+// ============================================
+// BERITA / ARTIKEL
+// ============================================
+
+enum PostCategory {
+  BERITA        // Berita umum
+  PENGUMUMAN    // Pengumuman resmi
+  KEGIATAN      // Kegiatan pesantren
+  PRESTASI      // Prestasi santri/unit
+  ARTIKEL       // Artikel/tulisan
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model Post {
+  id          String       @id @default(cuid())
+  title       String
+  slug        String       @unique
+  content     String       @db.Text // Rich text content dari Tiptap
+  excerpt     String?      @db.Text // Ringkasan singkat
+  image       String?      // Thumbnail/featured image
+  category    PostCategory @default(BERITA)
+  status      PostStatus   @default(DRAFT)
+  publishedAt DateTime?
+  featured    Boolean      @default(false) // Berita unggulan
+  viewCount   Int          @default(0)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  // Relations
+  authorId String?
+  author   User?   @relation(fields: [authorId], references: [id], onDelete: SetNull)
+
+  unitId String?
+  unit   Unit?   @relation(fields: [unitId], references: [id], onDelete: SetNull)
+
+  @@index([status, publishedAt])
+  @@index([category])
+  @@index([unitId])
+  @@map("posts")
+}
+
+// ============================================
+// PROGRAM DONASI / INFAQ
+// ============================================
+
+model DonationProgram {
+  id            String   @id @default(cuid())
+  title         String
+  slug          String   @unique
+  description   String   @db.Text // Deskripsi program donasi
+  image         String?  // Gambar program
+  targetAmount  Decimal  @db.Decimal(15, 2) // Target donasi
+  currentAmount Decimal  @default(0) @db.Decimal(15, 2) // Jumlah terkumpul
+  bankName      String   // Nama bank
+  accountNumber String   // Nomor rekening
+  accountName   String?  // Nama pemilik rekening
+  isActive      Boolean  @default(true)
+  startDate     DateTime @default(now())
+  endDate       DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([isActive])
+  @@map("donation_programs")
+}
+
+// ============================================
+// GALERI FOTO
+// ============================================
+
+model Gallery {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  imageUrl    String   // URL gambar dari Uploadthing
+  order       Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Optional relation to Unit
+  unitId String?
+  unit   Unit?   @relation(fields: [unitId], references: [id], onDelete: SetNull)
+
+  @@index([unitId])
+  @@index([isActive])
+  @@map("galleries")
+}
+
+// ============================================
+// PENGATURAN WEBSITE
+// ============================================
+
+model Setting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("settings")
+}
