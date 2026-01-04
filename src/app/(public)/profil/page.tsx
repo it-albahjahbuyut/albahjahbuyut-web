@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Target, User } from "lucide-react";
+import { Target, User, GraduationCap, BookOpen, Scroll, BookOpenCheck } from "lucide-react";
 import { db } from "@/lib/db";
 import { UnitCard } from "@/components/public/UnitCard";
 
@@ -20,12 +20,12 @@ export default async function ProfilePage() {
             name: "Buya Yahya",
             role: "Pengasuh LPD Al-Bahjah",
             // Placeholder image for Buya Yahya (using a respectful generic image or placeholder)
-            image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1000&auto=format&fit=crop",
+            image: "https://upload.wikimedia.org/wikipedia/commons/a/aa/Buya_Yahya.jpg",
         },
         {
             name: "Abah Sayf Abu Hanifah",
             role: "Pengasuh Al-Bahjah Buyut",
-            image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1000&auto=format&fit=crop",
+            image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3lna5pypNzw2uM5TlKw2kNfWSH9n14VNLmg&s",
         },
         {
             name: "Kepala Sekolah SMPIQu",
@@ -127,10 +127,60 @@ export default async function ProfilePage() {
                                     <span className="w-1.5 h-8 bg-gold-500 rounded-full"></span>
                                     Program Unggulan
                                 </h2>
-                                <div className="grid sm:grid-cols-2 gap-6">
-                                    {units.map((unit, i) => (
-                                        <UnitCard key={unit.id} unit={unit} index={i} />
-                                    ))}
+                                <div className="grid md:grid-cols-2 gap-6">
+                                    {units.map((unit) => {
+                                        // Icon logic
+                                        const unitIcons: any = {
+                                            smpiqu: GraduationCap,
+                                            smaiqu: BookOpen,
+                                            tafaqquh: Scroll,
+                                            tahfidz: BookOpenCheck,
+                                        };
+                                        const Icon = unitIcons[unit.slug] || BookOpen;
+
+                                        // Strip HTML description
+                                        const cleanDesc = unit.description ? unit.description.replace(/<[^>]*>?/gm, '') : "Program pendidikan unggulan.";
+
+                                        return (
+                                            <Link
+                                                key={unit.id}
+                                                href={`/pendidikan/${unit.slug}`}
+                                                className="group relative block bg-emerald-50/50 overflow-hidden min-h-[280px] rounded-2xl hover:bg-emerald-900 transition-all duration-500 border border-emerald-100/50 hover:border-emerald-900 shadow-sm hover:shadow-xl"
+                                            >
+                                                {/* Large Background Icon */}
+                                                <div className="absolute top-8 right-8 text-emerald-900/5 group-hover:text-white/10 transition-colors duration-500">
+                                                    <Icon className="w-32 h-32 stroke-[1px]" />
+                                                </div>
+
+                                                <div className="absolute inset-0 p-8 flex flex-col justify-between">
+                                                    <div>
+                                                        {/* Small Icon Badge */}
+                                                        <div className="w-12 h-12 rounded-full border border-emerald-900/10 flex items-center justify-center mb-6 text-emerald-900 group-hover:border-white/20 group-hover:text-gold-400 transition-all duration-500 bg-white group-hover:bg-white/10">
+                                                            <Icon className="w-5 h-5" />
+                                                        </div>
+
+                                                        {/* Title */}
+                                                        <h3 className="text-2xl font-bold text-emerald-950 mb-4 group-hover:text-white transition-colors duration-500">
+                                                            {unit.name}
+                                                        </h3>
+
+                                                        {/* Description */}
+                                                        <p className="text-emerald-900/60 text-sm leading-relaxed max-w-sm group-hover:text-emerald-100/90 transition-colors duration-500 line-clamp-3">
+                                                            {cleanDesc}
+                                                        </p>
+                                                    </div>
+
+                                                    {/* Footer / CTA */}
+                                                    <div className="flex items-center gap-4">
+                                                        <span className="w-8 h-[1px] bg-emerald-900/20 group-hover:bg-white/30 transition-colors duration-500" />
+                                                        <span className="text-xs font-bold tracking-widest text-emerald-900 group-hover:text-gold-400 transition-colors duration-500 uppercase">
+                                                            Selengkapnya
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </Link>
+                                        );
+                                    })}
                                 </div>
                             </div>
                         </div>

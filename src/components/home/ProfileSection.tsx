@@ -66,10 +66,11 @@ export function ProfileSection() {
                                 className="relative"
                             >
                                 <div className="relative aspect-[3/4] w-full overflow-hidden rounded-2xl shadow-xl shadow-emerald-900/10">
-                                    <img
-                                        src="https://upload.wikimedia.org/wikipedia/commons/b/b4/Buya_Yahya.jpg"
+                                    <Image
+                                        src="https://upload.wikimedia.org/wikipedia/commons/a/aa/Buya_Yahya.jpg"
                                         alt="Buya Yahya"
-                                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+                                        fill
+                                        className="object-cover hover:scale-105 transition-transform duration-700"
                                     />
                                     <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/90 via-transparent to-transparent opacity-80" />
 
@@ -90,19 +91,19 @@ export function ProfileSection() {
                                 className="relative mt-8 lg:mt-12"
                             >
                                 <div className="relative aspect-[3/4] w-full overflow-hidden rounded-2xl shadow-xl shadow-emerald-900/10">
-                                    <div className="w-full h-full bg-slate-200 flex items-center justify-center">
-                                        {/* Placeholder until real image is provided */}
-                                        <img
-                                            src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1374&auto=format&fit=crop"
+                                    <div className="w-full h-full bg-slate-200 flex items-center justify-center relative">
+                                        <Image
+                                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3lna5pypNzw2uM5TlKw2kNfWSH9n14VNLmg&s"
                                             alt="Abah Sayf Abu Hanifah"
-                                            className="w-full h-full object-cover hover:scale-105 transition-transform duration-700 grayscale"
+                                            fill
+                                            className="object-cover hover:scale-105 transition-transform duration-700"
                                         />
                                     </div>
                                     <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/90 via-transparent to-transparent opacity-80" />
 
                                     <div className="absolute bottom-0 left-0 right-0 p-4 text-white text-center">
-                                        <h3 className="text-base font-bold tracking-wider mb-0.5">Abah Sayf Abu Hanifah</h3>
-                                        <p className="text-emerald-100/90 text-[10px] font-bold tracking-widest">Pengasuh LPD Al-Bahjah Buyut</p>
+                                        <h3 className="text-base font-bold uppercase tracking-wider mb-0.5">Abah Sayf Abu Hanifah</h3>
+                                        <p className="text-emerald-100/90 text-[10px] font-bold uppercase tracking-widest">Pengasuh LPD Al-Bahjah Buyut</p>
                                     </div>
                                 </div>
                                 <div className="absolute -bottom-3 -right-3 w-16 h-16 bg-slate-100 rounded-full -z-10" />
