@@ -31,8 +31,8 @@ export function HeroSection() {
                     className="max-w-4xl mx-auto"
                 >
                     <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 uppercase tracking-tight">
-                        Pondok Pesantren <br />
-                        Al-Bahjah Buyut
+                        Bumi Mahabbah <br />
+                        <span className="text-emerald-600">Al-Bahjah Buyut</span>
                     </h1>
 
                     <p className="text-lg md:text-2xl text-white/90 mb-10 font-light max-w-2xl mx-auto leading-relaxed">

@@ -44,11 +44,11 @@ export default async function HomePage() {
         {/* 3. Program Pendidikan */}
         <ProgramsSection units={units} />
 
-        {/* 4. Why Choose Us / Features */}
-        <FeaturesSection />
-
-        {/* 5. News Section */}
+        {/* 4. News Section (Moved Up) */}
         <NewsSection posts={latestNews} />
+
+        {/* 5. Why Choose Us / Features */}
+        <FeaturesSection />
 
         {/* 6. Donation Section */}
         <DonationSection program={featuredDonation} />

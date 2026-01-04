@@ -11,7 +11,7 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 export const metadata: Metadata = {
   title: "Pondok Pesantren Al-Bahjah Buyut | Membangun Generasi Qur'ani",
   description:
-    "Pondok Pesantren Al-Bahjah Buyut - Lembaga pendidikan Islam terpadu dengan program SMP, SMA, Tafaqquh, dan Tahfidz. Membangun generasi Qur'ani yang berakhlak mulia.",
+    "Pondok Pesantren Al-Bahjah Buyut - Lembaga pendidikan Islam terpadu dengan program SMPiq, SMA, Tafaqquh, dan Tahfidz. Membangun generasi Qur'ani yang berakhlak mulia.",
   keywords: [
     "pesantren",
     "al-bahjah",
@@ -29,7 +29,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id">
-      <body className={`${plusJakartaSans.variable} antialiased font-sans`}>
+      <body className={`${plusJakartaSans.variable} antialiased font-sans overflow-x-hidden`}>
         {children}
       </body>
     </html>

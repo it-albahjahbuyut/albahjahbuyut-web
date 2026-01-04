@@ -42,7 +42,7 @@ export default function ProfilePage() {
                             {/* History */}
                             <div className="space-y-6">
                                 <h2 className="text-3xl font-bold text-emerald-950 uppercase tracking-tight flex items-center gap-3">
-                                    <span className="w-8 h-1 bg-gold-500 rounded-full"></span>
+                                    <span className="w-1.5 h-8 bg-gold-500 rounded-full"></span>
                                     Sejarah Singkat
                                 </h2>
                                 <div className="prose prose-lg prose-slate text-justify">
@@ -58,7 +58,7 @@ export default function ProfilePage() {
                             {/* Programs */}
                             <div className="space-y-8">
                                 <h2 className="text-3xl font-bold text-emerald-950 uppercase tracking-tight flex items-center gap-3">
-                                    <span className="w-8 h-1 bg-gold-500 rounded-full"></span>
+                                    <span className="w-1.5 h-8 bg-gold-500 rounded-full"></span>
                                     Program Unggulan
                                 </h2>
                                 <div className="grid sm:grid-cols-2 gap-4">

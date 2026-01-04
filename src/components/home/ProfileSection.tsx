@@ -1,70 +1,115 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Users, Quote } from "lucide-react";
+import { Quote } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 export function ProfileSection() {
     return (
-        <section className="py-24 bg-white relative">
-            <div className="container mx-auto px-4 lg:px-8">
-                <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+        <section className="py-20 lg:py-32 bg-white relative overflow-hidden">
+            {/* Background Decorations */}
+            <div className="absolute top-0 right-0 w-1/3 h-full bg-slate-50 -z-10 hidden lg:block" />
 
-                    {/* Image Side - Simple & Clean */}
-                    <div className="w-full lg:w-1/2 flex justify-center lg:justify-end">
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            whileInView={{ opacity: 1, scale: 1 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.8 }}
-                            className="relative w-full max-w-sm"
-                        >
-                            <div className="aspect-[3/4] bg-slate-100 relative overflow-hidden shadow-sm">
-                                {/* Placeholder for Leader Image */}
-                                <div className="absolute inset-0 bg-slate-200" />
-                                <div className="absolute inset-0 flex items-center justify-center text-slate-300">
-                                    <Users className="w-32 h-32 opacity-50" />
-                                </div>
-                            </div>
-                            <div className="mt-6 text-center lg:text-left border-l-4 border-emerald-900 pl-4">
-                                <h3 className="text-xl font-bold text-emerald-950 uppercase tracking-widest">Buya Yahya</h3>
-                                <p className="text-sm text-slate-500 uppercase tracking-wide font-medium">Pengasuh LPD Al-Bahjah</p>
-                            </div>
-                        </motion.div>
-                    </div>
+            <div className="container mx-auto px-6 md:px-12 lg:px-24">
+                <div className="flex flex-col-reverse lg:flex-row items-center gap-8 lg:gap-16">
 
-                    {/* Text Side - Minimalist */}
-                    <div className="w-full lg:w-1/2 text-center lg:text-left">
+                    {/* Text Side (Now Left) */}
+                    <div className="w-full lg:w-7/12">
                         <motion.div
-                            initial={{ opacity: 0, y: 20 }}
+                            initial={{ opacity: 0, y: 30 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.8 }}
+                            className="max-w-xl mx-auto lg:mx-0 text-center lg:text-left"
                         >
-                            <h2 className="text-4xl lg:text-6xl font-bold text-emerald-950 mb-8 uppercase tracking-tight leading-none">
+                            <span className="text-gold-600 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">
+                                Tentang Kami
+                            </span>
+
+                            <h2 className="text-4xl lg:text-5xl font-bold text-emerald-950 mb-8 tracking-tight leading-[1.1]">
                                 Ahlan Wa Sahlan <br />
-                                <span className="text-emerald-700">Al-Bahjah Buyut</span>
+                                <span className="text-emerald-800/60 font-light">di Al-Bahjah Buyut</span>
                             </h2>
 
-                            <div className="relative mb-10 max-w-lg mx-auto lg:mx-0">
-                                <Quote className="w-8 h-8 text-emerald-900/20 mb-4 mx-auto lg:mx-0" />
-                                <blockquote className="text-xl lg:text-2xl text-slate-800 leading-relaxed italic font-light font-serif">
+                            <div className="relative mb-8">
+                                <Quote className="w-10 h-10 text-emerald-900/10 absolute -top-4 -left-2 lg:-left-6" />
+                                <blockquote className="relative z-10 text-xl text-emerald-950 font-serif italic leading-relaxed">
                                     "Pendidikan bukan hanya tentang mengisi kepala dengan ilmu, tetapi juga menyalakan pelita iman di dalam hati."
                                 </blockquote>
                             </div>
 
-                            <p className="text-slate-600 leading-relaxed mb-10 text-base lg:text-lg font-light max-w-lg mx-auto lg:mx-0">
-                                Di Al-Bahjah Buyut, kami berkomitmen menyediakan lingkungan belajar yang kondusif dan penuh berkah. Kurikulum kami dirancang untuk menyeimbangkan pencapaian akademis dengan pembentukan karakter Qur'ani.
+                            <p className="text-emerald-900/60 leading-relaxed mb-8 text-sm lg:text-base font-light">
+                                Lembaga Pengembangan Dakwah (LPD) Al-Bahjah Buyut hadir sebagai oase ilmu dan akhlak. Kami berkomitmen menyediakan lingkungan belajar yang kondusif, penuh berkah, dan bersanad jelas kepada Rasulullah SAW.
                             </p>
 
-                            <Link
-                                href="/profil"
-                                className="inline-flex items-center justify-center px-10 py-3.5 text-sm font-bold text-emerald-950 border-2 border-emerald-950 hover:bg-emerald-950 hover:text-white transition-all duration-300 uppercase tracking-widest"
-                            >
-                                Selengkapnya
-                            </Link>
+                            <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
+                                <Link
+                                    href="/profil"
+                                    className="px-8 py-3 bg-emerald-950 text-white text-xs font-bold uppercase tracking-widest rounded-full hover:bg-emerald-900 transition-all shadow-lg hover:shadow-emerald-900/20"
+                                >
+                                    Profil Lengkap
+                                </Link>
+                            </div>
                         </motion.div>
                     </div>
+
+                    {/* Image Side (Now Right) */}
+                    <div className="w-full lg:w-5/12 relative">
+                        <div className="grid grid-cols-2 gap-4 lg:gap-6">
+                            {/* Buya Yahya */}
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 0.8 }}
+                                className="relative"
+                            >
+                                <div className="relative aspect-[3/4] w-full overflow-hidden rounded-2xl shadow-xl shadow-emerald-900/10">
+                                    <img
+                                        src="https://upload.wikimedia.org/wikipedia/commons/b/b4/Buya_Yahya.jpg"
+                                        alt="Buya Yahya"
+                                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/90 via-transparent to-transparent opacity-80" />
+
+                                    <div className="absolute bottom-0 left-0 right-0 p-4 text-white text-center">
+                                        <h3 className="text-base font-bold uppercase tracking-wider mb-0.5">Buya Yahya</h3>
+                                        <p className="text-emerald-100/90 text-[10px] font-bold tracking-widest uppercase">Pengasuh LPD Al-Bahjah</p>
+                                    </div>
+                                </div>
+                                <div className="absolute -top-3 -left-3 w-12 h-12 border-2 border-gold-400/30 rounded-full -z-10" />
+                            </motion.div>
+
+                            {/* Abah Sayf */}
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 0.8, delay: 0.2 }}
+                                className="relative mt-8 lg:mt-12"
+                            >
+                                <div className="relative aspect-[3/4] w-full overflow-hidden rounded-2xl shadow-xl shadow-emerald-900/10">
+                                    <div className="w-full h-full bg-slate-200 flex items-center justify-center">
+                                        {/* Placeholder until real image is provided */}
+                                        <img
+                                            src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1374&auto=format&fit=crop"
+                                            alt="Abah Sayf Abu Hanifah"
+                                            className="w-full h-full object-cover hover:scale-105 transition-transform duration-700 grayscale"
+                                        />
+                                    </div>
+                                    <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/90 via-transparent to-transparent opacity-80" />
+
+                                    <div className="absolute bottom-0 left-0 right-0 p-4 text-white text-center">
+                                        <h3 className="text-base font-bold uppercase tracking-wider mb-0.5">Abah Sayf Abu Hanifah</h3>
+                                        <p className="text-emerald-100/90 text-[10px] font-bold tracking-widest uppercase">Pengasuh LPD Al-Bahjah Buyut</p>
+                                    </div>
+                                </div>
+                                <div className="absolute -bottom-3 -right-3 w-16 h-16 bg-slate-100 rounded-full -z-10" />
+                            </motion.div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </section>
