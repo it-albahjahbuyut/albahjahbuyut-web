@@ -27,20 +27,21 @@ export function DonationSection({ program }: { program: DonationProgram | null }
                             </div>
 
                             <h2 className="text-4xl lg:text-5xl font-bold mb-6 uppercase tracking-tight leading-none">Mari Berbagi Kebaikan</h2>
+                            <h2 className="text-4xl lg:text-5xl font-bold mb-6 tracking-tight leading-none">Mari Berbagi Kebaikan</h2>
                             <p className="text-emerald-100/80 text-lg leading-relaxed mb-10 font-light">
                                 {program.description || "Sisihkan sebagian harta Anda untuk membantu pembangunan dan operasional pesantren. Insya Allah menjadi amal jariyah yang tak terputus."}
                             </p>
                             <div className="flex flex-wrap gap-4">
                                 <Link
                                     href={`/infaq/${program.slug}`}
-                                    className="inline-flex items-center justify-center px-8 py-3.5 bg-white text-emerald-950 text-sm font-bold uppercase tracking-widest hover:bg-emerald-100 transition-all"
+                                    className="inline-flex items-center justify-center px-8 py-3.5 bg-white text-emerald-950 text-sm font-bold tracking-widest hover:bg-emerald-100 transition-all"
                                 >
                                     Infaq Sekarang
                                     <ArrowRight className="ml-2 w-4 h-4" />
                                 </Link>
                                 <Link
                                     href="/infaq"
-                                    className="inline-flex items-center justify-center px-8 py-3.5 bg-transparent border border-emerald-700 text-emerald-100 text-sm font-bold uppercase tracking-widest hover:bg-emerald-900 transition-all"
+                                    className="inline-flex items-center justify-center px-8 py-3.5 bg-transparent border border-emerald-700 text-emerald-100 text-sm font-bold tracking-widest hover:bg-emerald-900 transition-all"
                                 >
                                     Program Lain
                                 </Link>

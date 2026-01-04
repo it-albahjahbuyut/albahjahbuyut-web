@@ -37,11 +37,11 @@ export default async function NewsPage() {
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent to-emerald-950/90" />
 
                 <div className="relative z-10 container mx-auto px-4 text-center">
-                    <span className="inline-block px-3 py-1 mb-4 border border-gold-400 text-gold-400 text-xs font-bold uppercase tracking-widest">
-                        Informasi Terkini
+                    <span className="inline-block px-3 py-1 mb-4 border border-gold-400 text-gold-400 text-xs font-bold tracking-widest">
+                        Halaman Berita
                     </span>
-                    <h1 className="text-4xl md:text-6xl font-bold text-white uppercase tracking-tighter mb-4">
-                        Berita & Kegiatan
+                    <h1 className="text-4xl md:text-6xl font-bold text-white tracking-tighter mb-4">
+                        Kabar Pesantren
                     </h1>
                     <p className="text-emerald-100/80 font-serif italic text-lg">
                         Kabar terbaru dari keluarga besar Al-Bahjah Buyut

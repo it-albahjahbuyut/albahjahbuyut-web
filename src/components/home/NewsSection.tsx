@@ -22,7 +22,7 @@ export function NewsSection({ posts }: { posts: Post[] }) {
             <div className="container mx-auto px-4 lg:px-8">
                 <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-4">
                     <div className="max-w-3xl">
-                        <div className="text-emerald-900 font-bold tracking-widest text-xs uppercase mb-3 flex items-center gap-2">
+                        <div className="text-emerald-900 font-bold tracking-widest text-xs mb-3 flex items-center gap-2">
                             <Newspaper className="w-4 h-4 text-emerald-600" />
                             Kabar Pesantren
                         </div>
@@ -33,7 +33,7 @@ export function NewsSection({ posts }: { posts: Post[] }) {
                     </div>
                     <Link
                         href="/berita"
-                        className="inline-flex items-center justify-center px-6 py-3 bg-white border border-emerald-200 text-emerald-950 font-bold hover:bg-emerald-950 hover:text-white hover:border-emerald-950 transition-all uppercase tracking-widest text-xs"
+                        className="inline-flex items-center justify-center px-6 py-3 bg-white border border-emerald-200 text-emerald-950 font-bold hover:bg-emerald-950 hover:text-white hover:border-emerald-950 transition-all tracking-widest text-xs"
                     >
                         Lihat Semua
                         <ArrowRight className="ml-2 w-4 h-4" />
@@ -66,7 +66,7 @@ export function NewsSection({ posts }: { posts: Post[] }) {
                                     </div>
                                 </div>
                                 <div className="px-2 flex flex-col flex-1">
-                                    <h3 className="text-xl font-bold mb-3 text-emerald-950 group-hover:text-emerald-700 transition-colors uppercase tracking-tight leading-snug line-clamp-2">
+                                    <h3 className="text-xl font-bold mb-3 text-emerald-950 group-hover:text-emerald-700 transition-colors tracking-tight leading-snug line-clamp-2">
                                         <Link href={`/berita/${post.slug}`}>
                                             {post.title}
                                         </Link>

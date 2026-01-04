@@ -101,8 +101,8 @@ export function ProfileSection() {
                                     <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/90 via-transparent to-transparent opacity-80" />
 
                                     <div className="absolute bottom-0 left-0 right-0 p-4 text-white text-center">
-                                        <h3 className="text-base font-bold uppercase tracking-wider mb-0.5">Abah Sayf Abu Hanifah</h3>
-                                        <p className="text-emerald-100/90 text-[10px] font-bold tracking-widest uppercase">Pengasuh LPD Al-Bahjah Buyut</p>
+                                        <h3 className="text-base font-bold tracking-wider mb-0.5">Abah Sayf Abu Hanifah</h3>
+                                        <p className="text-emerald-100/90 text-[10px] font-bold tracking-widest">Pengasuh LPD Al-Bahjah Buyut</p>
                                     </div>
                                 </div>
                                 <div className="absolute -bottom-3 -right-3 w-16 h-16 bg-slate-100 rounded-full -z-10" />

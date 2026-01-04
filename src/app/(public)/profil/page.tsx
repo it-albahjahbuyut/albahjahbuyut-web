@@ -72,8 +72,8 @@ export default function ProfilePage() {
                                             <div className="mb-3 w-10 h-10 rounded-lg bg-white flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
                                                 <Target className="w-5 h-5 text-emerald-600" />
                                             </div>
-                                            <h3 className="font-bold text-emerald-950 text-base uppercase tracking-wide mb-1">{item.title}</h3>
-                                            <p className="text-xs text-slate-500 font-medium uppercase tracking-wider">{item.desc}</p>
+                                            <h3 className="font-bold text-emerald-950 text-base tracking-wide mb-1">{item.title}</h3>
+                                            <p className="text-xs text-slate-500 font-medium tracking-wider">{item.desc}</p>
                                         </div>
                                     ))}
                                 </div>
@@ -89,8 +89,8 @@ export default function ProfilePage() {
                                         <Target className="w-40 h-40" />
                                     </div>
                                     <div className="relative z-10">
-                                        <div className="inline-block px-3 py-1 rounded bg-emerald-800 text-gold-400 text-xs font-bold uppercase tracking-widest mb-6">
-                                            Visi Kami
+                                        <div className="inline-block px-3 py-1 rounded bg-emerald-800 text-gold-400 text-xs font-bold tracking-widest mb-6">
+                                            Visi
                                         </div>
                                         <p className="text-xl md:text-2xl font-serif leading-relaxed text-emerald-50">
                                             "Terwujudnya lembaga dakwah dan pendidikan yang mampu mencetak kader ulama dan da'i yang berakhlak mulia."

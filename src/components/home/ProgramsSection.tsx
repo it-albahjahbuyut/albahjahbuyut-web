@@ -92,7 +92,7 @@ export function ProgramsSection({ units }: { units: Unit[] }) {
 
                                     <div className="flex items-center gap-4">
                                         <span className="w-8 h-[1px] bg-emerald-900/20 group-hover:bg-white/30 transition-colors duration-500" />
-                                        <span className="text-xs font-bold uppercase tracking-widest text-emerald-900 group-hover:text-gold-400 transition-colors duration-500">
+                                        <span className="text-xs font-bold tracking-widest text-emerald-900 group-hover:text-gold-400 transition-colors duration-500">
                                             Selengkapnya
                                         </span>
                                     </div>
@@ -105,7 +105,7 @@ export function ProgramsSection({ units }: { units: Unit[] }) {
                 <div className="mt-12 text-center md:hidden">
                     <Link
                         href="/pendidikan"
-                        className="inline-flex items-center justify-center px-8 py-4 bg-emerald-950 text-white font-bold rounded-full text-sm uppercase tracking-widest hover:bg-emerald-900 transition-all shadow-lg shadow-emerald-900/20"
+                        className="inline-flex items-center justify-center px-8 py-4 bg-emerald-950 text-white font-bold rounded-full text-sm tracking-widest hover:bg-emerald-900 transition-all shadow-lg shadow-emerald-900/20"
                     >
                         Lihat Semua
                     </Link>

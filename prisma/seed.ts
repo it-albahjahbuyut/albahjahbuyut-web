@@ -112,6 +112,100 @@ async function main() {
     }
     console.log("✅ Created settings");
 
+    // Create sample posts
+    const posts = [
+        {
+            title: "Penerimaan Santri Baru Tahun Ajaran 2026/2027 Telah Dibuka",
+            slug: "penerimaan-santri-baru-2026",
+            excerpt: "Pondok Pesantren Al-Bahjah Buyut kembali membuka pendaftaran santri baru untuk jenjang SMP, SMA, dan Tahfidz. Segera daftarkan putra-putri Anda.",
+            content: "<p>Assalamu'alaikum Warahmatullahi Wabarakatuh...</p><p>Pondok Pesantren Al-Bahjah Buyut dengan bangga mengumumkan pembukaan pendaftaran santri baru...</p>",
+            image: "https://images.unsplash.com/photo-1510590337019-5ef2d3977e2e?q=80&w=2070&auto=format&fit=crop",
+            category: "PENGUMUMAN",
+            status: "PUBLISHED",
+            publishedAt: new Date(),
+        },
+        {
+            title: "Kajian Bulanan Bersama Buya Yahya",
+            slug: "kajian-bulanan-buya-yahya-januari-2026",
+            excerpt: "Ikuti kajian rutin bulanan bersama Buya Yahya di Masjid Al-Bahjah Buyut. Terbuka untuk umum.",
+            content: "<p>Mari hadiri kajian rutin bulanan...</p>",
+            image: "https://images.unsplash.com/photo-1606233400587-c1dcb8dc2286?q=80&w=2070&auto=format&fit=crop",
+            category: "KEGIATAN",
+            status: "PUBLISHED",
+            publishedAt: new Date(),
+        },
+        {
+            title: "Prestasi Santri: Juara 1 Lomba Tahfidz Tingkat Kabupaten",
+            slug: "prestasi-santri-tahfidz-2026",
+            excerpt: "Alhamdulillah, ananda Fulan bin Fulan berhasil meraih juara 1 dalam Musabaqah Hifdzil Quran tingkat Kabupaten Cirebon.",
+            content: "<p>Kabar gembira datang dari santri Al-Bahjah Buyut...</p>",
+            image: "https://images.unsplash.com/photo-1629814407873-670dc402d20e?q=80&w=2070&auto=format&fit=crop",
+            category: "PRESTASI",
+            status: "PUBLISHED",
+            publishedAt: new Date(),
+        }
+    ];
+
+    for (const post of posts) {
+        // @ts-ignore
+        await prisma.post.upsert({
+            where: { slug: post.slug },
+            update: {},
+            create: post
+        });
+    }
+    console.log("✅ Created sample posts");
+
+    // Create sample galleries
+    const galleries = [
+        {
+            title: "Kegiatan Belajar Mengajar",
+            imageUrl: "https://images.unsplash.com/photo-1427504746074-9471b90d4c84?q=80&w=2070&auto=format&fit=crop",
+            description: "Suasana belajar santri di kelas yang kondusif.",
+            order: 1,
+        },
+        {
+            title: "Sholat Berjamaah",
+            imageUrl: "https://images.unsplash.com/photo-1564121211835-e88c852648ab?q=80&w=2070&auto=format&fit=crop",
+            description: "Kegiatan sholat berjamaah di masjid pesantren.",
+            order: 2,
+        },
+        {
+            title: "Ekstrakurikuler Memanah",
+            imageUrl: "https://images.unsplash.com/photo-1511267503926-d62153eb3c48?q=80&w=2070&auto=format&fit=crop",
+            description: "Santri sedang berlatih memanah sebagai sunnah Rasulullah.",
+            order: 3,
+        },
+        {
+            title: "Wisuda Tahfidz",
+            imageUrl: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=2070&auto=format&fit=crop",
+            description: "Momen haru wisuda tahfidz 30 juz.",
+            order: 4,
+        },
+        {
+            title: "Gotong Royong",
+            imageUrl: "https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?q=80&w=2070&auto=format&fit=crop",
+            description: "Kegiatan kebersihan lingkungan pesantren.",
+            order: 5,
+        },
+        {
+            title: "Makan Bersama",
+            imageUrl: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?q=80&w=2070&auto=format&fit=crop",
+            description: "Kebersamaan santri saat makan bersama.",
+            order: 6,
+        }
+    ];
+
+    for (const gallery of galleries) {
+        await prisma.gallery.create({
+            data: {
+                ...gallery,
+                isActive: true
+            }
+        });
+    }
+    console.log("✅ Created sample galleries");
+
     console.log("🎉 Seeding complete!");
 }
 

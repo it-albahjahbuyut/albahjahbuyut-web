@@ -68,24 +68,24 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
                 <div className="relative z-10 container mx-auto px-4 lg:px-8">
                     <Link
                         href="/berita"
-                        className="inline-flex items-center gap-2 text-gold-400 text-xs font-bold uppercase tracking-widest hover:text-white mb-6 transition-colors"
+                        className="inline-flex items-center gap-2 text-gold-400 text-xs font-bold tracking-widest hover:text-white mb-6 transition-colors"
                     >
                         <ArrowLeft className="w-4 h-4" />
                         Kembali ke Berita
                     </Link>
 
                     <div className="flex flex-wrap items-center gap-4 mb-4">
-                        <span className="bg-gold-500 text-emerald-950 text-xs font-bold px-3 py-1 uppercase tracking-wider rounded-sm">
+                        <span className="bg-gold-500 text-emerald-950 text-xs font-bold px-3 py-1 tracking-wider rounded-sm">
                             {post.category}
                         </span>
                         {post.unit && (
-                            <span className="bg-emerald-900/80 text-emerald-100 border border-emerald-700 text-xs font-bold px-3 py-1 uppercase tracking-wider rounded-sm">
+                            <span className="bg-emerald-900/80 text-emerald-100 border border-emerald-700 text-xs font-bold px-3 py-1 tracking-wider rounded-sm">
                                 Unit: {post.unit.name}
                             </span>
                         )}
                     </div>
 
-                    <h1 className="text-3xl md:text-5xl font-bold text-white uppercase tracking-tight leading-tight max-w-4xl">
+                    <h1 className="text-3xl md:text-5xl font-bold text-white tracking-tight leading-tight max-w-4xl">
                         {post.title}
                     </h1>
                 </div>

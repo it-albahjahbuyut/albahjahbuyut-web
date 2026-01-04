@@ -25,8 +25,8 @@ export function Footer() {
                                 <span className="text-2xl font-bold text-white">ب</span>
                             </div>
                             <div>
-                                <h3 className="text-lg font-bold uppercase tracking-wide">Al-Bahjah Buyut</h3>
-                                <p className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">Membangun Generasi Qur&apos;ani</p>
+                                <h3 className="text-lg font-bold tracking-wide">Al-Bahjah Buyut</h3>
+                                <p className="text-[10px] font-bold text-emerald-400 tracking-widest">Membangun Generasi Qur&apos;ani</p>
                             </div>
                         </div>
                         <p className="mb-6 text-sm leading-relaxed text-emerald-100/90">

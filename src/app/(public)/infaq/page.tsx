@@ -28,10 +28,10 @@ export default async function DonationPage() {
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent to-emerald-950/90" />
 
                 <div className="relative z-10 container mx-auto px-4 text-center">
-                    <span className="inline-block px-3 py-1 mb-4 border border-gold-400 text-gold-400 text-xs font-bold uppercase tracking-widest">
+                    <span className="inline-block px-3 py-1 mb-4 border border-gold-400 text-gold-400 text-xs font-bold tracking-widest">
                         Amal Jariyah
                     </span>
-                    <h1 className="text-4xl md:text-6xl font-bold text-white uppercase tracking-tighter mb-4">
+                    <h1 className="text-4xl md:text-6xl font-bold text-white tracking-tighter mb-4">
                         Program Infaq & Donasi
                     </h1>
                     <p className="text-emerald-100/80 font-serif italic text-lg max-w-3xl mx-auto">
@@ -45,7 +45,7 @@ export default async function DonationPage() {
                 <div className="container mx-auto px-4 lg:px-8">
                     {/* Section Header */}
                     <div className="mb-16 text-center max-w-3xl mx-auto">
-                        <h2 className="text-3xl font-bold text-emerald-950 uppercase tracking-wide mb-4">
+                        <h2 className="text-3xl font-bold text-emerald-950 tracking-wide mb-4">
                             Program Pilihan
                         </h2>
                         <div className="w-16 h-1 bg-gold-500 mx-auto mb-6"></div>

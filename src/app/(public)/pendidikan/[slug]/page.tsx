@@ -189,7 +189,7 @@ export default async function UnitDetailPage({ params }: UnitDetailPageProps) {
                             <div className="sticky top-24 space-y-8">
                                 {/* Registration Card */}
                                 <div className="bg-emerald-950 text-white p-8 border-t-8 border-gold-500">
-                                    <h3 className="text-2xl font-bold uppercase tracking-wide mb-2 line-clamp-2">
+                                    <h3 className="text-2xl font-bold tracking-wide mb-2 line-clamp-2">
                                         Gabung Bersama Kami
                                     </h3>
                                     <p className="text-emerald-200/80 mb-8 font-light leading-relaxed">
@@ -199,7 +199,7 @@ export default async function UnitDetailPage({ params }: UnitDetailPageProps) {
                                     <div className="space-y-4">
                                         <Link
                                             href={unit.registrationLink || "/psb"}
-                                            className="flex w-full items-center justify-center gap-2 bg-gold-500 hover:bg-gold-400 text-emerald-950 py-4 text-sm font-bold uppercase tracking-widest transition-all hover:-translate-y-1"
+                                            className="flex w-full items-center justify-center gap-2 bg-gold-500 hover:bg-gold-400 text-emerald-950 py-4 text-sm font-bold tracking-widest transition-all hover:-translate-y-1"
                                         >
                                             Daftar Sekarang
                                             <ArrowRight className="h-4 w-4" />
@@ -207,7 +207,7 @@ export default async function UnitDetailPage({ params }: UnitDetailPageProps) {
 
                                         <a
                                             href="https://wa.me/6281234567890"
-                                            className="flex w-full items-center justify-center gap-2 border border-emerald-700 hover:bg-emerald-900 text-white py-4 text-sm font-bold uppercase tracking-widest transition-all"
+                                            className="flex w-full items-center justify-center gap-2 border border-emerald-700 hover:bg-emerald-900 text-white py-4 text-sm font-bold tracking-widest transition-all"
                                         >
                                             Konsultasi WA
                                         </a>

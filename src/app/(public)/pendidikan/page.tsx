@@ -38,10 +38,10 @@ export default async function PendidikanPage() {
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent to-emerald-950/90" />
 
                 <div className="relative z-10 container mx-auto px-4 text-center">
-                    <span className="inline-block px-3 py-1 mb-4 border border-gold-400 text-gold-400 text-xs font-bold uppercase tracking-widest">
+                    <span className="inline-block px-3 py-1 mb-4 border border-gold-400 text-gold-400 text-xs font-bold tracking-widest">
                         Program Pendidikan
                     </span>
-                    <h1 className="text-4xl md:text-6xl font-bold text-white uppercase tracking-tighter mb-4">
+                    <h1 className="text-4xl md:text-6xl font-bold text-white tracking-tighter mb-4">
                         Pendidikan Kami
                     </h1>
                     <p className="text-emerald-100/80 font-serif italic text-lg max-w-3xl mx-auto">
@@ -54,7 +54,7 @@ export default async function PendidikanPage() {
             <section className="py-20 bg-white">
                 <div className="container mx-auto px-4 lg:px-8">
                     <div className="max-w-3xl mx-auto text-center mb-16">
-                        <h2 className="text-3xl font-bold text-emerald-950 uppercase tracking-tight mb-4">
+                        <h2 className="text-3xl font-bold text-emerald-950 tracking-tight mb-4">
                             Daftar Program
                         </h2>
                         <p className="text-slate-600 leading-relaxed">

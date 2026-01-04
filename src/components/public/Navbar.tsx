@@ -12,6 +12,7 @@ import {
     Newspaper,
     Heart,
     Users,
+    Image as ImageIcon,
 } from "lucide-react";
 
 interface NavbarProps {
@@ -39,6 +40,7 @@ export function Navbar({ units }: NavbarProps) {
     const navLinks = [
         { href: "/", label: "Beranda", icon: Home },
         { href: "/profil", label: "Profil", icon: Users },
+        { href: "/galeri", label: "Galeri", icon: ImageIcon },
         { href: "/berita", label: "Berita", icon: Newspaper },
         { href: "/infaq", label: "Donasi", icon: Heart },
     ];
@@ -61,8 +63,8 @@ export function Navbar({ units }: NavbarProps) {
                         <span className="text-xl font-bold text-white">ب</span>
                     </div>
                     <div className="hidden sm:block">
-                        <p className={`text-base font-bold leading-none mb-0.5 uppercase tracking-wide ${textColor}`}>Al-Bahjah Buyut</p>
-                        <p className={`text-[10px] font-bold uppercase tracking-widest ${subTextColor}`}>Membangun Generasi Qur&apos;ani</p>
+                        <p className={`text-base font-bold leading-none mb-0.5 tracking-wide ${textColor}`}>Al-Bahjah Buyut</p>
+                        <p className={`text-[10px] font-bold tracking-widest ${subTextColor}`}>Membangun Generasi Qur&apos;ani</p>
                     </div>
                 </Link>
 
@@ -118,6 +120,12 @@ export function Navbar({ units }: NavbarProps) {
                         className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${navTextColor}`}
                     >
                         Profil
+                    </Link>
+                    <Link
+                        href="/galeri"
+                        className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${navTextColor}`}
+                    >
+                        Galeri
                     </Link>
                     <Link
                         href="/berita"

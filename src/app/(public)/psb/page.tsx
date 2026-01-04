@@ -50,10 +50,10 @@ export default async function PSBPage() {
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent to-emerald-950/90" />
 
                 <div className="relative z-10 container mx-auto px-4 text-center">
-                    <span className="inline-block px-3 py-1 mb-4 border border-gold-400 text-gold-400 text-xs font-bold uppercase tracking-widest">
+                    <span className="inline-block px-3 py-1 mb-4 border border-gold-400 text-gold-400 text-xs font-bold tracking-widest">
                         Tahun Ajaran 2025/2026
                     </span>
-                    <h1 className="text-4xl md:text-6xl font-bold text-white uppercase tracking-tighter mb-4">
+                    <h1 className="text-4xl md:text-6xl font-bold text-white tracking-tighter mb-4">
                         Penerimaan Santri Baru
                     </h1>
                     <p className="text-emerald-100/80 font-serif italic text-lg max-w-3xl mx-auto">
@@ -66,7 +66,7 @@ export default async function PSBPage() {
             <section className="py-20 bg-white">
                 <div className="container mx-auto px-4 lg:px-8">
                     <div className="text-center max-w-3xl mx-auto mb-16">
-                        <h2 className="text-3xl font-bold text-emerald-950 uppercase tracking-wide mb-4">
+                        <h2 className="text-3xl font-bold text-emerald-950 tracking-wide mb-4">
                             Alur Pendaftaran
                         </h2>
                         <div className="w-16 h-1 bg-gold-500 mx-auto mb-6"></div>
