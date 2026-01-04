@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import "dotenv/config";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, PostCategory, PostStatus, UserRole } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 
 const adapter = new PrismaPg({
@@ -22,7 +22,7 @@ async function main() {
             email: "admin@albahjahbuyut.com",
             name: "Admin Al-Bahjah",
             password: hashedPassword,
-            role: "SUPER_ADMIN",
+            role: UserRole.SUPER_ADMIN,
         },
     });
     console.log("✅ Created admin user:", admin.email);
@@ -30,18 +30,18 @@ async function main() {
     // Create units
     const units = [
         {
-            name: "SMP Al-Bahjah",
-            slug: "smp",
-            description: "<p>SMP Al-Bahjah Buyut adalah jenjang pendidikan menengah pertama yang memadukan kurikulum nasional dengan pendidikan agama Islam yang komprehensif.</p>",
+            name: "SMPIQu Al-Bahjah",
+            slug: "smpiqu",
+            description: "<p>SMPIQu Al-Bahjah Buyut adalah jenjang pendidikan menengah pertama yang memadukan kurikulum nasional dengan pendidikan agama Islam yang komprehensif.</p>",
             curriculum: "<p>Kurikulum Merdeka dengan penguatan pendidikan agama Islam, tahfidz, dan bahasa Arab.</p>",
             facilities: "Ruang kelas ber-AC\nLaboratorium IPA\nPerpustakaan\nMasjid\nAsrama putra dan putri\nLapangan olahraga",
             registrationLink: "",
             order: 1,
         },
         {
-            name: "SMA Al-Bahjah",
-            slug: "sma",
-            description: "<p>SMA Al-Bahjah Buyut menyiapkan santri untuk melanjutkan ke jenjang pendidikan tinggi dengan bekal ilmu agama dan umum yang seimbang.</p>",
+            name: "SMAIQu Al-Bahjah",
+            slug: "smaiqu",
+            description: "<p>SMAIQu Al-Bahjah Buyut menyiapkan santri untuk melanjutkan ke jenjang pendidikan tinggi dengan bekal ilmu agama dan umum yang seimbang.</p>",
             curriculum: "<p>Kurikulum Merdeka dengan peminatan IPA/IPS dan penguatan tahfidz Al-Quran.</p>",
             facilities: "Ruang kelas ber-AC\nLaboratorium IPA dan Komputer\nPerpustakaan\nMasjid\nAsrama putra dan putri\nLapangan olahraga",
             registrationLink: "",
@@ -120,8 +120,8 @@ async function main() {
             excerpt: "Pondok Pesantren Al-Bahjah Buyut kembali membuka pendaftaran santri baru untuk jenjang SMP, SMA, dan Tahfidz. Segera daftarkan putra-putri Anda.",
             content: "<p>Assalamu'alaikum Warahmatullahi Wabarakatuh...</p><p>Pondok Pesantren Al-Bahjah Buyut dengan bangga mengumumkan pembukaan pendaftaran santri baru...</p>",
             image: "https://images.unsplash.com/photo-1510590337019-5ef2d3977e2e?q=80&w=2070&auto=format&fit=crop",
-            category: "PENGUMUMAN",
-            status: "PUBLISHED",
+            category: PostCategory.PENGUMUMAN,
+            status: PostStatus.PUBLISHED,
             publishedAt: new Date(),
         },
         {
@@ -130,8 +130,8 @@ async function main() {
             excerpt: "Ikuti kajian rutin bulanan bersama Buya Yahya di Masjid Al-Bahjah Buyut. Terbuka untuk umum.",
             content: "<p>Mari hadiri kajian rutin bulanan...</p>",
             image: "https://images.unsplash.com/photo-1606233400587-c1dcb8dc2286?q=80&w=2070&auto=format&fit=crop",
-            category: "KEGIATAN",
-            status: "PUBLISHED",
+            category: PostCategory.KEGIATAN,
+            status: PostStatus.PUBLISHED,
             publishedAt: new Date(),
         },
         {
@@ -140,8 +140,8 @@ async function main() {
             excerpt: "Alhamdulillah, ananda Fulan bin Fulan berhasil meraih juara 1 dalam Musabaqah Hifdzil Quran tingkat Kabupaten Cirebon.",
             content: "<p>Kabar gembira datang dari santri Al-Bahjah Buyut...</p>",
             image: "https://images.unsplash.com/photo-1629814407873-670dc402d20e?q=80&w=2070&auto=format&fit=crop",
-            category: "PRESTASI",
-            status: "PUBLISHED",
+            category: PostCategory.PRESTASI,
+            status: PostStatus.PUBLISHED,
             publishedAt: new Date(),
         }
     ];

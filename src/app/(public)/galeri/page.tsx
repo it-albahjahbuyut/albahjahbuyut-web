@@ -16,7 +16,7 @@ export default async function GalleryPage() {
     return (
         <main>
             {/* Hero Section */}
-            <section className="relative h-[40vh] min-h-[300px] flex items-center justify-center bg-emerald-950 overflow-hidden">
+            <section className="relative h-[50vh] min-h-[400px] flex items-center justify-center bg-emerald-950 overflow-hidden pt-32">
                 <div
                     className="absolute inset-0 bg-cover bg-center opacity-30 fixed-bg"
                     style={{
@@ -29,7 +29,7 @@ export default async function GalleryPage() {
                     <span className="inline-block px-3 py-1 mb-4 border border-gold-400 text-gold-400 text-xs font-bold tracking-widest">
                         Dokumentasi
                     </span>
-                    <h1 className="text-4xl md:text-6xl font-bold text-white tracking-tighter mb-4">
+                    <h1 className="text-5xl md:text-7xl font-bold text-white tracking-tighter mb-4">
                         Galeri Pesantren
                     </h1>
                     <p className="text-emerald-100/80 font-serif italic text-lg max-w-3xl mx-auto">

@@ -1,17 +1,48 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, CheckCircle2, Target, History, Users } from "lucide-react";
+import { Target, User } from "lucide-react";
+import { db } from "@/lib/db";
+import { UnitCard } from "@/components/public/UnitCard";
 
 export const metadata = {
     title: "Profil | Pondok Pesantren Al-Bahjah Buyut",
     description: "Mengenal lebih dekat Pondok Pesantren Al-Bahjah Buyut, sejarah, visi-misi, dan nilai-nilai perjuangan.",
 };
 
-export default function ProfilePage() {
+export default async function ProfilePage() {
+    const units = await db.unit.findMany({
+        where: { isActive: true },
+        orderBy: { order: "asc" },
+    });
+
+    const figures = [
+        {
+            name: "Buya Yahya",
+            role: "Pengasuh LPD Al-Bahjah",
+            // Placeholder image for Buya Yahya (using a respectful generic image or placeholder)
+            image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1000&auto=format&fit=crop",
+        },
+        {
+            name: "Abah Sayf Abu Hanifah",
+            role: "Pengasuh Al-Bahjah Buyut",
+            image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1000&auto=format&fit=crop",
+        },
+        {
+            name: "Kepala Sekolah SMPIQu",
+            role: "Kepala Sekolah SMPIQu Al-Bahjah",
+            image: null, // No image yet
+        },
+        {
+            name: "Kepala Sekolah SMAIQu",
+            role: "Kepala Sekolah SMAIQu Al-Bahjah",
+            image: null, // No image yet
+        }
+    ];
+
     return (
         <main>
             {/* Hero Section */}
-            <section className="relative h-[40vh] min-h-[300px] flex items-center justify-center bg-emerald-950 overflow-hidden">
+            <section className="relative h-[50vh] min-h-[400px] flex items-center justify-center bg-emerald-950 overflow-hidden pt-32">
                 <div
                     className="absolute inset-0 bg-cover bg-center opacity-30 fixed-bg"
                     style={{
@@ -24,7 +55,7 @@ export default function ProfilePage() {
                     <span className="inline-block px-3 py-1 mb-4 border border-gold-400 text-gold-400 text-xs font-bold uppercase tracking-widest">
                         Tentang Kami
                     </span>
-                    <h1 className="text-4xl md:text-6xl font-bold text-white uppercase tracking-tighter mb-4">
+                    <h1 className="text-5xl md:text-7xl font-bold text-white uppercase tracking-tighter mb-4">
                         Profil Al-Bahjah Buyut
                     </h1>
                     <p className="text-emerald-100/80 font-serif italic text-lg max-w-3xl mx-auto">
@@ -38,7 +69,7 @@ export default function ProfilePage() {
                 <div className="container mx-auto px-4 lg:px-8">
                     <div className="grid lg:grid-cols-12 gap-12 lg:gap-20">
                         {/* Main Content (History & Programs) */}
-                        <div className="lg:col-span-7 space-y-16">
+                        <div className="lg:col-span-12 xl:col-span-8 space-y-20">
                             {/* History */}
                             <div className="space-y-6">
                                 <h2 className="text-3xl font-bold text-emerald-950 uppercase tracking-tight flex items-center gap-3">
@@ -50,8 +81,43 @@ export default function ProfilePage() {
                                         <span className="text-emerald-900 font-bold">Lembaga Pengembangan Dakwah (LPD) Al-Bahjah Buyut</span> merupakan perpanjangan tangan dari dakwah mulia yang diasuh oleh <strong>Buya Yahya</strong>. Berdiri di tengah kerinduan umat akan lembaga pendidikan yang tidak hanya mengasah intelektual, tetapi juga menempa spiritualitas.
                                     </p>
                                     <p className="leading-loose text-slate-600">
-                                        Kami bermula dari majelis taklim sederhana yang kemudian berkembang menjadi pusat pendidikan terpadu. Dengan semangat khidmat kepada umat, Al-Bahjah Buyut terus bertransformasi menghadirkan fasilitas pendidikan formal dan non-formal yang berkualitas, sersanad jelas, dan berorientasi pada pembentukan akhlakul karimah.
+                                        Kami bermula dari majelis taklim sederhana yang kemudian berkembang menjadi pusat pendidikan terpadu. Dengan semangat khidmat kepada umat, Al-Bahjah Buyut terus bertransformasi menghadirkan fasilitas pendidikan formal dan non-formal yang berkualitas, bersanad jelas, dan berorientasi pada pembentukan akhlakul karimah.
                                     </p>
+                                </div>
+                            </div>
+
+                            {/* Tokoh Pesantren (Figures) */}
+                            <div className="space-y-8">
+                                <h2 className="text-3xl font-bold text-emerald-950 uppercase tracking-tight flex items-center gap-3">
+                                    <span className="w-1.5 h-8 bg-gold-500 rounded-full"></span>
+                                    Tokoh & Pimpinan
+                                </h2>
+                                <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-6">
+                                    {figures.map((figure, idx) => (
+                                        <div key={idx} className="group bg-slate-50 rounded-xl overflow-hidden border border-slate-100 hover:shadow-lg transition-all duration-300">
+                                            <div className="relative aspect-[3/4] bg-emerald-100 overflow-hidden">
+                                                {figure.image ? (
+                                                    <Image
+                                                        src={figure.image}
+                                                        alt={figure.name}
+                                                        fill
+                                                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                                                    />
+                                                ) : (
+                                                    <div className="w-full h-full flex items-center justify-center text-emerald-300">
+                                                        <User className="w-20 h-20" />
+                                                    </div>
+                                                )}
+                                                <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/90 to-transparent opacity-60 group-hover:opacity-40 transition-opacity" />
+                                            </div>
+                                            <div className="p-4 text-center relative -mt-10">
+                                                <div className="bg-white rounded-lg p-3 shadow-md border-b-4 border-gold-500">
+                                                    <h3 className="font-bold text-emerald-950 text-sm">{figure.name}</h3>
+                                                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mt-1">{figure.role}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
 
@@ -61,28 +127,17 @@ export default function ProfilePage() {
                                     <span className="w-1.5 h-8 bg-gold-500 rounded-full"></span>
                                     Program Unggulan
                                 </h2>
-                                <div className="grid sm:grid-cols-2 gap-4">
-                                    {[
-                                        { title: "Pendidikan Formal", desc: "SMP & SMA Berbasis Pesantren" },
-                                        { title: "Tahfidz Al-Qur'an", desc: "Program Hafalan Intensif & Mutqin" },
-                                        { title: "Kajian Kitab", desc: "Turats Islam & Sanad Keilmuan" },
-                                        { title: "Dakwah Sosial", desc: "Khidmat Untuk Masyarakat Luas" }
-                                    ].map((item, i) => (
-                                        <div key={i} className="group p-6 bg-slate-50 border border-slate-100 hover:border-emerald-500 hover:bg-emerald-50/50 transition-all duration-300 rounded-xl">
-                                            <div className="mb-3 w-10 h-10 rounded-lg bg-white flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
-                                                <Target className="w-5 h-5 text-emerald-600" />
-                                            </div>
-                                            <h3 className="font-bold text-emerald-950 text-base tracking-wide mb-1">{item.title}</h3>
-                                            <p className="text-xs text-slate-500 font-medium tracking-wider">{item.desc}</p>
-                                        </div>
+                                <div className="grid sm:grid-cols-2 gap-6">
+                                    {units.map((unit, i) => (
+                                        <UnitCard key={unit.id} unit={unit} index={i} />
                                     ))}
                                 </div>
                             </div>
                         </div>
 
                         {/* Sidebar (Visi Misi) */}
-                        <div className="lg:col-span-5">
-                            <div className="sticky top-28 space-y-8">
+                        <div className="lg:col-span-12 xl:col-span-4 mt-12 xl:mt-0">
+                            <div className="sticky top-32 space-y-8">
                                 {/* Visi Card */}
                                 <div className="relative overflow-hidden rounded-2xl bg-emerald-900 text-white p-8 lg:p-10 shadow-xl">
                                     <div className="absolute top-0 right-0 p-4 opacity-10">

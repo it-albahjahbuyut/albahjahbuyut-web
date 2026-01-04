@@ -42,7 +42,7 @@ model User {
 model Unit {
   id               String   @id @default(cuid())
   name             String   @unique // SMP, SMA, Tafaqquh, Tahfidz
-  slug             String   @unique // smp, sma, tafaqquh, tahfidz
+  slug             String   @unique // smpiqu, smaiqu, tafaqquh, tahfidz
   description      String?  @db.Text // Deskripsi lengkap unit
   curriculum       String?  @db.Text // Kurikulum yang digunakan
   facilities       String?  @db.Text // Fasilitas yang tersedia (JSON atau text)

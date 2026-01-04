@@ -11,15 +11,14 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 export const metadata: Metadata = {
   title: "Pondok Pesantren Al-Bahjah Buyut | Membangun Generasi Qur'ani",
   description:
-    "Pondok Pesantren Al-Bahjah Buyut - Lembaga pendidikan Islam terpadu dengan program SMPiq, SMA, Tafaqquh, dan Tahfidz. Membangun generasi Qur'ani yang berakhlak mulia.",
-  keywords: [
-    "pesantren",
-    "al-bahjah",
-    "buyut",
-    "pendidikan islam",
-    "tahfidz",
-    "tafaqquh",
-  ],
+    "Pondok Pesantren Al-Bahjah Buyut - Lembaga pendidikan Islam terpadu dengan program SMPIQu, SMAIQu, Tafaqquh, dan Tahfidz. Membangun generasi Qur'ani yang berakhlak mulia.", keywords: [
+      "pesantren",
+      "al-bahjah",
+      "buyut",
+      "pendidikan islam",
+      "tahfidz",
+      "tafaqquh",
+    ],
 };
 
 export default function RootLayout({

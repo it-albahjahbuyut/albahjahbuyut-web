@@ -84,7 +84,7 @@ export default async function UnitDetailPage({ params }: UnitDetailPageProps) {
     return (
         <>
             {/* Hero Section */}
-            <section className="relative h-[50vh] min-h-[400px] flex items-center bg-zinc-900 overflow-hidden">
+            <section className="relative h-[50vh] min-h-[400px] flex items-center bg-zinc-900 overflow-hidden pt-32">
                 {/* Background Image */}
                 {unit.image ? (
                     <Image

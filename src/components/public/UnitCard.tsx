@@ -23,8 +23,8 @@ interface UnitCardProps {
 }
 
 const unitIcons: Record<string, LucideIcon> = {
-    smp: GraduationCap,
-    sma: BookOpen,
+    smpiqu: GraduationCap,
+    smaiqu: BookOpen,
     tafaqquh: Scroll,
     tahfidz: BookOpenCheck,
 };
@@ -70,7 +70,7 @@ export function UnitCard({ unit, index = 0 }: UnitCardProps) {
                             {unit.name}
                         </h3>
                         <p className="line-clamp-3 text-sm leading-relaxed text-slate-600">
-                            {unit.description || "Program pendidikan unggulan di Pesantren Al-Bahjah Buyut."}
+                            {unit.description ? unit.description.replace(/<[^>]*>?/gm, "") : "Program pendidikan unggulan di Pesantren Al-Bahjah Buyut."}
                         </p>
 
                         {/* Arrow */}

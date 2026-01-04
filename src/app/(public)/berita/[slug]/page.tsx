@@ -56,7 +56,7 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
     return (
         <main className="bg-white min-h-screen">
             {/* Hero / Header */}
-            <div className="relative h-[40vh] min-h-[400px] flex items-end pb-12 bg-emerald-950">
+            <div className="relative h-[50vh] min-h-[400px] flex items-end pb-12 bg-emerald-950">
                 <div
                     className="absolute inset-0 bg-cover bg-center opacity-40 fixed-bg"
                     style={{
