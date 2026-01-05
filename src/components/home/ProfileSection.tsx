@@ -7,7 +7,7 @@ import Image from "next/image";
 
 export function ProfileSection() {
     return (
-        <section className="py-20 lg:py-32 bg-white relative overflow-hidden">
+        <section className="pt-20 lg:pt-32 pb-10 bg-white relative overflow-hidden">
             {/* Background Decorations */}
             <div className="absolute top-0 right-0 w-1/3 h-full bg-slate-50 -z-10 hidden lg:block" />
 

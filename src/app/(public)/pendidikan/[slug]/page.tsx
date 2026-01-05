@@ -8,9 +8,9 @@ import {
     GraduationCap,
     Calendar,
     CheckCircle2,
-    Building2,
     ArrowRight,
 } from "lucide-react";
+import { FadeIn, FadeInStagger } from "@/components/animations/FadeIn";
 
 interface UnitDetailPageProps {
     params: Promise<{ slug: string }>;
@@ -84,47 +84,56 @@ export default async function UnitDetailPage({ params }: UnitDetailPageProps) {
     return (
         <>
             {/* Hero Section */}
-            <section className="relative h-[50vh] min-h-[400px] flex items-center bg-zinc-900 overflow-hidden pt-32">
+            {/* Hero Section */}
+            <section className="relative min-h-[50vh] flex items-center bg-zinc-900 overflow-hidden py-32">
                 {/* Background Image */}
                 {unit.image ? (
                     <Image
                         src={unit.image}
                         alt={unit.name}
                         fill
-                        className="object-cover opacity-40"
+                        className="object-cover opacity-50"
                         priority
                     />
                 ) : (
                     <div
-                        className="absolute inset-0 opacity-10 bg-cover bg-center"
+                        className="absolute inset-0 opacity-30 bg-cover bg-center"
                         style={{
-                            backgroundImage: `url("https://images.unsplash.com/photo-1541829070764-84a7d30dd3f3?q=80&w=1974&auto=format&fit=crop")`,
+                            backgroundImage: `url('https://images.unsplash.com/photo-1576487248805-cf45f6bcc67f?q=80&w=2070&auto=format&fit=crop')`,
                         }}
                     />
                 )}
 
-                <div className="absolute inset-0 bg-black/60" />
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-emerald-950/90" />
 
                 {/* Content */}
                 <div className="relative z-10 w-full container mx-auto px-4 lg:px-8">
-                    <Link
-                        href="/"
-                        className="mb-8 inline-flex items-center gap-2 text-xs font-bold text-emerald-400 uppercase tracking-widest hover:text-white transition-colors"
-                    >
-                        <ArrowLeft className="h-4 w-4" />
-                        Kembali
-                    </Link>
+                    <FadeIn delay={0.1}>
+                        <Link
+                            href="/pendidikan"
+                            className="mb-8 inline-flex items-center gap-2 text-xs font-bold text-emerald-400 uppercase tracking-widest hover:text-white transition-colors"
+                        >
+                            <ArrowLeft className="h-4 w-4" />
+                            Kembali
+                        </Link>
+                    </FadeIn>
 
                     <div className="max-w-4xl">
-                        <span className="inline-block px-3 py-1 mb-4 border border-gold-500 text-gold-400 text-xs font-bold uppercase tracking-widest">
-                            Unit Pendidikan
-                        </span>
-                        <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white uppercase tracking-tighter leading-none mb-6">
-                            {unit.name}
-                        </h1>
-                        <p className="text-xl md:text-2xl text-emerald-100 font-serif italic">
-                            Membangun Generasi Qur'ani Berakhlak Mulia
-                        </p>
+                        <FadeIn delay={0.2}>
+                            <span className="inline-block px-3 py-1 mb-4 border border-gold-500 text-gold-400 text-xs font-bold uppercase tracking-widest">
+                                Unit Pendidikan
+                            </span>
+                        </FadeIn>
+                        <FadeIn delay={0.3}>
+                            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white uppercase tracking-tighter leading-none mb-6">
+                                {unit.name}
+                            </h1>
+                        </FadeIn>
+                        <FadeIn delay={0.4}>
+                            <p className="text-xl md:text-2xl text-emerald-100 font-serif italic">
+                                Membangun Generasi Qur'ani Berakhlak Mulia
+                            </p>
+                        </FadeIn>
                     </div>
                 </div>
             </section>
@@ -136,7 +145,7 @@ export default async function UnitDetailPage({ params }: UnitDetailPageProps) {
                         {/* Main Content Column */}
                         <div className="lg:col-span-8">
                             {/* Description */}
-                            <div className="mb-16">
+                            <FadeIn className="mb-16">
                                 <h2 className="text-2xl font-bold text-emerald-950 uppercase tracking-wide mb-6 border-l-4 border-gold-500 pl-4">
                                     Tentang {unit.name}
                                 </h2>
@@ -144,11 +153,11 @@ export default async function UnitDetailPage({ params }: UnitDetailPageProps) {
                                     className="prose prose-lg prose-slate max-w-none text-slate-600 leading-relaxed font-light"
                                     dangerouslySetInnerHTML={{ __html: descriptionHtml }}
                                 />
-                            </div>
+                            </FadeIn>
 
                             {/* Curriculum */}
                             {curriculumHtml && (
-                                <div className="mb-16">
+                                <FadeIn className="mb-16">
                                     <h2 className="text-2xl font-bold text-emerald-950 uppercase tracking-wide mb-8 border-l-4 border-gold-500 pl-4">
                                         Kurikulum Pendidikan
                                     </h2>
@@ -158,18 +167,18 @@ export default async function UnitDetailPage({ params }: UnitDetailPageProps) {
                                             dangerouslySetInnerHTML={{ __html: curriculumHtml }}
                                         />
                                     </div>
-                                </div>
+                                </FadeIn>
                             )}
 
                             {/* Facilities */}
                             {facilities.length > 0 && (
-                                <div className="mb-12">
+                                <FadeIn className="mb-12">
                                     <h2 className="text-2xl font-bold text-emerald-950 uppercase tracking-wide mb-8 border-l-4 border-gold-500 pl-4">
                                         Fasilitas Penunjang
                                     </h2>
-                                    <div className="grid gap-6 sm:grid-cols-2">
+                                    <FadeInStagger className="grid gap-6 sm:grid-cols-2">
                                         {facilities.map((facility, index) => (
-                                            <div
+                                            <FadeIn
                                                 key={index}
                                                 className="group flex items-center gap-4 p-6 bg-white border border-slate-200 hover:bg-emerald-950 hover:border-emerald-950 transition-all duration-300"
                                             >
@@ -177,10 +186,10 @@ export default async function UnitDetailPage({ params }: UnitDetailPageProps) {
                                                     <CheckCircle2 className="h-6 w-6 text-emerald-600 group-hover:text-gold-400" />
                                                 </div>
                                                 <span className="font-bold text-slate-700 group-hover:text-white uppercase tracking-wide text-sm">{facility}</span>
-                                            </div>
+                                            </FadeIn>
                                         ))}
-                                    </div>
-                                </div>
+                                    </FadeInStagger>
+                                </FadeIn>
                             )}
                         </div>
 
@@ -188,7 +197,7 @@ export default async function UnitDetailPage({ params }: UnitDetailPageProps) {
                         <div className="lg:col-span-4">
                             <div className="sticky top-24 space-y-8">
                                 {/* Registration Card */}
-                                <div className="bg-emerald-950 text-white p-8 border-t-8 border-gold-500">
+                                <FadeIn delay={0.2} className="bg-emerald-950 text-white p-8 border-t-8 border-gold-500">
                                     <h3 className="text-2xl font-bold tracking-wide mb-2 line-clamp-2">
                                         Gabung Bersama Kami
                                     </h3>
@@ -212,10 +221,10 @@ export default async function UnitDetailPage({ params }: UnitDetailPageProps) {
                                             Konsultasi WA
                                         </a>
                                     </div>
-                                </div>
+                                </FadeIn>
 
                                 {/* Quick Info */}
-                                <div className="bg-slate-50 p-8 border border-slate-200">
+                                <FadeIn delay={0.4} className="bg-slate-50 p-8 border border-slate-200">
                                     <h4 className="font-bold text-emerald-950 uppercase tracking-widest text-xs mb-6">Informasi Kontak</h4>
                                     <ul className="space-y-4">
                                         <li className="flex items-start gap-3 text-sm text-slate-600">
@@ -231,7 +240,7 @@ export default async function UnitDetailPage({ params }: UnitDetailPageProps) {
                                             <span>+62 812-3456-7890</span>
                                         </li>
                                     </ul>
-                                </div>
+                                </FadeIn>
                             </div>
                         </div>
                     </div>

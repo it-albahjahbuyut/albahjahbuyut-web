@@ -84,7 +84,7 @@ export function Footer() {
                             <li className="flex items-start gap-3">
                                 <MapPin className="mt-1 h-5 w-5 shrink-0 text-gold-400" />
                                 <span className="text-sm text-emerald-100/80 leading-relaxed">
-                                    Desa Buyut, Kec. Gunungjati, Kab. Cirebon, Jawa Barat
+                                    Jl. Revolusi No.45, Buyut, Kec. Gunungjati, Kabupaten Cirebon, Jawa Barat 45151, Indonesia
                                 </span>
                             </li>
                             <li className="flex items-center gap-3">
@@ -116,12 +116,12 @@ export function Footer() {
 
                     {/* Map Embed */}
                     <div>
-                        <h4 className="mb-6 text-sm font-bold uppercase tracking-widest text-gold-400">
+                        <h4 className="mb-4 text-sm font-bold uppercase tracking-widest text-gold-400">
                             Lokasi Kami
                         </h4>
-                        <div className="aspect-video overflow-hidden rounded-xl bg-emerald-800 shadow-lg border border-emerald-700/50">
+                        <div className="aspect-video overflow-hidden rounded-xl bg-emerald-800 shadow-lg border border-emerald-700/50 mb-3">
                             <iframe
-                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3962.5!2d108.5!3d-6.7!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6ee278ae5c4fd9%3A0xd5fd7d4b05b5e98e!2sBumi%20Mahabbah%20Lembaga%20Pengembangan%20Da&#39;wah%20Al-Bahjah%20Buyut!5e0!3m2!1sid!2sid!4v1704263000000"
+                                src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d1981.2!2d108.508232709881!3d-6.650574662289826!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zNsKwMzknMDIuMSJTIDEwOMKwMzAnMjkuNiJF!5e0!3m2!1sid!2sid!4v1704263000000"
                                 width="100%"
                                 height="100%"
                                 style={{ border: 0 }}
@@ -132,6 +132,15 @@ export function Footer() {
                                 title="Lokasi Pondok Pesantren Al-Bahjah Buyut"
                             />
                         </div>
+                        <a
+                            href="https://maps.app.goo.gl/yvnfNYzzzv1Hma3n7"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 text-sm text-emerald-100/80 hover:text-gold-400 transition-colors"
+                        >
+                            <MapPin className="h-4 w-4" />
+                            Buka di Google Maps
+                        </a>
                     </div>
                 </div>
             </div>

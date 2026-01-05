@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Target, User, GraduationCap, BookOpen, Scroll, BookOpenCheck } from "lucide-react";
 import { db } from "@/lib/db";
 import { UnitCard } from "@/components/public/UnitCard";
+import { FadeIn, FadeInStagger } from "@/components/animations/FadeIn";
 
 export const metadata = {
     title: "Profil | Pondok Pesantren Al-Bahjah Buyut",
@@ -52,15 +53,21 @@ export default async function ProfilePage() {
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent to-emerald-950/90" />
 
                 <div className="relative z-10 container mx-auto px-4 text-center">
-                    <span className="inline-block px-3 py-1 mb-4 border border-gold-400 text-gold-400 text-xs font-bold uppercase tracking-widest">
-                        Tentang Kami
-                    </span>
-                    <h1 className="text-5xl md:text-7xl font-bold text-white uppercase tracking-tighter mb-4">
-                        Profil Al-Bahjah Buyut
-                    </h1>
-                    <p className="text-emerald-100/80 font-serif italic text-lg max-w-3xl mx-auto">
-                        Membangun peradaban mulia di bawah naungan Al-Qur'an dan Sunnah Rasulullah SAW.
-                    </p>
+                    <FadeIn delay={0.2}>
+                        <span className="inline-block px-3 py-1 mb-4 border border-gold-400 text-gold-400 text-xs font-bold uppercase tracking-widest">
+                            Tentang Kami
+                        </span>
+                    </FadeIn>
+                    <FadeIn delay={0.4}>
+                        <h1 className="text-5xl md:text-7xl font-bold text-white uppercase tracking-tighter mb-4">
+                            Profil Al-Bahjah Buyut
+                        </h1>
+                    </FadeIn>
+                    <FadeIn delay={0.6}>
+                        <p className="text-emerald-100/80 font-serif italic text-lg max-w-3xl mx-auto">
+                            Membangun peradaban mulia di bawah naungan Al-Qur'an dan Sunnah Rasulullah SAW.
+                        </p>
+                    </FadeIn>
                 </div>
             </section>
 
@@ -71,7 +78,7 @@ export default async function ProfilePage() {
                         {/* Main Content (History & Programs) */}
                         <div className="lg:col-span-12 xl:col-span-8 space-y-20">
                             {/* History */}
-                            <div className="space-y-6">
+                            <FadeIn className="space-y-6">
                                 <h2 className="text-3xl font-bold text-emerald-950 uppercase tracking-tight flex items-center gap-3">
                                     <span className="w-1.5 h-8 bg-gold-500 rounded-full"></span>
                                     Sejarah Singkat
@@ -84,41 +91,45 @@ export default async function ProfilePage() {
                                         Kami bermula dari majelis taklim sederhana yang kemudian berkembang menjadi pusat pendidikan terpadu. Dengan semangat khidmat kepada umat, Al-Bahjah Buyut terus bertransformasi menghadirkan fasilitas pendidikan formal dan non-formal yang berkualitas, bersanad jelas, dan berorientasi pada pembentukan akhlakul karimah.
                                     </p>
                                 </div>
-                            </div>
+                            </FadeIn>
 
                             {/* Tokoh Pesantren (Figures) */}
                             <div className="space-y-8">
-                                <h2 className="text-3xl font-bold text-emerald-950 uppercase tracking-tight flex items-center gap-3">
-                                    <span className="w-1.5 h-8 bg-gold-500 rounded-full"></span>
-                                    Tokoh & Pimpinan
-                                </h2>
-                                <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-6">
+                                <FadeIn>
+                                    <h2 className="text-3xl font-bold text-emerald-950 uppercase tracking-tight flex items-center gap-3">
+                                        <span className="w-1.5 h-8 bg-gold-500 rounded-full"></span>
+                                        Tokoh & Pimpinan
+                                    </h2>
+                                </FadeIn>
+                                <FadeInStagger className="grid sm:grid-cols-2 md:grid-cols-4 gap-6">
                                     {figures.map((figure, idx) => (
-                                        <div key={idx} className="group bg-slate-50 rounded-xl overflow-hidden border border-slate-100 hover:shadow-lg transition-all duration-300">
-                                            <div className="relative aspect-[3/4] bg-emerald-100 overflow-hidden">
-                                                {figure.image ? (
-                                                    <Image
-                                                        src={figure.image}
-                                                        alt={figure.name}
-                                                        fill
-                                                        className="object-cover group-hover:scale-105 transition-transform duration-500"
-                                                    />
-                                                ) : (
-                                                    <div className="w-full h-full flex items-center justify-center text-emerald-300">
-                                                        <User className="w-20 h-20" />
+                                        <FadeIn key={idx}>
+                                            <div className="group bg-slate-50 rounded-xl overflow-hidden border border-slate-100 hover:shadow-lg transition-all duration-300 h-full">
+                                                <div className="relative aspect-[3/4] bg-emerald-100 overflow-hidden">
+                                                    {figure.image ? (
+                                                        <Image
+                                                            src={figure.image}
+                                                            alt={figure.name}
+                                                            fill
+                                                            className="object-cover group-hover:scale-105 transition-transform duration-500"
+                                                        />
+                                                    ) : (
+                                                        <div className="w-full h-full flex items-center justify-center text-emerald-300">
+                                                            <User className="w-20 h-20" />
+                                                        </div>
+                                                    )}
+                                                    <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/90 to-transparent opacity-60 group-hover:opacity-40 transition-opacity" />
+                                                </div>
+                                                <div className="p-4 text-center relative -mt-10">
+                                                    <div className="bg-white rounded-lg p-3 shadow-md border-b-4 border-gold-500">
+                                                        <h3 className="font-bold text-emerald-950 text-sm">{figure.name}</h3>
+                                                        <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mt-1">{figure.role}</p>
                                                     </div>
-                                                )}
-                                                <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/90 to-transparent opacity-60 group-hover:opacity-40 transition-opacity" />
-                                            </div>
-                                            <div className="p-4 text-center relative -mt-10">
-                                                <div className="bg-white rounded-lg p-3 shadow-md border-b-4 border-gold-500">
-                                                    <h3 className="font-bold text-emerald-950 text-sm">{figure.name}</h3>
-                                                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mt-1">{figure.role}</p>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </FadeIn>
                                     ))}
-                                </div>
+                                </FadeInStagger>
                             </div>
 
                             {/* Programs */}

@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
 import { DonationCard } from "@/components/public/DonationCard";
 import { Heart, Landmark } from "lucide-react";
+import { FadeIn, FadeInStagger } from "@/components/animations/FadeIn";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -28,15 +29,21 @@ export default async function DonationPage() {
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent to-emerald-950/90" />
 
                 <div className="relative z-10 container mx-auto px-4 text-center">
-                    <span className="inline-block px-3 py-1 mb-4 border border-gold-400 text-gold-400 text-xs font-bold tracking-widest">
-                        Amal Jariyah
-                    </span>
-                    <h1 className="text-5xl md:text-7xl font-bold text-white tracking-tighter mb-4">
-                        Program Infaq & Donasi
-                    </h1>
-                    <p className="text-emerald-100/80 font-serif italic text-lg max-w-3xl mx-auto">
-                        "Perumpamaan orang yang menginfakkan hartanya di jalan Allah seperti sebutir biji yang menumbuhkan tujuh tangkai."
-                    </p>
+                    <FadeIn delay={0.2}>
+                        <span className="inline-block px-3 py-1 mb-4 border border-gold-400 text-gold-400 text-xs font-bold tracking-widest">
+                            Amal Jariyah
+                        </span>
+                    </FadeIn>
+                    <FadeIn delay={0.4}>
+                        <h1 className="text-5xl md:text-7xl font-bold text-white tracking-tighter mb-4">
+                            Program Infaq & Donasi
+                        </h1>
+                    </FadeIn>
+                    <FadeIn delay={0.6}>
+                        <p className="text-emerald-100/80 font-serif italic text-lg max-w-3xl mx-auto">
+                            "Perumpamaan orang yang menginfakkan hartanya di jalan Allah seperti sebutir biji yang menumbuhkan tujuh tangkai."
+                        </p>
+                    </FadeIn>
                 </div>
             </section>
 
@@ -44,7 +51,7 @@ export default async function DonationPage() {
             <section className="py-20">
                 <div className="container mx-auto px-4 lg:px-8">
                     {/* Section Header */}
-                    <div className="mb-16 text-center max-w-3xl mx-auto">
+                    <FadeIn className="mb-16 text-center max-w-3xl mx-auto">
                         <h2 className="text-3xl font-bold text-emerald-950 tracking-wide mb-4">
                             Program Pilihan
                         </h2>
@@ -52,30 +59,31 @@ export default async function DonationPage() {
                         <p className="text-slate-600 text-lg leading-relaxed">
                             Pilih peluang kebaikan Anda hari ini. Setiap rupiah yang Anda infaqkan akan menjadi saksi kebaikan di akhirat kelak.
                         </p>
-                    </div>
+                    </FadeIn>
 
                     {/* Programs Grid */}
                     {programs.length > 0 ? (
-                        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 mb-24">
+                        <FadeInStagger className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 mb-24">
                             {programs.map((program, index) => (
-                                <DonationCard
-                                    key={program.id}
-                                    program={{
-                                        id: program.id,
-                                        title: program.title,
-                                        slug: program.slug,
-                                        description: program.description,
-                                        image: program.image,
-                                        targetAmount: program.targetAmount.toString(),
-                                        currentAmount: program.currentAmount.toString(),
-                                        bankName: program.bankName,
-                                        accountNumber: program.accountNumber,
-                                        accountName: program.accountName,
-                                    }}
-                                    index={index}
-                                />
+                                <FadeIn key={program.id}>
+                                    <DonationCard
+                                        program={{
+                                            id: program.id,
+                                            title: program.title,
+                                            slug: program.slug,
+                                            description: program.description,
+                                            image: program.image,
+                                            targetAmount: program.targetAmount.toString(),
+                                            currentAmount: program.currentAmount.toString(),
+                                            bankName: program.bankName,
+                                            accountNumber: program.accountNumber,
+                                            accountName: program.accountName,
+                                        }}
+                                        index={index}
+                                    />
+                                </FadeIn>
                             ))}
-                        </div>
+                        </FadeInStagger>
                     ) : (
                         <div className="bg-white border border-slate-200 rounded-xl p-12 text-center mb-24">
                             <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -94,21 +102,23 @@ export default async function DonationPage() {
                                 <span className="w-1 h-8 bg-gold-500 block"></span>
                                 Cara Berdonasi
                             </h3>
-                            <ul className="space-y-6">
+                            <FadeInStagger faster className="space-y-6">
                                 {[
                                     "Pilih program donasi yang ingin Anda dukung.",
                                     "Salin nomor rekening tujuan yang tertera.",
                                     "Lakukan transfer melalui ATM atau Mobile Banking.",
                                     "Lakukan konfirmasi agar donasi tercatat."
                                 ].map((step, idx) => (
-                                    <li key={idx} className="flex gap-5">
-                                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-emerald-950 text-gold-400 font-bold flex items-center justify-center text-sm border-2 border-emerald-950">
-                                            {idx + 1}
+                                    <FadeIn key={idx}>
+                                        <div className="flex gap-5">
+                                            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-emerald-950 text-gold-400 font-bold flex items-center justify-center text-sm border-2 border-emerald-950">
+                                                {idx + 1}
+                                            </div>
+                                            <p className="text-slate-700 font-medium pt-1 text-lg">{step}</p>
                                         </div>
-                                        <p className="text-slate-700 font-medium pt-1 text-lg">{step}</p>
-                                    </li>
+                                    </FadeIn>
                                 ))}
-                            </ul>
+                            </FadeInStagger>
                         </div>
 
                         {/* Confirmation CTA */}
