@@ -60,7 +60,7 @@ export function NewsSection({ posts }: { posts: Post[] }) {
                                                 src={post.image}
                                                 alt={post.title}
                                                 fill
-                                                className="object-cover transition-transform duration-700 group-hover:scale-105 filter grayscale group-hover:grayscale-0"
+                                                className="object-cover transition-all duration-500 ease-in-out group-hover:scale-105 filter grayscale group-hover:grayscale-0"
                                             />
                                         ) : (
                                             <div className="absolute inset-0 flex items-center justify-center text-emerald-900/20">

@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { DonationProgram } from "@prisma/client";
 import { createDonation, updateDonation } from "@/actions/donation";
 import { donationSchema, type DonationInput } from "@/lib/validations";
 import { Button } from "@/components/ui/button";
@@ -28,11 +27,12 @@ import {
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { UploadDropzone } from "@/lib/uploadthing";
+import { CloudinaryUpload } from "@/components/ui/cloudinary-upload";
 import { X } from "lucide-react";
+import { SerializedDonation } from "@/lib/types";
 
 interface DonationFormProps {
-    donation?: DonationProgram;
+    donation?: SerializedDonation;
 }
 
 function generateSlug(title: string): string {
@@ -62,6 +62,7 @@ export function DonationForm({ donation }: DonationFormProps) {
             accountNumber: donation?.accountNumber || "",
             accountName: donation?.accountName || "",
             isActive: donation?.isActive ?? true,
+            isFeatured: donation?.isFeatured ?? false,
             endDate: donation?.endDate || undefined,
         },
     });
@@ -183,16 +184,14 @@ export function DonationForm({ donation }: DonationFormProps) {
                                             </Button>
                                         </div>
                                     ) : (
-                                        <UploadDropzone
-                                            endpoint="donationImage"
-                                            onClientUploadComplete={(res) => {
-                                                if (res?.[0]) {
-                                                    form.setValue("image", res[0].ufsUrl);
-                                                    toast.success("Gambar berhasil diupload");
-                                                }
+                                        <CloudinaryUpload
+                                            folder="abbuyut/donations"
+                                            onUploadComplete={(url) => {
+                                                form.setValue("image", url);
+                                                toast.success("Gambar berhasil diupload");
                                             }}
-                                            onUploadError={(error: Error) => {
-                                                toast.error(`Upload gagal: ${error.message}`);
+                                            onUploadError={(error) => {
+                                                toast.error(`Upload gagal: ${error}`);
                                             }}
                                         />
                                     )}
@@ -271,6 +270,34 @@ export function DonationForm({ donation }: DonationFormProps) {
                                             <SelectItem value="false">Nonaktif</SelectItem>
                                         </SelectContent>
                                     </Select>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="isFeatured"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Highlight di Beranda</FormLabel>
+                                    <Select
+                                        onValueChange={(value) => field.onChange(value === "true")}
+                                        defaultValue={field.value ? "true" : "false"}
+                                    >
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Pilih status" />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            <SelectItem value="true">Ya</SelectItem>
+                                            <SelectItem value="false">Tidak</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                    <FormDescription>
+                                        Tampilkan program ini di halaman depan website
+                                    </FormDescription>
                                     <FormMessage />
                                 </FormItem>
                             )}

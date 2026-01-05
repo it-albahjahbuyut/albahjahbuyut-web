@@ -29,7 +29,7 @@ import {
 } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
-import { UploadDropzone } from "@/lib/uploadthing";
+import { CloudinaryUpload } from "@/components/ui/cloudinary-upload";
 import { X } from "lucide-react";
 import Image from "next/image";
 
@@ -159,16 +159,14 @@ export function GalleryForm({ gallery, units }: GalleryFormProps) {
                                                             </Button>
                                                         </div>
                                                     ) : (
-                                                        <UploadDropzone
-                                                            endpoint="galleryImage"
-                                                            onClientUploadComplete={(res) => {
-                                                                if (res?.[0]?.ufsUrl) {
-                                                                    field.onChange(res[0].ufsUrl);
-                                                                    toast.success("Gambar berhasil diupload");
-                                                                }
+                                                        <CloudinaryUpload
+                                                            folder="abbuyut/gallery"
+                                                            onUploadComplete={(url) => {
+                                                                field.onChange(url);
+                                                                toast.success("Gambar berhasil diupload");
                                                             }}
-                                                            onUploadError={(error: Error) => {
-                                                                toast.error(`Gagal upload: ${error.message}`);
+                                                            onUploadError={(error) => {
+                                                                toast.error(`Gagal upload: ${error}`);
                                                             }}
                                                         />
                                                     )}

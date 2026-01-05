@@ -50,6 +50,7 @@ export const donationSchema = z.object({
     accountNumber: z.string().min(1, "Nomor rekening diperlukan"),
     accountName: z.string().optional(),
     isActive: z.boolean().default(true),
+    isFeatured: z.boolean().default(false),
     endDate: z.date().optional(),
 });
 

@@ -16,7 +16,10 @@ export default async function HomePage() {
     }),
     db.donationProgram.findFirst({
       where: { isActive: true },
-      orderBy: { createdAt: "desc" },
+      orderBy: [
+        { isFeatured: "desc" },
+        { createdAt: "desc" }
+      ],
     }),
     db.post.findMany({
       where: { status: "PUBLISHED" },

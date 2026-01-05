@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { DonationProgram } from "@prisma/client";
 import {
     Card,
     CardContent,
@@ -24,9 +23,10 @@ import {
 import { Edit, Trash2, Heart, Banknote } from "lucide-react";
 import { deleteDonation } from "@/actions/donation";
 import { toast } from "sonner";
+import { SerializedDonation } from "@/lib/types";
 
 interface DonationListProps {
-    donations: DonationProgram[];
+    donations: SerializedDonation[];
 }
 
 function formatCurrency(value: unknown): string {
@@ -65,7 +65,7 @@ function calculateProgress(current: unknown, target: unknown): number {
 
 export function DonationList({ donations }: DonationListProps) {
     const router = useRouter();
-    const [deletingDonation, setDeletingDonation] = useState<DonationProgram | null>(null);
+    const [deletingDonation, setDeletingDonation] = useState<SerializedDonation | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
 
     const handleDelete = async () => {

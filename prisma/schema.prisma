@@ -122,6 +122,7 @@ model DonationProgram {
   accountNumber String   // Nomor rekening
   accountName   String?  // Nama pemilik rekening
   isActive      Boolean  @default(true)
+  isFeatured    Boolean  @default(false)
   startDate     DateTime @default(now())
   endDate       DateTime?
   createdAt     DateTime @default(now())

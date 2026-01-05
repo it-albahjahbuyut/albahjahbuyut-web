@@ -4,10 +4,15 @@ import { getDonations } from "@/actions/donation";
 import { DonationList } from "./donation-list";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import { serializeDonations, SerializedDonation } from "@/lib/types";
 
 export default async function DonationsPage() {
     const result = await getDonations();
-    const donations = result.success && result.data ? result.data : [];
+    const rawDonations = result.success && result.data ? result.data : [];
+
+    // Convert Decimal to number for client component serialization
+    // Type assertion needed because Prisma types may not be fully synced
+    const donations = serializeDonations(rawDonations) as SerializedDonation[];
 
     return (
         <div>

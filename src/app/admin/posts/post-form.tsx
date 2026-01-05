@@ -29,7 +29,7 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
 import { TiptapEditor } from "@/components/editor/tiptap";
-import { UploadDropzone } from "@/lib/uploadthing";
+import { CloudinaryUpload } from "@/components/ui/cloudinary-upload";
 import { X } from "lucide-react";
 
 interface PostFormProps {
@@ -249,8 +249,10 @@ export function PostForm({ post, units }: PostFormProps) {
                                         <FormItem>
                                             <FormLabel>Unit Terkait</FormLabel>
                                             <Select
-                                                onValueChange={field.onChange}
-                                                defaultValue={field.value}
+                                                onValueChange={(value) => {
+                                                    field.onChange(value === "none" ? undefined : value);
+                                                }}
+                                                defaultValue={field.value || "none"}
                                             >
                                                 <FormControl>
                                                     <SelectTrigger>
@@ -258,7 +260,7 @@ export function PostForm({ post, units }: PostFormProps) {
                                                     </SelectTrigger>
                                                 </FormControl>
                                                 <SelectContent>
-                                                    <SelectItem value="">Tidak ada</SelectItem>
+                                                    <SelectItem value="none">Tidak ada</SelectItem>
                                                     {units.map((unit) => (
                                                         <SelectItem key={unit.id} value={unit.id}>
                                                             {unit.name}
@@ -302,16 +304,14 @@ export function PostForm({ post, units }: PostFormProps) {
                                                     </Button>
                                                 </div>
                                             ) : (
-                                                <UploadDropzone
-                                                    endpoint="postImage"
-                                                    onClientUploadComplete={(res) => {
-                                                        if (res?.[0]) {
-                                                            form.setValue("image", res[0].ufsUrl);
-                                                            toast.success("Gambar berhasil diupload");
-                                                        }
+                                                <CloudinaryUpload
+                                                    folder="abbuyut/posts"
+                                                    onUploadComplete={(url) => {
+                                                        form.setValue("image", url);
+                                                        toast.success("Gambar berhasil diupload");
                                                     }}
-                                                    onUploadError={(error: Error) => {
-                                                        toast.error(`Upload gagal: ${error.message}`);
+                                                    onUploadError={(error) => {
+                                                        toast.error(`Upload gagal: ${error}`);
                                                     }}
                                                 />
                                             )}

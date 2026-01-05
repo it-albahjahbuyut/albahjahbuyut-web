@@ -16,9 +16,9 @@ export default async function AdminLayout({
 
     return (
         <Providers>
-            <div className="min-h-screen bg-gray-50">
+            <div className="h-screen bg-gray-50 overflow-hidden">
                 <AdminSidebar />
-                <main className="md:ml-64 min-h-screen">{children}</main>
+                <main className="md:ml-64 h-full overflow-y-auto">{children}</main>
             </div>
         </Providers>
     );

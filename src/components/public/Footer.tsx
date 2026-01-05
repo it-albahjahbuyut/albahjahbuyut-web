@@ -5,9 +5,8 @@ export function Footer() {
     const quickLinks = [
         { href: "/", label: "Beranda" },
         { href: "/profil", label: "Profil Pesantren" },
-        { href: "/pendidikan/smp", label: "SMP" },
-        { href: "/pendidikan/sma", label: "SMA" },
-        { href: "/pendidikan/tahfidz", label: "Tahfidz" },
+        { href: "/pendidikan/smp", label: "SMPIQu" },
+        { href: "/pendidikan/sma", label: "SMAIQu" },
         { href: "/berita", label: "Berita" },
         { href: "/infaq", label: "Donasi" },
         { href: "/psb", label: "Pendaftaran" },
@@ -36,19 +35,19 @@ export function Footer() {
                         {/* Social Links */}
                         <div className="flex gap-3">
                             <a
-                                href="#"
+                                href="https://www.facebook.com/ponpesalbahjah2"
                                 className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-800/50 transition-colors hover:bg-gold-500 hover:text-emerald-950"
                             >
                                 <Facebook className="h-5 w-5" />
                             </a>
                             <a
-                                href="#"
+                                href="https://www.instagram.com/abahsayfabuhanifah"
                                 className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-800/50 transition-colors hover:bg-gold-500 hover:text-emerald-950"
                             >
                                 <Instagram className="h-5 w-5" />
                             </a>
                             <a
-                                href="#"
+                                href="https://www.youtube.com/@ASAHTVOFFICIAL"
                                 className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-800/50 transition-colors hover:bg-gold-500 hover:text-emerald-950"
                             >
                                 <Youtube className="h-5 w-5" />
@@ -99,10 +98,10 @@ export function Footer() {
                             <li className="flex items-center gap-3">
                                 <Mail className="h-5 w-5 shrink-0 text-gold-400" />
                                 <a
-                                    href="mailto:info@albahjahbuyut.sch.id"
+                                    href="mailto:info@albahjahbuyut.com"
                                     className="text-sm text-emerald-100/80 transition-colors hover:text-gold-400"
                                 >
-                                    info@albahjahbuyut.sch.id
+                                    info@albahjahbuyut.com
                                 </a>
                             </li>
                             <li className="flex items-center gap-3">

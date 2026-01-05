@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { donationSchema, type DonationInput } from "@/lib/validations";
 import { auth } from "@/lib/auth";
+import { serializeDonation, serializeDonations } from "@/lib/types";
 
 export async function getDonations(options?: {
     isActive?: boolean;
@@ -22,7 +23,7 @@ export async function getDonations(options?: {
             take: options?.limit || 50,
         });
 
-        return { success: true, data: donations };
+        return { success: true, data: serializeDonations(donations) };
     } catch (error) {
         console.error("Failed to fetch donations:", error);
         return { success: false, error: "Gagal mengambil data donasi" };
@@ -39,7 +40,7 @@ export async function getDonation(id: string) {
             return { success: false, error: "Program donasi tidak ditemukan" };
         }
 
-        return { success: true, data: donation };
+        return { success: true, data: serializeDonation(donation) };
     } catch (error) {
         console.error("Failed to fetch donation:", error);
         return { success: false, error: "Gagal mengambil data donasi" };
@@ -66,7 +67,7 @@ export async function createDonation(data: DonationInput) {
         revalidatePath("/admin/donations");
         revalidatePath("/donasi");
 
-        return { success: true, data: donation };
+        return { success: true, data: serializeDonation(donation) };
     } catch (error) {
         console.error("Failed to create donation:", error);
         return { success: false, error: "Gagal membuat program donasi" };
@@ -96,7 +97,7 @@ export async function updateDonation(id: string, data: DonationInput) {
         revalidatePath(`/admin/donations/${id}`);
         revalidatePath(`/donasi/${donation.slug}`);
 
-        return { success: true, data: donation };
+        return { success: true, data: serializeDonation(donation) };
     } catch (error) {
         console.error("Failed to update donation:", error);
         return { success: false, error: "Gagal memperbarui program donasi" };
@@ -140,7 +141,7 @@ export async function updateDonationAmount(id: string, amount: number) {
         revalidatePath("/admin/donations");
         revalidatePath(`/donasi/${donation.slug}`);
 
-        return { success: true, data: donation };
+        return { success: true, data: serializeDonation(donation) };
     } catch (error) {
         console.error("Failed to update donation amount:", error);
         return { success: false, error: "Gagal memperbarui jumlah donasi" };
