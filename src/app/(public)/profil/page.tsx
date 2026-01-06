@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Target, User, GraduationCap, BookOpen, Scroll, BookOpenCheck } from "lucide-react";
+import { Target, User, GraduationCap, BookOpen, Scroll, BookOpenCheck, Quote } from "lucide-react";
 import { db } from "@/lib/db";
 import { UnitCard } from "@/components/public/UnitCard";
 import { FadeIn, FadeInStagger } from "@/components/animations/FadeIn";
@@ -209,7 +209,22 @@ export default async function ProfilePage() {
                                             Visi
                                         </div>
                                         <p className="text-xl md:text-2xl font-serif leading-relaxed text-emerald-50">
-                                            "Terwujudnya lembaga dakwah dan pendidikan yang mampu mencetak kader ulama dan da'i yang berakhlak mulia."
+                                            "Membangun Masyarakat Berakhlak Mulia, Bersendikan Al-Qu’ran dan Sunah Rasulullah SAW"
+                                        </p>
+                                    </div>
+                                </div>
+
+                                {/* Moto Card */}
+                                <div className="bg-gold-500 rounded-2xl p-8 lg:p-10 shadow-xl text-emerald-950 relative overflow-hidden">
+                                    <div className="absolute top-0 right-0 p-4 opacity-10">
+                                        <Quote className="w-32 h-32" />
+                                    </div>
+                                    <div className="relative z-10">
+                                        <div className="inline-block px-3 py-1 rounded bg-emerald-950/10 text-emerald-950 text-xs font-bold uppercase tracking-widest mb-4">
+                                            Moto
+                                        </div>
+                                        <p className="text-xl md:text-3xl font-bold font-serif italic leading-tight">
+                                            “Tinggalan Kami Jika Tidak Berakhlak”
                                         </p>
                                     </div>
                                 </div>
@@ -221,10 +236,12 @@ export default async function ProfilePage() {
                                     </div>
                                     <ul className="space-y-6">
                                         {[
-                                            "Menyelenggarakan pendidikan Islam yang berkualitas.",
-                                            "Membangun lingkungan kondusif untuk karakter santri.",
-                                            "Mengembangkan dakwah yang rahmatan lil 'alamin.",
-                                            "Memberdayakan potensi umat melalui program sosial."
+                                            "Mengamalkan nilai-nilai Al-Qu’ran dan ajaran Rasulullah SAW sesuai dengan Manhajiah Islam Ahlusunah Waljama’ah, Asy-‘Ariyah, Asshuffiyah/Maturdiyah, Shufiyah dan Bermadzhab.",
+                                            "Menghadirkan dakwah Islam dalam seluruh kehidupan masyarakat.",
+                                            "Mewujudkan kemandirian ekonomi, pendidikan dan kebudayaan yang bersendikan syariah Islam.",
+                                            "Mencetak para penghafal Al-Qur’an dan para Ulama yang akan menjadi duta pada perubahan kemuliaan peradaban.",
+                                            "Mengkader para profesional dan enterpreneur yang beriman dan bertakwa dan menjadi pejuang dakwah Islam.",
+                                            "Mengoptimalkan dan menguasai penggunan teknologi informasi dan media sebagai kekuatan mendoroong perjuangan dakwah islam."
                                         ].map((misi, idx) => (
                                             <li key={idx} className="flex gap-4 group">
                                                 <span className="flex-shrink-0 w-8 h-8 rounded-full bg-emerald-50 text-emerald-700 text-sm font-bold flex items-center justify-center group-hover:bg-gold-500 group-hover:text-emerald-950 transition-colors">
