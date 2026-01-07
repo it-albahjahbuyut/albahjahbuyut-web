@@ -54,8 +54,9 @@ model Unit {
   updatedAt        DateTime @updatedAt
 
   // Relations
-  posts     Post[]
-  galleries Gallery[]
+  posts            Post[]
+  galleries        Gallery[]
+  psbRegistrations PSBRegistration[]
 
   @@map("units")
 }
@@ -167,4 +168,77 @@ model Setting {
   updatedAt DateTime @updatedAt
 
   @@map("settings")
+}
+
+// ============================================
+// PSB (PENERIMAAN SANTRI BARU)
+// ============================================
+
+enum PSBStatus {
+  PENDING     // Menunggu verifikasi
+  VERIFIED    // Berkas lengkap & valid
+  ACCEPTED    // Diterima
+  REJECTED    // Ditolak
+}
+
+model PSBRegistration {
+  id                String    @id @default(cuid())
+  registrationNumber String   @unique // Nomor pendaftaran otomatis
+  
+  // Data Pribadi Calon Santri
+  namaLengkap       String
+  tempatLahir       String
+  tanggalLahir      DateTime
+  jenisKelamin      String    // L / P
+  alamatLengkap     String    @db.Text
+  nisn              String?
+  asalSekolah       String
+  
+  // Data Orang Tua / Wali
+  namaOrangTua      String
+  noHpOrangTua      String
+  emailOrangTua     String?
+  
+  // Status & Metadata
+  status            PSBStatus @default(PENDING)
+  notes             String?   @db.Text // Catatan admin
+  
+  // Google Drive folder for this registration
+  driveFolderId     String?   // ID folder di Google Drive
+  driveFolderUrl    String?   // URL folder di Google Drive
+  
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  
+  // Relations
+  unitId            String
+  unit              Unit      @relation(fields: [unitId], references: [id], onDelete: Cascade)
+  documents         PSBDocument[]
+  
+  @@index([unitId])
+  @@index([status])
+  @@index([registrationNumber])
+  @@map("psb_registrations")
+}
+
+model PSBDocument {
+  id              String   @id @default(cuid())
+  documentType    String   // IJAZAH, AKTA_KELAHIRAN, KARTU_KELUARGA, PAS_FOTO, KTP_ORTU
+  fileName        String   // Nama file asli
+  fileSize        Int      // Ukuran file dalam bytes
+  mimeType        String   // image/jpeg, application/pdf, etc
+  
+  // Google Drive info
+  driveFileId     String   // ID file di Google Drive
+  driveFileUrl    String   // URL file di Google Drive
+  
+  createdAt       DateTime @default(now())
+  
+  // Relations
+  registrationId  String
+  registration    PSBRegistration @relation(fields: [registrationId], references: [id], onDelete: Cascade)
+  
+  @@index([registrationId])
+  @@index([documentType])
+  @@map("psb_documents")
 }

@@ -41,3 +41,14 @@ yarn-error.log*
 next-env.d.ts
 
 /src/generated/prisma
+
+# Google Cloud Service Account
+*.json
+!package.json
+!package-lock.json
+!tsconfig.json
+!components.json
+
+# PSB uploads (keep folder but ignore files)
+public/uploads/psb/*
+!public/uploads/psb/.gitkeep

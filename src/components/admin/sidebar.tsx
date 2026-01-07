@@ -13,6 +13,7 @@ import {
     LogOut,
     Menu,
     X,
+    UserPlus,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { useState } from "react";
@@ -43,6 +44,11 @@ const navItems = [
         title: "Galeri",
         href: "/admin/galleries",
         icon: Image,
+    },
+    {
+        title: "Pendaftaran PSB",
+        href: "/admin/psb",
+        icon: UserPlus,
     },
     {
         title: "Pengaturan",

@@ -62,9 +62,18 @@ export default async function PSBPage() {
                         </h1>
                     </FadeIn>
                     <FadeIn delay={0.6}>
-                        <p className="text-emerald-100/80 font-serif italic text-lg max-w-3xl mx-auto">
+                        <p className="text-emerald-100/80 font-serif italic text-lg max-w-3xl mx-auto mb-6">
                             Mari bergabung menjadi generasi Qur'ani berakhlak mulia bersama Al-Bahjah Buyut.
                         </p>
+                    </FadeIn>
+                    <FadeIn delay={0.8}>
+                        <Link
+                            href="/psb/status"
+                            className="inline-flex items-center gap-2 px-6 py-3 bg-white/10 backdrop-blur-sm text-white border border-white/30 rounded-lg hover:bg-white/20 transition-colors"
+                        >
+                            <span className="text-sm font-semibold">Sudah Daftar? Cek Status Pendaftaran</span>
+                            <ArrowRight className="w-4 h-4" />
+                        </Link>
                     </FadeIn>
                 </div>
             </section>
@@ -141,7 +150,7 @@ export default async function PSBPage() {
 
                                             <div className="space-y-3 mt-auto">
                                                 <Link
-                                                    href={unit.registrationLink || `/pendidikan/${unit.slug}`}
+                                                    href={unit.registrationLink || `/psb/daftar/${unit.slug}`}
                                                     target={unit.registrationLink ? "_blank" : "_self"}
                                                     className="block w-full text-center bg-emerald-950 text-white font-bold py-3 uppercase tracking-wider hover:bg-gold-500 hover:text-emerald-950 transition-colors"
                                                 >
