@@ -19,17 +19,15 @@ export function Footer() {
                 <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
                     {/* About */}
                     <div className="lg:col-span-1">
-                        <div className="mb-6 flex items-center gap-3">
-                            <div className="flex h-12 w-12 items-center justify-center bg-emerald-800">
-                                <span className="text-2xl font-bold text-white">ب</span>
-                            </div>
+                        <div className="mb-6">
+                            <img src="/logo-buyut.png" alt="Logo Al-Bahjah Buyut" className="h-20 w-auto object-contain mb-4" />
                             <div>
                                 <h3 className="text-lg font-bold tracking-wide">Al-Bahjah Buyut</h3>
-                                <p className="text-[10px] font-bold text-emerald-400 tracking-widest">Membangun Generasi Qur&apos;ani</p>
+                                <p className="text-[10px] font-bold text-emerald-400 tracking-widest">Membangun Generasi Qur'ani</p>
                             </div>
                         </div>
-                        <p className="mb-6 text-sm leading-relaxed text-emerald-100/90">
-                            Pondok Pesantren Al-Bahjah Buyut adalah lembaga pendidikan Islam terpadu yang mengintegrasikan pendidikan formal dengan pembelajaran Al-Qur&apos;an dan kitab kuning.
+                        <p className="mb-6 text-sm leading-relaxed text-emerald-100/90 max-w-xs">
+                            Lembaga Pengembangan Dakwah (LPD) Al-Bahjah Buyut dibawah asuhan Buya Yahya & Abah Sayf Abu Hanifah. Mencetak generasi Qur'ani yang berakhlak mulia, cerdas, dan mandiri.
                         </p>
 
                         {/* Social Links */}
@@ -89,10 +87,10 @@ export function Footer() {
                             <li className="flex items-center gap-3">
                                 <Phone className="h-5 w-5 shrink-0 text-gold-400" />
                                 <a
-                                    href="https://wa.me/6281234567890"
+                                    href="https://wa.me/6289676539390"
                                     className="text-sm text-emerald-100/80 transition-colors hover:text-gold-400"
                                 >
-                                    +62 812-3456-7890
+                                    0896 7653 9390
                                 </a>
                             </li>
                             <li className="flex items-center gap-3">
@@ -107,7 +105,8 @@ export function Footer() {
                             <li className="flex items-center gap-3">
                                 <Clock className="h-5 w-5 shrink-0 text-gold-400" />
                                 <span className="text-sm text-emerald-100/80">
-                                    Senin - Sabtu: 07:00 - 16:00 WIB
+                                    Senin - Jumat: 07:00 - 16:00 WIB
+                                    Sabtu - Ahad: 07:00 - 12:00 WIB
                                 </span>
                             </li>
                         </ul>
@@ -118,9 +117,9 @@ export function Footer() {
                         <h4 className="mb-4 text-sm font-bold uppercase tracking-widest text-gold-400">
                             Lokasi Kami
                         </h4>
-                        <div className="aspect-video overflow-hidden rounded-xl bg-emerald-800 shadow-lg border border-emerald-700/50 mb-3">
+                        <div className="aspect-[4/3] overflow-hidden rounded-xl bg-emerald-800 shadow-lg border border-emerald-700/50 mb-3">
                             <iframe
-                                src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d1981.2!2d108.508232709881!3d-6.650574662289826!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zNsKwMzknMDIuMSJTIDEwOMKwMzAnMjkuNiJF!5e0!3m2!1sid!2sid!4v1704263000000"
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d247.6856899793127!2d108.50808394923925!3d-6.650511541174398!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6ee1031049e1fd%3A0x864102adb6b45729!2sBumi%20Mahabbah%20Lembaga%20Pengembangan%20Da&#39;wah%20Al-Bahjah%20Buyut!5e0!3m2!1sid!2sid!4v1767796115168!5m2!1sid!2sid"
                                 width="100%"
                                 height="100%"
                                 style={{ border: 0 }}

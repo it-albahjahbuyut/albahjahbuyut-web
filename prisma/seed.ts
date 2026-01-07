@@ -30,6 +30,15 @@ async function main() {
     // Create units
     const units = [
         {
+            name: "SDIQu Al-Bahjah",
+            slug: "sdiqu",
+            description: "<p>SDIQu Al-Bahjah Buyut adalah jenjang pendidikan dasar yang memadukan kurikulum nasional dengan pendidikan agama Islam sejak dini.</p>",
+            curriculum: "<p>Kurikulum Merdeka dengan penguatan baca tulis Al-Quran dan akhlak mulia.</p>",
+            facilities: "Ruang kelas ber-AC\nArea bermain\nPerpustakaan\nMasjid",
+            registrationLink: "",
+            order: 0,
+        },
+        {
             name: "SMPIQu Al-Bahjah",
             slug: "smpiqu",
             description: "<p>SMPIQu Al-Bahjah Buyut adalah jenjang pendidikan menengah pertama yang memadukan kurikulum nasional dengan pendidikan agama Islam yang komprehensif.</p>",

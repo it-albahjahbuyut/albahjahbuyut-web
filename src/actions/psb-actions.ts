@@ -59,16 +59,10 @@ export async function submitPSBRegistration(
         );
 
         // Upload semua dokumen ke Google Drive
-        const uploadedDocuments: Array<{
-            documentType: string;
-            fileName: string;
-            fileSize: number;
-            mimeType: string;
-            driveFileId: string;
-            driveFileUrl: string;
-        }> = [];
 
-        for (const doc of documents) {
+
+        // Upload semua dokumen ke Google Drive secara Paralel (Concurrent)
+        const uploadPromises = documents.map(async (doc) => {
             // Convert base64 to buffer
             const buffer = Buffer.from(doc.base64Data, 'base64');
 
@@ -80,15 +74,18 @@ export async function submitPSBRegistration(
                 folderResult.folderId
             );
 
-            uploadedDocuments.push({
+            return {
                 documentType: doc.documentType,
                 fileName: doc.fileName,
                 fileSize: doc.fileSize,
                 mimeType: doc.mimeType,
                 driveFileId: uploadResult.fileId,
                 driveFileUrl: uploadResult.fileUrl,
-            });
-        }
+            };
+        });
+
+        // Tunggu semua proses upload selesai (Lebih Cepat)
+        const uploadedDocuments = await Promise.all(uploadPromises);
 
         // Simpan ke database
         const registration = await db.pSBRegistration.create({

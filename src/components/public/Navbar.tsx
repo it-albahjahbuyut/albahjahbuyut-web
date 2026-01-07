@@ -58,14 +58,9 @@ export function Navbar({ units }: NavbarProps) {
         <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${headerBackground}`}>
             <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 lg:px-8">
                 {/* Logo */}
+                {/* Logo */}
                 <Link href="/" className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center bg-emerald-900">
-                        <span className="text-xl font-bold text-white">ب</span>
-                    </div>
-                    <div className="hidden sm:block">
-                        <p className={`text-base font-bold leading-none mb-0.5 tracking-wide ${textColor}`}>Al-Bahjah Buyut</p>
-                        <p className={`text-[10px] font-bold tracking-widest ${subTextColor}`}>Membangun Generasi Qur&apos;ani</p>
-                    </div>
+                    <img src="/logo-buyut.png" alt="Logo Al-Bahjah Buyut" className="h-12 w-auto object-contain" />
                 </Link>
 
                 {/* Desktop Navigation */}

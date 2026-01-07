@@ -48,7 +48,7 @@ export default async function NewsPage() {
     return (
         <main className="bg-slate-50 min-h-screen">
             {/* Hero Section */}
-            <section className="relative h-[50vh] min-h-[400px] flex items-center justify-center bg-emerald-950 overflow-hidden pt-32">
+            <section className="relative min-h-[50vh] flex items-center justify-center bg-emerald-950 overflow-hidden px-4 pt-24 pb-20">
                 <div
                     className="absolute inset-0 bg-cover bg-center opacity-30 fixed-bg"
                     style={{

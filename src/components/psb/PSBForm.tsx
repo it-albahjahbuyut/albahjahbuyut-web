@@ -195,8 +195,13 @@ export default function PSBForm({
             setSubmitResult(result);
 
             if (result.success) {
-                // Scroll to top to show success message
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                // Tunggu sebentar agar render selesai, lalu scroll ke elemen sukses
+                setTimeout(() => {
+                    const successElement = document.getElementById('psb-success-message');
+                    if (successElement) {
+                        successElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }, 100);
             }
 
         } catch (error) {
@@ -237,7 +242,7 @@ export default function PSBForm({
     // Render success result
     if (submitResult?.success) {
         return (
-            <div className="max-w-2xl mx-auto text-center py-8 sm:py-12 px-4">
+            <div id="psb-success-message" className="max-w-2xl mx-auto text-center py-8 sm:py-12 px-4">
                 <div className="w-16 h-16 sm:w-20 sm:h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
                     <CheckCircle2 className="w-8 h-8 sm:w-10 sm:h-10 text-emerald-600" />
                 </div>

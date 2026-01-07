@@ -1,7 +1,16 @@
 import Link from "next/link";
-import Image from "next/image";
 import { db } from "@/lib/db";
-import { CheckCircle2, FileText, ArrowRight, Wallet, GraduationCap } from "lucide-react";
+import {
+    CheckCircle2,
+    FileText,
+    ArrowRight,
+    CreditCard,
+    GraduationCap,
+    MapPin,
+    Phone,
+    Calendar,
+    Users
+} from "lucide-react";
 import { FadeIn, FadeInStagger } from "@/components/animations/FadeIn";
 
 export const metadata = {
@@ -11,37 +20,54 @@ export const metadata = {
 
 export default async function PSBPage() {
     const units = await db.unit.findMany({
-        where: { isActive: true },
+        where: {
+            isActive: true,
+            // Hanya ambil unit formal untuk PSB (SD, SMP, SMA)
+            OR: [
+                { slug: { contains: "sd" } },
+                { slug: { contains: "smp" } },
+                { slug: { contains: "sma" } }
+            ]
+        },
         orderBy: { order: "asc" },
     });
 
-    const steps = [
+    const flowSteps = [
         {
-            title: "Pendaftaran Online",
-            desc: "Isi formulir pendaftaran melalui website resmi atau link yang tersedia.",
+            title: "1. Daftar Online",
+            desc: "Isi formulir biodata diri melalui website ini.",
             icon: FileText
         },
         {
-            title: "Pembayaran Formulir",
-            desc: "Lakukan pembayaran biaya pendaftaran sesuai unit yang dituju.",
-            icon: Wallet
+            title: "2. Pembayaran",
+            desc: "Transfer biaya pendaftaran & upload bukti.",
+            icon: CreditCard
         },
         {
-            title: "Tes Seleksi",
-            desc: "Ikuti tes seleksi akademik dan wawancara sesuai jadwal.",
+            title: "3. Tes Seleksi",
+            desc: "Ikuti tes akademik, membaca Al-Qur'an & wawancara.",
             icon: GraduationCap
         },
         {
-            title: "Pengumuman",
-            desc: "Hasil seleksi akan diumumkan melalui website dan kontak terdaftar.",
+            title: "4. Pengumuman",
+            desc: "Cek hasil kelulusan melalui dashboard akun.",
             icon: CheckCircle2
         }
     ];
 
+    const requirements = [
+        "Mengisi Formulir Pendaftaran Online",
+        "Pas Foto 3x4 (4 lembar)",
+        "Fotocopy Kartu Keluarga (KK)",
+        "Fotocopy Akta Kelahiran",
+        "Fotocopy KTP Orang Tua",
+        "Surat Keterangan Aktif Sekolah / Ijazah"
+    ];
+
     return (
-        <main className="bg-slate-50 min-h-screen">
+        <main className="bg-white min-h-screen font-sans selection:bg-emerald-100 selection:text-emerald-900">
             {/* Hero Section */}
-            <section className="relative h-[50vh] min-h-[400px] flex items-center justify-center bg-emerald-950 overflow-hidden pt-32">
+            <section className="relative min-h-[60vh] flex items-center justify-center bg-emerald-950 overflow-hidden px-4 pt-24 pb-20">
                 <div
                     className="absolute inset-0 bg-cover bg-center opacity-30 fixed-bg"
                     style={{
@@ -78,35 +104,18 @@ export default async function PSBPage() {
                 </div>
             </section>
 
-            {/* Registration Flow */}
-            <section className="py-20 bg-white">
-                <div className="container mx-auto px-4 lg:px-8">
-                    <FadeIn className="text-center max-w-3xl mx-auto mb-16">
-                        <h2 className="text-3xl font-bold text-emerald-950 tracking-wide mb-4">
-                            Alur Pendaftaran
-                        </h2>
-                        <div className="w-16 h-1 bg-gold-500 mx-auto mb-6"></div>
-                        <p className="text-slate-600 text-lg">
-                            Proses pendaftaran santri baru dilakukan secara online dan terstruktur untuk memudahkan calon wali santri.
-                        </p>
-                    </FadeIn>
-
-                    <FadeInStagger className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-                        {steps.map((step, idx) => (
-                            <FadeIn key={idx}>
-                                <div className="relative group p-8 bg-slate-50 border border-slate-100 rounded-xl hover:shadow-xl transition-all duration-300 hover:-translate-y-1 h-full">
-                                    <div className="absolute top-0 right-0 p-4 opacity-10 font-black text-6xl text-slate-300 group-hover:text-gold-500/20 transition-colors">
-                                        {idx + 1}
-                                    </div>
-                                    <div className="w-14 h-14 bg-emerald-900 rounded-lg flex items-center justify-center mb-6 group-hover:bg-gold-500 transition-colors">
-                                        <step.icon className="w-7 h-7 text-white" />
-                                    </div>
-                                    <h3 className="text-xl font-bold text-emerald-900 uppercase tracking-tight mb-3">
-                                        {step.title}
-                                    </h3>
-                                    <p className="text-slate-500 text-sm leading-relaxed">
-                                        {step.desc}
-                                    </p>
+            {/* Quick Flow */}
+            <section className="py-16 border-b border-slate-100">
+                <div className="container mx-auto px-4 lg:px-8 max-w-6xl">
+                    <FadeInStagger className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                        {flowSteps.map((step, i) => (
+                            <FadeIn key={i} className="flex gap-4 items-start">
+                                <div className="w-12 h-12 rounded-full bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0">
+                                    <step.icon className="w-5 h-5" />
+                                </div>
+                                <div>
+                                    <h3 className="font-bold text-emerald-950 mb-1">{step.title}</h3>
+                                    <p className="text-sm text-slate-500 leading-relaxed">{step.desc}</p>
                                 </div>
                             </FadeIn>
                         ))}
@@ -114,64 +123,162 @@ export default async function PSBPage() {
                 </div>
             </section>
 
-            {/* Units Selection */}
-            <section className="py-20 bg-emerald-50 relative overflow-hidden">
-                <div className="absolute top-0 left-0 w-full h-20 bg-gradient-to-b from-white to-transparent"></div>
-                <div className="container mx-auto px-4 lg:px-8">
-                    <FadeIn className="text-center max-w-3xl mx-auto mb-16">
-                        <span className="text-gold-600 text-sm font-bold uppercase tracking-widest block mb-2">Pilihan Jenjang</span>
-                        <h2 className="text-3xl font-bold text-emerald-950 uppercase tracking-wide mb-6">
-                            Daftar Sekarang
-                        </h2>
-                        <p className="text-slate-600 text-lg">
-                            Pilih jenjang pendidikan yang sesuai dan mulai langkah awal pendidikan terbaik putra-putri Anda.
-                        </p>
-                    </FadeIn>
-
-                    <FadeInStagger className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
-                        {units.map((unit) => {
-                            const description = unit.description
-                                ? unit.description.replace(/<[^>]*>?/gm, "")
-                                : `Program unggulan ${unit.name} dengan kurikulum terpadu berbasis Islam dan standar nasional.`;
-
-                            return (
-                                <FadeIn key={unit.id} className="h-full">
-                                    <div className="bg-white rounded-xl overflow-hidden shadow-lg group hover:shadow-2xl transition-all duration-300 border-t-8 border-gold-500 h-full flex flex-col">
-                                        <div className="p-8 flex flex-col flex-1">
-                                            <div className="mb-6">
-                                                <h3 className="text-2xl font-bold text-emerald-950 uppercase tracking-tight mb-2">
-                                                    {unit.name}
-                                                </h3>
-                                                <div className="w-12 h-1 bg-slate-200 group-hover:bg-gold-500 transition-colors"></div>
+            {/* Info Grid */}
+            <section className="py-24 bg-white">
+                <div className="container mx-auto px-4 lg:px-8 max-w-6xl">
+                    <div className="grid lg:grid-cols-12 gap-12 lg:gap-20">
+                        {/* Left: Requirements */}
+                        <div className="lg:col-span-7">
+                            <FadeIn>
+                                <h2 className="text-3xl font-bold text-emerald-950 mb-8 tracking-tight">Persyaratan Umum</h2>
+                                <div className="grid sm:grid-cols-2 gap-4">
+                                    {requirements.map((req, i) => (
+                                        <div key={i} className="flex items-start gap-3 p-4 rounded-xl border border-slate-100 bg-slate-50/50 hover:bg-slate-50 transition-colors">
+                                            <div className="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center shrink-0 mt-0.5">
+                                                <div className="w-2 h-2 rounded-full bg-emerald-600" />
                                             </div>
-                                            <p className="text-slate-500 mb-8 line-clamp-3 text-sm min-h-[60px] flex-1">
-                                                {description}
-                                            </p>
+                                            <span className="text-slate-700 text-sm font-medium">{req}</span>
+                                        </div>
+                                    ))}
+                                </div>
 
-                                            <div className="space-y-3 mt-auto">
-                                                <Link
-                                                    href={unit.registrationLink || `/psb/daftar/${unit.slug}`}
-                                                    target={unit.registrationLink ? "_blank" : "_self"}
-                                                    className="block w-full text-center bg-emerald-950 text-white font-bold py-3 uppercase tracking-wider hover:bg-gold-500 hover:text-emerald-950 transition-colors"
-                                                >
-                                                    Daftar {unit.name}
-                                                </Link>
-                                                <Link
-                                                    href={`/pendidikan/${unit.slug}`}
-                                                    className="block w-full text-center border border-emerald-950 text-emerald-950 font-bold py-3 uppercase tracking-wider hover:bg-emerald-50 transition-colors"
-                                                >
-                                                    Info Detail
-                                                </Link>
+                                <div className="mt-12 pt-12 border-t border-slate-100">
+                                    <h3 className="text-xl font-bold text-emerald-950 mb-6">Metode Pendaftaran</h3>
+                                    <div className="grid sm:grid-cols-2 gap-6">
+                                        <div className="p-6 rounded-2xl border border-emerald-100 bg-emerald-50/30">
+                                            <div className="flex items-center gap-2 mb-3">
+                                                <Users className="w-5 h-5 text-emerald-700" />
+                                                <h4 className="font-bold text-emerald-900">Offline (Langsung)</h4>
+                                            </div>
+                                            <p className="text-sm text-slate-600 mb-4">Datang ke sekretariat PSB di Pondok Pesantren Al-Bahjah Buyut.</p>
+                                            <div className="text-xs text-slate-500 space-y-1">
+                                                <p className="flex items-center gap-2"><MapPin className="w-3 h-3" /> Jl. Revolusi No. 45 Desa Buyut</p>
+                                                <p className="flex items-center gap-2"><Calendar className="w-3 h-3" /> Senin - Ahad (08.00 - 15.00)</p>
                                             </div>
                                         </div>
+                                        <div className="p-6 rounded-2xl border border-slate-100 bg-white shadow-sm">
+                                            <div className="flex items-center gap-2 mb-3">
+                                                <GlobeIcon className="w-5 h-5 text-emerald-700" />
+                                                <h4 className="font-bold text-emerald-900">Online (Website)</h4>
+                                            </div>
+                                            <p className="text-sm text-slate-600 mb-4">Daftar dari mana saja melalui website ini 24 jam.</p>
+                                            <Link href="#units" className="text-xs font-bold text-emerald-700 hover:underline flex items-center gap-1">
+                                                Pilih Jenjang & Daftar <ArrowRight className="w-3 h-3" />
+                                            </Link>
+                                        </div>
                                     </div>
-                                </FadeIn>
-                            );
-                        })}
-                    </FadeInStagger>
+                                </div>
+                            </FadeIn>
+                        </div>
+
+                        {/* Right: Test Info & Help */}
+                        <div className="lg:col-span-5 space-y-8">
+                            <FadeIn delay={0.2}>
+                                <div className="bg-emerald-900 text-white rounded-3xl p-8 relative overflow-hidden">
+                                    <div className="absolute top-0 right-0 p-12 opacity-[0.03]">
+                                        <GraduationCap size={150} />
+                                    </div>
+                                    <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
+                                        <span className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-sm">?</span>
+                                        Materi Seleksi
+                                    </h3>
+                                    <ul className="space-y-4 relative z-10">
+                                        {[
+                                            "Tes Potensi Akademik",
+                                            "Baca Tulis Al-Qur'an (Tahsin)",
+                                            "Wawancara Calon Santri",
+                                            "Wawancara Wali Santri",
+                                            "Tes Praktik Ibadah"
+                                        ].map((item, i) => (
+                                            <li key={i} className="flex items-center gap-3 text-emerald-100/90 text-sm">
+                                                <CheckCircle2 className="w-4 h-4 text-gold-400 shrink-0" />
+                                                {item}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+
+                                <div className="border border-slate-200 rounded-3xl p-8 bg-white relative">
+                                    <div className="flex items-center gap-4 mb-4">
+                                        <div className="w-10 h-10 rounded-full bg-gold-100 text-gold-600 flex items-center justify-center">
+                                            <Phone className="w-5 h-5" />
+                                        </div>
+                                        <div>
+                                            <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">Layanan Informasi</div>
+                                            <div className="text-lg font-bold text-emerald-950">0896 7653 9390</div>
+                                        </div>
+                                    </div>
+                                    <p className="text-slate-500 text-sm">
+                                        Hubungi kami via WhatsApp jika mengalami kendala saat pendaftaran.
+                                    </p>
+                                </div>
+                            </FadeIn>
+                        </div>
+                    </div>
                 </div>
-                <div className="absolute bottom-0 left-0 w-full h-20 bg-gradient-to-t from-slate-50 to-transparent"></div>
+            </section>
+
+            {/* Units Section */}
+            <section id="units" className="py-24 bg-slate-50">
+                <div className="container mx-auto px-4 lg:px-8 max-w-6xl">
+                    <FadeIn className="text-center mb-16">
+                        <span className="text-emerald-600 font-medium tracking-wider text-sm">PILIHAN JENJANG PENDIDIKAN</span>
+                        <h2 className="text-3xl lg:text-4xl font-bold text-emerald-950 mt-2">Mulai Pendaftaran</h2>
+                    </FadeIn>
+
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {units.map((unit) => (
+                            <FadeIn key={unit.id}>
+                                <div className="bg-white rounded-3xl p-8 shadow-[0_2px_20px_-4px_rgba(0,0,0,0.05)] border border-slate-100 hover:border-emerald-200 hover:shadow-lg transition-all duration-300 flex flex-col h-full group">
+                                    <div className="mb-6">
+                                        <div className="text-2xl font-bold text-emerald-950">{unit.name}</div>
+                                        <div className="h-1 w-12 bg-gold-400 mt-2 rounded-full" />
+                                    </div>
+                                    <p className="text-slate-500 text-sm leading-relaxed mb-8 line-clamp-3">
+                                        {unit.description?.replace(/<[^>]*>?/gm, "") || "Program pendidikan unggulan berbasis pesantren."}
+                                    </p>
+                                    <div className="mt-auto grid grid-cols-2 gap-3">
+                                        <Link
+                                            href={`/pendidikan/${unit.slug}`}
+                                            className="py-3 px-4 rounded-xl border border-slate-200 text-center text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-colors"
+                                        >
+                                            Detail
+                                        </Link>
+                                        <Link
+                                            href={unit.registrationLink || `/psb/daftar/${unit.slug}`}
+                                            target={unit.registrationLink ? "_blank" : "_self"}
+                                            className="py-3 px-4 rounded-xl bg-emerald-950 text-center text-sm font-semibold text-white hover:bg-emerald-900 transition-colors group-hover:bg-gold-500 group-hover:text-emerald-950"
+                                        >
+                                            Daftar
+                                        </Link>
+                                    </div>
+                                </div>
+                            </FadeIn>
+                        ))}
+                    </div>
+                </div>
             </section>
         </main>
+    );
+}
+
+function GlobeIcon(props: any) {
+    return (
+        <svg
+            {...props}
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+        >
+            <circle cx="12" cy="12" r="10" />
+            <line x1="2" x2="22" y1="12" y2="12" />
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+        </svg>
     );
 }

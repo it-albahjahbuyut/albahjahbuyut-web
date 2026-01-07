@@ -125,6 +125,17 @@ export default async function UnitDetailPage({ params }: UnitDetailPageProps) {
                             </span>
                         </FadeIn>
                         <FadeIn delay={0.3}>
+                            {slug.toLowerCase().includes('smp') && (
+                                <div className="mb-6">
+                                    <Image
+                                        src="/logo-smp.png"
+                                        alt="Logo SMPIQu"
+                                        width={120}
+                                        height={120}
+                                        className="w-24 h-24 md:w-32 md:h-32 object-contain"
+                                    />
+                                </div>
+                            )}
                             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white uppercase tracking-tighter leading-none mb-6">
                                 {unit.name}
                             </h1>
@@ -197,7 +208,7 @@ export default async function UnitDetailPage({ params }: UnitDetailPageProps) {
                         <div className="lg:col-span-4">
                             <div className="sticky top-24 space-y-8">
                                 {/* Registration Card */}
-                                <FadeIn delay={0.2} className="bg-emerald-950 text-white p-8 border-t-8 border-gold-500">
+                                <FadeIn delay={0.2} className="bg-emerald-950 text-white p-8 border-t-8 border-gold-500 shadow-xl">
                                     <h3 className="text-2xl font-bold tracking-wide mb-2 line-clamp-2">
                                         Gabung Bersama Kami
                                     </h3>
@@ -208,15 +219,15 @@ export default async function UnitDetailPage({ params }: UnitDetailPageProps) {
                                     <div className="space-y-4">
                                         <Link
                                             href={unit.registrationLink || "/psb"}
-                                            className="flex w-full items-center justify-center gap-2 bg-gold-500 hover:bg-gold-400 text-emerald-950 py-4 text-sm font-bold tracking-widest transition-all hover:-translate-y-1"
+                                            className="flex w-full items-center justify-center gap-2 bg-gold-500 hover:bg-gold-400 text-emerald-950 py-4 text-sm font-bold tracking-widest transition-all hover:-translate-y-1 rounded-full shadow-lg shadow-gold-500/20"
                                         >
                                             Daftar Sekarang
                                             <ArrowRight className="h-4 w-4" />
                                         </Link>
 
                                         <a
-                                            href="https://wa.me/6281234567890"
-                                            className="flex w-full items-center justify-center gap-2 border border-emerald-700 hover:bg-emerald-900 text-white py-4 text-sm font-bold tracking-widest transition-all"
+                                            href="https://wa.me/089676539390"
+                                            className="flex w-full items-center justify-center gap-2 border border-emerald-700 hover:bg-emerald-900 text-white py-4 text-sm font-bold tracking-widest transition-all rounded-full"
                                         >
                                             Konsultasi WA
                                         </a>
@@ -224,20 +235,20 @@ export default async function UnitDetailPage({ params }: UnitDetailPageProps) {
                                 </FadeIn>
 
                                 {/* Quick Info */}
-                                <FadeIn delay={0.4} className="bg-slate-50 p-8 border border-slate-200">
+                                <FadeIn delay={0.4} className="bg-slate-50 p-8 border border-slate-200 shadow-sm">
                                     <h4 className="font-bold text-emerald-950 uppercase tracking-widest text-xs mb-6">Informasi Kontak</h4>
                                     <ul className="space-y-4">
                                         <li className="flex items-start gap-3 text-sm text-slate-600">
                                             <span className="font-bold text-emerald-700 min-w-[80px]">Alamat:</span>
-                                            <span>Desa Buyut, Kec. Gunungjati, Cirebon</span>
+                                            <span>Jl. Revolusi No.45, Buyut, Kec. Gunungjati, Kabupaten Cirebon, Jawa Barat 45151, Indonesia</span>
                                         </li>
                                         <li className="flex items-start gap-3 text-sm text-slate-600">
                                             <span className="font-bold text-emerald-700 min-w-[80px]">Email:</span>
-                                            <span>info@albahjahbuyut.sch.id</span>
+                                            <span>info@albahjahbuyut.com</span>
                                         </li>
                                         <li className="flex items-start gap-3 text-sm text-slate-600">
                                             <span className="font-bold text-emerald-700 min-w-[80px]">Telepon:</span>
-                                            <span>+62 812-3456-7890</span>
+                                            <span>0896 7653 9390</span>
                                         </li>
                                     </ul>
                                 </FadeIn>

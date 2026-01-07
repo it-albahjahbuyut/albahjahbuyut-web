@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowLeft, ArrowRight, GraduationCap, BookOpen, Scroll, BookOpenCheck, LucideIcon, Sparkles } from "lucide-react";
 import { FadeIn, FadeInStagger } from "@/components/animations/FadeIn";
 
@@ -15,6 +16,7 @@ interface Program {
     name: string;
     desc: string;
     icon: LucideIcon;
+    image: string | null;
 }
 
 const unitIcons: Record<string, LucideIcon> = {
@@ -34,6 +36,7 @@ export function ProgramsSection({ units }: { units: Unit[] }) {
         name: unit.name,
         desc: unit.description ? stripHtml(unit.description) : "Program pendidikan unggulan yang memadukan kurikulum nasional dan kepesantrenan untuk membentuk karakter mulia.",
         icon: unitIcons[unit.slug] || BookOpen,
+        image: unit.image,
     }));
 
     return (
@@ -69,43 +72,47 @@ export function ProgramsSection({ units }: { units: Unit[] }) {
                     </FadeIn>
                 </div>
 
-                <FadeInStagger className="grid md:grid-cols-12 gap-6">
+                <FadeInStagger className="grid md:grid-cols-2 lg:grid-cols-2 gap-8">
                     {programs.map((program, index) => {
-                        // Zig-zag pattern: 0 & 3 are wide (8 cols), 1 & 2 are narrow (4 cols)
-                        // Or alternating: 0 (8), 1 (4), 2 (4), 3 (8)
-                        const isWide = index === 0 || index === 3;
-                        const colSpan = isWide ? "col-span-12 md:col-span-8" : "col-span-12 md:col-span-4";
+                        let defaultImage = "https://images.unsplash.com/photo-1541829070764-84a7d30dd3f3?q=80&w=1974&auto=format&fit=crop";
+                        if (program.slug.includes('smp')) defaultImage = "https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=2070&auto=format&fit=crop";
+                        if (program.slug.includes('sma')) defaultImage = "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=2070&auto=format&fit=crop";
+                        if (program.slug.includes('tahfidz')) defaultImage = "https://images.unsplash.com/photo-1606233400587-c1dcb8dc2286?q=80&w=2070&auto=format&fit=crop";
 
                         return (
                             <FadeIn
                                 key={program.slug}
-                                className={`${colSpan} h-full`}
+                                className="h-full"
                             >
                                 <Link
                                     href={`/pendidikan/${program.slug}`}
-                                    className={`group relative block bg-emerald-50/50 overflow-hidden min-h-[280px] md:min-h-[320px] rounded-2xl md:rounded-3xl hover:bg-emerald-900 transition-all duration-500 h-full`}
+                                    className="group relative flex flex-col h-[320px] w-full overflow-hidden rounded-2xl border border-emerald-800 bg-emerald-950 transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl"
                                 >
-                                    <div className="absolute top-8 right-8 text-emerald-900/10 group-hover:text-white/10 transition-colors duration-500">
-                                        <program.icon className="w-32 h-32 stroke-[1px]" />
+                                    {/* Background Image with Gradient */}
+                                    <div className="absolute inset-0">
+                                        <Image
+                                            src={program.image || defaultImage}
+                                            alt={program.name}
+                                            fill
+                                            className="object-cover object-center transition-transform duration-700 group-hover:scale-110 opacity-50"
+                                        />
+                                        {/* Gradient overlay: Solid on left, clear on right for image visibility */}
+                                        <div className="absolute inset-0 bg-gradient-to-r from-emerald-950 via-emerald-950/90 to-transparent" />
                                     </div>
 
-                                    <div className="absolute inset-0 p-8 flex flex-col justify-between">
-                                        <div>
-                                            <div className="w-12 h-12 rounded-full border border-emerald-900/10 flex items-center justify-center mb-6 text-emerald-900 group-hover:border-white/20 group-hover:text-gold-400 transition-all duration-500 bg-white group-hover:bg-white/10">
-                                                <program.icon className="w-5 h-5" />
-                                            </div>
-                                            <h3 className="text-2xl md:text-3xl font-bold text-emerald-950 mb-4 group-hover:text-white transition-colors duration-500">
-                                                {program.name}
-                                            </h3>
-                                            <p className="text-emerald-900/60 text-sm leading-relaxed max-w-sm group-hover:text-emerald-100/90 transition-colors duration-500 line-clamp-3">
-                                                {program.desc}
-                                            </p>
-                                        </div>
+                                    {/* Content */}
+                                    <div className="relative z-10 flex h-full flex-col p-8">
+                                        <h3 className="mb-3 text-2xl font-bold text-white group-hover:text-gold-400 transition-colors pt-4">
+                                            {program.name}
+                                        </h3>
 
-                                        <div className="flex items-center gap-4">
-                                            <span className="w-8 h-[1px] bg-emerald-900/20 group-hover:bg-white/30 transition-colors duration-500" />
-                                            <span className="text-xs font-bold tracking-widest text-emerald-900 group-hover:text-gold-400 transition-colors duration-500">
-                                                Selengkapnya
+                                        <p className="mb-6 line-clamp-2 text-emerald-100/80 leading-relaxed font-light">
+                                            {program.desc}
+                                        </p>
+
+                                        <div className="mt-auto">
+                                            <span className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-gold-400 group-hover:text-white transition-colors border-b border-transparent group-hover:border-white pb-1">
+                                                Selengkapnya <ArrowRight className="h-4 w-4" />
                                             </span>
                                         </div>
                                     </div>

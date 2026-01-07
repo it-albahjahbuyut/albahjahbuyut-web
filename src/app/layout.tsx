@@ -19,6 +19,11 @@ export const metadata: Metadata = {
       "tahfidz",
       "tafaqquh",
     ],
+  icons: {
+    icon: "/logo-buyut.png",
+    shortcut: "/logo-buyut.png",
+    apple: "/logo-buyut.png",
+  },
 };
 
 export default function RootLayout({

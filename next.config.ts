@@ -77,6 +77,7 @@ const nextConfig: NextConfig = {
               "font-src 'self' https://fonts.gstatic.com",
               "img-src 'self' data: blob: https: http:",
               "connect-src 'self' https:",
+              "frame-src 'self' https://www.google.com https://maps.google.com",
               "frame-ancestors 'self'",
             ].join('; '),
           },

@@ -106,9 +106,17 @@ export const STANDARD_FORM_FIELDS: FormField[] = [
 // Dokumen standar untuk SMP
 export const SMP_DOCUMENTS: DocumentRequirement[] = [
     {
-        type: 'IJAZAH_SD',
-        label: 'Ijazah SD / Sederajat',
-        description: 'Upload scan ijazah SD atau Surat Keterangan Lulus',
+        type: 'PAS_FOTO',
+        label: 'Pas Foto 3x4',
+        description: 'Upload pas foto ukuran 3x4 (4 lembar)',
+        acceptedFormats: ['.jpg', '.jpeg', '.png'],
+        maxSizeMB: 2,
+        required: true,
+    },
+    {
+        type: 'KARTU_KELUARGA',
+        label: 'Kartu Keluarga (KK)',
+        description: 'Upload scan Kartu Keluarga',
         acceptedFormats: ['.pdf', '.jpg', '.jpeg', '.png'],
         maxSizeMB: 5,
         required: true,
@@ -116,33 +124,41 @@ export const SMP_DOCUMENTS: DocumentRequirement[] = [
     {
         type: 'AKTA_KELAHIRAN',
         label: 'Akta Kelahiran',
-        description: 'Upload scan akta kelahiran',
+        description: 'Upload scan Akta Kelahiran',
         acceptedFormats: ['.pdf', '.jpg', '.jpeg', '.png'],
         maxSizeMB: 5,
-        required: true,
-    },
-    {
-        type: 'KARTU_KELUARGA',
-        label: 'Kartu Keluarga',
-        description: 'Upload scan Kartu Keluarga',
-        acceptedFormats: ['.pdf', '.jpg', '.jpeg', '.png'],
-        maxSizeMB: 5,
-        required: true,
-    },
-    {
-        type: 'PAS_FOTO',
-        label: 'Pas Foto 3x4',
-        description: 'Upload pas foto ukuran 3x4 dengan latar belakang merah',
-        acceptedFormats: ['.jpg', '.jpeg', '.png'],
-        maxSizeMB: 2,
         required: true,
     },
     {
         type: 'KTP_ORTU',
-        label: 'KTP Orang Tua / Wali',
-        description: 'Upload scan KTP orang tua atau wali',
+        label: 'KTP Orang Tua',
+        description: 'Upload scan KTP Orang Tua',
         acceptedFormats: ['.pdf', '.jpg', '.jpeg', '.png'],
         maxSizeMB: 5,
+        required: true,
+    },
+    {
+        type: 'SURAT_KETERANGAN_AKTIF',
+        label: 'Surat Keterangan Aktif Sekolah',
+        description: 'Upload Surat Keterangan Aktif Sekolah dari sekolah asal',
+        acceptedFormats: ['.pdf', '.jpg', '.jpeg', '.png'],
+        maxSizeMB: 5,
+        required: true,
+    },
+    {
+        type: 'IJAZAH_SD',
+        label: 'Ijazah SD / Sederajat (Jika Ada)',
+        description: 'Upload scan ijazah SD atau Surat Keterangan Lulus (Bisa menyusul)',
+        acceptedFormats: ['.pdf', '.jpg', '.jpeg', '.png'],
+        maxSizeMB: 5,
+        required: false,
+    },
+    {
+        type: 'BUKTI_PEMBAYARAN',
+        label: 'Bukti Pembayaran',
+        description: 'Upload bukti transfer biaya pendaftaran',
+        acceptedFormats: ['.jpg', '.jpeg', '.png', '.pdf'],
+        maxSizeMB: 2,
         required: true,
     },
 ];
@@ -150,9 +166,17 @@ export const SMP_DOCUMENTS: DocumentRequirement[] = [
 // Dokumen standar untuk SMA
 export const SMA_DOCUMENTS: DocumentRequirement[] = [
     {
-        type: 'IJAZAH_SMP',
-        label: 'Ijazah SMP / Sederajat',
-        description: 'Upload scan ijazah SMP atau Surat Keterangan Lulus',
+        type: 'PAS_FOTO',
+        label: 'Pas Foto 3x4',
+        description: 'Upload pas foto ukuran 3x4 (4 lembar)',
+        acceptedFormats: ['.jpg', '.jpeg', '.png'],
+        maxSizeMB: 2,
+        required: true,
+    },
+    {
+        type: 'KARTU_KELUARGA',
+        label: 'Kartu Keluarga (KK)',
+        description: 'Upload scan Kartu Keluarga',
         acceptedFormats: ['.pdf', '.jpg', '.jpeg', '.png'],
         maxSizeMB: 5,
         required: true,
@@ -160,33 +184,41 @@ export const SMA_DOCUMENTS: DocumentRequirement[] = [
     {
         type: 'AKTA_KELAHIRAN',
         label: 'Akta Kelahiran',
-        description: 'Upload scan akta kelahiran',
+        description: 'Upload scan Akta Kelahiran',
         acceptedFormats: ['.pdf', '.jpg', '.jpeg', '.png'],
         maxSizeMB: 5,
-        required: true,
-    },
-    {
-        type: 'KARTU_KELUARGA',
-        label: 'Kartu Keluarga',
-        description: 'Upload scan Kartu Keluarga',
-        acceptedFormats: ['.pdf', '.jpg', '.jpeg', '.png'],
-        maxSizeMB: 5,
-        required: true,
-    },
-    {
-        type: 'PAS_FOTO',
-        label: 'Pas Foto 3x4',
-        description: 'Upload pas foto ukuran 3x4 dengan latar belakang merah',
-        acceptedFormats: ['.jpg', '.jpeg', '.png'],
-        maxSizeMB: 2,
         required: true,
     },
     {
         type: 'KTP_ORTU',
-        label: 'KTP Orang Tua / Wali',
-        description: 'Upload scan KTP orang tua atau wali',
+        label: 'KTP Orang Tua',
+        description: 'Upload scan KTP Orang Tua',
         acceptedFormats: ['.pdf', '.jpg', '.jpeg', '.png'],
         maxSizeMB: 5,
+        required: true,
+    },
+    {
+        type: 'SURAT_KETERANGAN_AKTIF',
+        label: 'Surat Keterangan Aktif Sekolah',
+        description: 'Upload Surat Keterangan Aktif Sekolah dari sekolah asal',
+        acceptedFormats: ['.pdf', '.jpg', '.jpeg', '.png'],
+        maxSizeMB: 5,
+        required: true,
+    },
+    {
+        type: 'IJAZAH_SMP',
+        label: 'Ijazah SMP / Sederajat (Jika Ada)',
+        description: 'Upload scan ijazah SMP atau Surat Keterangan Lulus (Bisa menyusul)',
+        acceptedFormats: ['.pdf', '.jpg', '.jpeg', '.png'],
+        maxSizeMB: 5,
+        required: false,
+    },
+    {
+        type: 'BUKTI_PEMBAYARAN',
+        label: 'Bukti Pembayaran',
+        description: 'Upload bukti transfer biaya pendaftaran',
+        acceptedFormats: ['.jpg', '.jpeg', '.png', '.pdf'],
+        maxSizeMB: 2,
         required: true,
     },
 ];
@@ -194,9 +226,17 @@ export const SMA_DOCUMENTS: DocumentRequirement[] = [
 // Dokumen untuk program Tahfidz/Tafaqquh (sama dengan SMP/SMA tergantung jenjang)
 export const PESANTREN_DOCUMENTS: DocumentRequirement[] = [
     {
-        type: 'IJAZAH',
-        label: 'Ijazah Terakhir',
-        description: 'Upload scan ijazah terakhir (SD/SMP/SMA) atau Surat Keterangan Lulus',
+        type: 'PAS_FOTO',
+        label: 'Pas Foto 3x4',
+        description: 'Upload pas foto ukuran 3x4 (4 lembar)',
+        acceptedFormats: ['.jpg', '.jpeg', '.png'],
+        maxSizeMB: 2,
+        required: true,
+    },
+    {
+        type: 'KARTU_KELUARGA',
+        label: 'Kartu Keluarga (KK)',
+        description: 'Upload scan Kartu Keluarga',
         acceptedFormats: ['.pdf', '.jpg', '.jpeg', '.png'],
         maxSizeMB: 5,
         required: true,
@@ -204,33 +244,93 @@ export const PESANTREN_DOCUMENTS: DocumentRequirement[] = [
     {
         type: 'AKTA_KELAHIRAN',
         label: 'Akta Kelahiran',
-        description: 'Upload scan akta kelahiran',
+        description: 'Upload scan Akta Kelahiran',
         acceptedFormats: ['.pdf', '.jpg', '.jpeg', '.png'],
         maxSizeMB: 5,
         required: true,
     },
     {
+        type: 'KTP_ORTU',
+        label: 'KTP Orang Tua',
+        description: 'Upload scan KTP Orang Tua',
+        acceptedFormats: ['.pdf', '.jpg', '.jpeg', '.png'],
+        maxSizeMB: 5,
+        required: true,
+    },
+    {
+        type: 'SURAT_KETERANGAN_AKTIF',
+        label: 'Surat Keterangan Aktif Sekolah',
+        description: 'Upload Surat Keterangan Aktif Sekolah (Jika masih sekolah)',
+        acceptedFormats: ['.pdf', '.jpg', '.jpeg', '.png'],
+        maxSizeMB: 5,
+        required: false,
+    },
+    {
+        type: 'IJAZAH',
+        label: 'Ijazah Terakhir',
+        description: 'Upload scan ijazah terakhir',
+        acceptedFormats: ['.pdf', '.jpg', '.jpeg', '.png'],
+        maxSizeMB: 5,
+        required: true,
+    },
+    {
+        type: 'BUKTI_PEMBAYARAN',
+        label: 'Bukti Pembayaran',
+        description: 'Upload bukti transfer biaya pendaftaran',
+        acceptedFormats: ['.jpg', '.jpeg', '.png', '.pdf'],
+        maxSizeMB: 2,
+        required: true,
+    },
+];
+
+// Dokumen standar untuk SD
+export const SD_DOCUMENTS: DocumentRequirement[] = [
+    {
+        type: 'PAS_FOTO',
+        label: 'Pas Foto 3x4',
+        description: 'Upload pas foto ukuran 3x4 (4 lembar)',
+        acceptedFormats: ['.jpg', '.jpeg', '.png'],
+        maxSizeMB: 2,
+        required: true,
+    },
+    {
         type: 'KARTU_KELUARGA',
-        label: 'Kartu Keluarga',
+        label: 'Kartu Keluarga (KK)',
         description: 'Upload scan Kartu Keluarga',
         acceptedFormats: ['.pdf', '.jpg', '.jpeg', '.png'],
         maxSizeMB: 5,
         required: true,
     },
     {
-        type: 'PAS_FOTO',
-        label: 'Pas Foto 3x4',
-        description: 'Upload pas foto ukuran 3x4 dengan latar belakang merah',
-        acceptedFormats: ['.jpg', '.jpeg', '.png'],
-        maxSizeMB: 2,
+        type: 'AKTA_KELAHIRAN',
+        label: 'Akta Kelahiran',
+        description: 'Upload scan Akta Kelahiran',
+        acceptedFormats: ['.pdf', '.jpg', '.jpeg', '.png'],
+        maxSizeMB: 5,
         required: true,
     },
     {
         type: 'KTP_ORTU',
-        label: 'KTP Orang Tua / Wali',
-        description: 'Upload scan KTP orang tua atau wali',
+        label: 'KTP Orang Tua',
+        description: 'Upload scan KTP Orang Tua',
         acceptedFormats: ['.pdf', '.jpg', '.jpeg', '.png'],
         maxSizeMB: 5,
+        required: true,
+    },
+    {
+        type: 'IJAZAH_TK',
+        label: 'Ijazah TK / PAUD (Jika Ada)',
+        description: 'Upload scan ijazah TK atau Surat Keterangan Lulus (Bisa menyusul)',
+        acceptedFormats: ['.pdf', '.jpg', '.jpeg', '.png'],
+        maxSizeMB: 5,
+        required: false,
+    },
+    {
+        type: 'BUKTI_PEMBAYARAN',
+        label: 'Bukti Pembayaran',
+        description: 'Upload bukti transfer biaya pendaftaran',
+        acceptedFormats: ['.jpg', '.jpeg', '.png', '.pdf'],
+        maxSizeMB: 2,
         required: true,
     },
 ];
@@ -249,6 +349,8 @@ export function getFormConfig(unitSlug: string): { fields: FormField[]; document
         documents = SMP_DOCUMENTS;
     } else if (slug.includes('sma')) {
         documents = SMA_DOCUMENTS;
+    } else if (slug.includes('sd')) {
+        documents = SD_DOCUMENTS;
     } else {
         // Tahfidz, Tafaqquh, atau unit lainnya
         documents = PESANTREN_DOCUMENTS;
