@@ -2,19 +2,13 @@ import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { db } from "@/lib/db";
-
-// ============================================
-// SECURITY CONFIGURATION
-// ============================================
+import { authConfig } from "./auth.config";
 
 // Generic error message to prevent user enumeration
 const AUTH_ERROR_MESSAGE = "Email atau password salah";
 
-// Session configuration
-const SESSION_MAX_AGE = 7 * 24 * 60 * 60; // 7 days (reduced from 30 for security)
-const SESSION_UPDATE_AGE = 24 * 60 * 60; // Update session every 24 hours
-
 export const { handlers, signIn, signOut, auth } = NextAuth({
+    ...authConfig,
     providers: [
         Credentials({
             name: "credentials",
@@ -89,7 +83,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }),
     ],
     callbacks: {
+        ...authConfig.callbacks,
         async jwt({ token, user, trigger }) {
+            // Keep existing JWT logic especially the update trigger which uses DB
             if (user) {
                 token.id = user.id;
                 token.role = user.role;
@@ -114,39 +110,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
             return token;
         },
-        async session({ session, token }) {
-            if (session.user) {
-                session.user.id = token.id as string;
-                session.user.role = token.role as "ADMIN" | "SUPER_ADMIN";
-                session.user.email = token.email as string;
-            }
-            return session;
-        },
-    },
-    pages: {
-        signIn: "/login",
-        error: "/login",
-    },
-    session: {
-        strategy: "jwt",
-        maxAge: SESSION_MAX_AGE,
-        updateAge: SESSION_UPDATE_AGE,
-    },
-    cookies: {
-        sessionToken: {
-            name: process.env.NODE_ENV === "production"
-                ? "__Secure-authjs.session-token"
-                : "authjs.session-token",
-            options: {
-                httpOnly: true,
-                sameSite: "lax",
-                path: "/",
-                secure: process.env.NODE_ENV === "production",
-            },
-        },
-    },
-    secret: process.env.AUTH_SECRET,
-    // Enable debug logging only in development
-    debug: process.env.NODE_ENV === "development",
+    }
 });
 
