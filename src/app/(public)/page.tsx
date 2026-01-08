@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { UnitCard } from "@/components/public/UnitCard";
 import { DonationCard } from "@/components/public/DonationCard";
 import { NewsItem } from "@/components/public/NewsItem";
+import { SchemaOrg } from "@/components/seo/SchemaOrg";
 import { ArrowRight, BookOpenCheck, GraduationCap, Heart, Users } from "lucide-react";
 
 export default async function HomePage() {
@@ -25,6 +26,9 @@ export default async function HomePage() {
 
     return (
         <>
+            {/* Schema.org Structured Data for SEO */}
+            <SchemaOrg />
+            
             {/* Hero Section */}
             <section className="relative flex min-h-[85vh] items-center justify-center overflow-hidden bg-emerald-900">
                 {/* Background Pattern */}

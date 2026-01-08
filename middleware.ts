@@ -127,6 +127,30 @@ export default auth((req) => {
     const { nextUrl, headers } = req;
     const isLoggedIn = !!req.auth;
 
+    // ============================================
+    // SUBDOMAIN ROUTING (psb.albahjahbuyut.com)
+    // ============================================
+    const hostname = headers.get('host') || '';
+    const isPSBSubdomain = hostname.startsWith('psb.') || hostname.includes('psb.albahjahbuyut');
+    
+    // Handle PSB subdomain routing
+    if (isPSBSubdomain) {
+        const pathname = nextUrl.pathname;
+        
+        // Skip if already on /psb path, static assets, or API routes
+        const shouldRewrite = !pathname.startsWith('/psb') && 
+                              !pathname.startsWith('/_next') && 
+                              !pathname.startsWith('/api') &&
+                              !pathname.startsWith('/favicon') &&
+                              !pathname.match(/\.(ico|png|jpg|jpeg|gif|svg|css|js|woff|woff2)$/);
+        
+        if (shouldRewrite) {
+            // Rewrite to /psb path
+            const newUrl = new URL(`/psb${pathname === '/' ? '' : pathname}`, nextUrl);
+            return addSecurityHeaders(NextResponse.rewrite(newUrl));
+        }
+    }
+
     const isAdminRoute = nextUrl.pathname.startsWith("/admin");
     const isLoginPage = nextUrl.pathname === "/login";
     const isApiAuthRoute = nextUrl.pathname.startsWith("/api/auth");

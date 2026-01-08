@@ -46,6 +46,15 @@ export default function PSBForm({
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [submitResult, setSubmitResult] = useState<{ success: boolean; message: string; registrationNumber?: string } | null>(null);
     const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
+    const formTopRef = useRef<HTMLDivElement>(null);
+
+    const scrollToForm = () => {
+        setTimeout(() => {
+            if (formTopRef.current) {
+                formTopRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }, 100);
+    };
 
     // Handle form field change
     const handleFieldChange = (name: string, value: string) => {
@@ -215,15 +224,35 @@ export default function PSBForm({
         setUploadedFiles(prev => prev.filter(f => f.documentType !== documentType));
     };
 
+    // Scroll to first error
+    const scrollToFirstError = () => {
+        setTimeout(() => {
+            const firstError = document.querySelector('.border-red-500, .border-red-300');
+            if (firstError) {
+                firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                // Try to focus if it's an input
+                if (['INPUT', 'SELECT', 'TEXTAREA'].includes(firstError.tagName)) {
+                    (firstError as HTMLElement).focus();
+                }
+            }
+        }, 100);
+    };
+
     // Handle next step
     const handleNext = () => {
         if (step === 1) {
             if (validateFormData()) {
                 setStep(2);
+                scrollToForm();
+            } else {
+                scrollToFirstError();
             }
         } else if (step === 2) {
             if (validateDocuments()) {
                 setStep(3);
+                scrollToForm();
+            } else {
+                scrollToFirstError();
             }
         }
     };
@@ -393,7 +422,7 @@ export default function PSBForm({
             )}
 
             {/* Progress Steps */}
-            <div className="flex items-center justify-center mb-8 sm:mb-12">
+            <div ref={formTopRef} className="flex items-center justify-center mb-8 sm:mb-12 scroll-mt-32">
                 {[
                     { num: 1, label: 'Data Diri' },
                     { num: 2, label: 'Upload' },
@@ -597,7 +626,10 @@ export default function PSBForm({
 
                     <div className="flex flex-col-reverse sm:flex-row justify-between gap-3 mt-6 sm:mt-8">
                         <button
-                            onClick={() => setStep(1)}
+                            onClick={() => {
+                                setStep(1);
+                                scrollToForm();
+                            }}
                             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 text-slate-600 font-semibold rounded-lg hover:bg-slate-100 transition-colors"
                         >
                             <ArrowLeft className="w-4 h-4" />
@@ -693,7 +725,10 @@ export default function PSBForm({
 
                     <div className="flex flex-col-reverse sm:flex-row justify-between gap-3 mt-6 sm:mt-8">
                         <button
-                            onClick={() => setStep(2)}
+                            onClick={() => {
+                                setStep(2);
+                                scrollToForm();
+                            }}
                             disabled={isSubmitting}
                             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 text-slate-600 font-semibold rounded-lg hover:bg-slate-100 transition-colors disabled:opacity-50"
                         >
