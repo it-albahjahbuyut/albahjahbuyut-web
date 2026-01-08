@@ -42,7 +42,7 @@ export function Navbar({ units }: NavbarProps) {
         { href: "/profil", label: "Profil", icon: Users },
         { href: "/galeri", label: "Galeri", icon: ImageIcon },
         { href: "/berita", label: "Berita", icon: Newspaper },
-        { href: "/infaq", label: "Donasi", icon: Heart },
+        { href: "/infaq", label: "Infaq", icon: Heart },
     ];
 
     const headerBackground = isScrolled || isOpen
@@ -132,7 +132,7 @@ export function Navbar({ units }: NavbarProps) {
                         href="/infaq"
                         className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${navTextColor}`}
                     >
-                        Donasi
+                        Infaq
                     </Link>
                 </div>
 

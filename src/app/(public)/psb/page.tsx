@@ -247,7 +247,7 @@ export default async function PSBPage() {
                                         <Link
                                             href={unit.registrationLink || `/psb/daftar/${unit.slug}`}
                                             target={unit.registrationLink ? "_blank" : "_self"}
-                                            className="py-3 px-4 rounded-xl bg-emerald-950 text-center text-sm font-semibold text-white hover:bg-emerald-900 transition-colors group-hover:bg-gold-500 group-hover:text-emerald-950"
+                                            className="py-3 px-4 rounded-xl bg-emerald-950 text-center text-sm font-semibold text-white hover:bg-emerald-900 transition-colors group-hover:bg-gold-500 group-hover:text-white"
                                         >
                                             Daftar
                                         </Link>

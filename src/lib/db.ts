@@ -27,6 +27,7 @@ if (connectionString.startsWith('NEXT_PUBLIC')) {
 }
 
 // Prisma 7 style - using connectionString object format
+// Note: For Supabase pooler, use port 6543 with ?pgbouncer=true in DATABASE_URL
 const adapter = new PrismaPg({ connectionString });
 
 export const db = globalForPrisma.prisma ?? new PrismaClient({

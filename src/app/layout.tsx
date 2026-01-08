@@ -33,7 +33,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id">
-      <body className={`${plusJakartaSans.variable} antialiased font-sans overflow-x-hidden`}>
+      <body className={`${plusJakartaSans.variable} antialiased font-sans overflow-x-hidden`} suppressHydrationWarning>
         {children}
       </body>
     </html>

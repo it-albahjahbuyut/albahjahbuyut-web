@@ -3,6 +3,8 @@
 import { db } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
 import { createRegistrationFolder, uploadToDrive, deleteDriveFolder } from '@/lib/google-drive';
+import { appendToSpreadsheet, updateSpreadsheetStatus } from '@/lib/google-sheets';
+import { uploadQueue } from '@/lib/upload-queue';
 import { generateRegistrationNumber } from '@/lib/psb-config';
 
 // Define PSBStatus type locally to avoid Prisma client import issues
@@ -41,6 +43,7 @@ export interface SubmitPSBResult {
 
 /**
  * Submit pendaftaran PSB baru
+ * Strategy: Save to DB immediately, upload files in background for fast UX
  */
 export async function submitPSBRegistration(
     formData: PSBFormData,
@@ -50,7 +53,73 @@ export async function submitPSBRegistration(
         // Generate nomor pendaftaran
         const registrationNumber = generateRegistrationNumber(formData.unitSlug);
 
-        // Buat folder di Google Drive
+        // STEP 1: Simpan ke database DULU (cepat, ~1-2 detik)
+        // Dokumen akan diupload di background
+        const registration = await db.pSBRegistration.create({
+            data: {
+                registrationNumber,
+                namaLengkap: formData.namaLengkap,
+                tempatLahir: formData.tempatLahir,
+                tanggalLahir: new Date(formData.tanggalLahir),
+                jenisKelamin: formData.jenisKelamin,
+                alamatLengkap: formData.alamatLengkap,
+                nisn: formData.nisn || null,
+                asalSekolah: formData.asalSekolah,
+                namaOrangTua: formData.namaOrangTua,
+                noHpOrangTua: formData.noHpOrangTua,
+                emailOrangTua: formData.emailOrangTua || null,
+                status: 'PENDING',
+                driveFolderId: null, // Will be updated after background upload
+                driveFolderUrl: null,
+                unitId: formData.unitId,
+            },
+        });
+
+        console.log(`Registration ${registrationNumber} saved to database`);
+
+        // STEP 2: Add to queue for background processing
+        // Queue limits concurrent uploads to prevent overload
+        uploadQueue.add(registrationNumber, () =>
+            processUploadsInBackground(
+                registration.id,
+                registrationNumber,
+                formData,
+                documents
+            )
+        );
+
+        revalidatePath('/admin/psb');
+
+        // Return segera - user tidak perlu menunggu upload selesai
+        return {
+            success: true,
+            message: `Pendaftaran berhasil! Nomor pendaftaran Anda: ${registrationNumber}. Dokumen sedang diproses.`,
+            registrationNumber: registration.registrationNumber,
+        };
+    } catch (error) {
+        console.error('Error submitting PSB registration:', error);
+        return {
+            success: false,
+            message: 'Terjadi kesalahan saat memproses pendaftaran',
+            error: error instanceof Error ? error.message : 'Unknown error',
+        };
+    }
+}
+
+/**
+ * Process uploads in background (non-blocking)
+ * This runs AFTER the response is sent to user
+ */
+async function processUploadsInBackground(
+    registrationId: string,
+    registrationNumber: string,
+    formData: PSBFormData,
+    documents: DocumentUpload[]
+): Promise<void> {
+    try {
+        console.log(`[Background] Starting upload for ${registrationNumber}...`);
+
+        // Create folder di Google Drive
         const folderResult = await createRegistrationFolder(
             formData.unitName,
             formData.namaLengkap,
@@ -58,15 +127,10 @@ export async function submitPSBRegistration(
             formData.unitSlug
         );
 
-        // Upload semua dokumen ke Google Drive
-
-
-        // Upload semua dokumen ke Google Drive secara Paralel (Concurrent)
+        // Upload semua dokumen PARALLEL
         const uploadPromises = documents.map(async (doc) => {
-            // Convert base64 to buffer
             const buffer = Buffer.from(doc.base64Data, 'base64');
 
-            // Upload ke Google Drive
             const uploadResult = await uploadToDrive(
                 buffer,
                 doc.fileName,
@@ -84,53 +148,66 @@ export async function submitPSBRegistration(
             };
         });
 
-        // Tunggu semua proses upload selesai (Lebih Cepat)
         const uploadedDocuments = await Promise.all(uploadPromises);
 
-        // Simpan ke database
-        const registration = await db.pSBRegistration.create({
+        // Update registration dengan folder info dan documents
+        await db.pSBRegistration.update({
+            where: { id: registrationId },
             data: {
-                registrationNumber,
-                namaLengkap: formData.namaLengkap,
-                tempatLahir: formData.tempatLahir,
-                tanggalLahir: new Date(formData.tanggalLahir),
-                jenisKelamin: formData.jenisKelamin,
-                alamatLengkap: formData.alamatLengkap,
-                nisn: formData.nisn || null,
-                asalSekolah: formData.asalSekolah,
-                namaOrangTua: formData.namaOrangTua,
-                noHpOrangTua: formData.noHpOrangTua,
-                emailOrangTua: formData.emailOrangTua || null,
-                status: 'PENDING',
                 driveFolderId: folderResult.folderId,
                 driveFolderUrl: folderResult.folderUrl,
-                unitId: formData.unitId,
                 documents: {
                     create: uploadedDocuments,
                 },
             },
-            include: {
-                documents: true,
-                unit: true,
-            },
         });
 
-        revalidatePath('/admin/psb');
+        console.log(`[Background] Upload complete for ${registrationNumber}`);
 
-        return {
-            success: true,
-            message: `Pendaftaran berhasil! Nomor pendaftaran Anda: ${registrationNumber}`,
-            registrationNumber: registration.registrationNumber,
-        };
+        // Backup ke Spreadsheet (juga background)
+        try {
+            await appendToSpreadsheet({
+                registrationNumber,
+                namaLengkap: formData.namaLengkap,
+                tempatLahir: formData.tempatLahir,
+                tanggalLahir: formData.tanggalLahir,
+                jenisKelamin: formData.jenisKelamin,
+                alamatLengkap: formData.alamatLengkap,
+                nisn: formData.nisn,
+                asalSekolah: formData.asalSekolah,
+                namaOrangTua: formData.namaOrangTua,
+                noHpOrangTua: formData.noHpOrangTua,
+                emailOrangTua: formData.emailOrangTua,
+                unitName: formData.unitName,
+                driveFolderUrl: folderResult.folderUrl,
+                status: 'PENDING',
+                createdAt: new Date().toISOString(),
+            });
+            console.log(`[Background] Spreadsheet backup complete for ${registrationNumber}`);
+        } catch (sheetError) {
+            console.error('[Background] Spreadsheet error:', sheetError);
+        }
+
+        // Note: revalidatePath cannot be called in background/render context
+        // Cache is already revalidated in the main submitPSBRegistration function
+
     } catch (error) {
-        console.error('Error submitting PSB registration:', error);
-        return {
-            success: false,
-            message: 'Terjadi kesalahan saat memproses pendaftaran',
-            error: error instanceof Error ? error.message : 'Unknown error',
-        };
+        console.error(`[Background] Upload failed for ${registrationNumber}:`, error);
+
+        // Update status to indicate upload problem
+        try {
+            await db.pSBRegistration.update({
+                where: { id: registrationId },
+                data: {
+                    notes: `Upload gagal: ${error instanceof Error ? error.message : 'Unknown error'}. Harap upload ulang dokumen.`,
+                },
+            });
+        } catch (updateError) {
+            console.error('[Background] Failed to update notes:', updateError);
+        }
     }
 }
+
 
 /**
  * Update status pendaftaran (admin only)
@@ -150,6 +227,19 @@ export async function updatePSBStatus(
         });
 
         revalidatePath('/admin/psb');
+
+        // Update status di spreadsheet juga
+        try {
+            const registration = await db.pSBRegistration.findUnique({
+                where: { id: registrationId },
+                select: { registrationNumber: true }
+            });
+            if (registration) {
+                await updateSpreadsheetStatus(registration.registrationNumber, status);
+            }
+        } catch (sheetError) {
+            console.error('Failed to update spreadsheet status (non-blocking):', sheetError);
+        }
 
         return {
             success: true,

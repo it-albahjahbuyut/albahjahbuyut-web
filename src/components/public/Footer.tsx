@@ -5,10 +5,10 @@ export function Footer() {
     const quickLinks = [
         { href: "/", label: "Beranda" },
         { href: "/profil", label: "Profil Pesantren" },
-        { href: "/pendidikan/smp", label: "SMPIQu" },
-        { href: "/pendidikan/sma", label: "SMAIQu" },
+        { href: "/pendidikan/smpiqu", label: "SMPIQu" },
+        { href: "/pendidikan/smaiqu", label: "SMAIQu" },
         { href: "/berita", label: "Berita" },
-        { href: "/infaq", label: "Donasi" },
+        { href: "/infaq", label: "Infaq" },
         { href: "/psb", label: "Pendaftaran" },
     ];
 

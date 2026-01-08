@@ -52,3 +52,5 @@ next-env.d.ts
 # PSB uploads (keep folder but ignore files)
 public/uploads/psb/*
 !public/uploads/psb/.gitkeep
+
+testsprite_tests

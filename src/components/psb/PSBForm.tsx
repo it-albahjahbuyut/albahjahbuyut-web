@@ -60,13 +60,72 @@ export default function PSBForm({
         }
     };
 
-    // Validate step 1 (form data)
+    // Validate step 1 (form data) with comprehensive validation
     const validateFormData = (): boolean => {
         const newErrors: Record<string, string> = {};
 
         fields.forEach(field => {
-            if (field.required && !formData[field.name]?.trim()) {
+            const value = formData[field.name]?.trim() || '';
+
+            // Check required fields
+            if (field.required && !value) {
                 newErrors[field.name] = `${field.label} wajib diisi`;
+                return;
+            }
+
+            // Skip validation for empty optional fields
+            if (!value) return;
+
+            // Specific validations based on field name
+            switch (field.name) {
+                case 'nisn':
+                    // NISN must be exactly 10 digits
+                    if (!/^\d{10}$/.test(value)) {
+                        newErrors[field.name] = 'NISN harus berupa 10 digit angka';
+                    }
+                    break;
+
+                case 'noHpOrangTua':
+                    // Indonesian phone number: 08xx, 62xx, or +62xx formats
+                    const phoneClean = value.replace(/[\s-]/g, '');
+                    if (!/^(\+62|62|0)8[1-9][0-9]{7,11}$/.test(phoneClean)) {
+                        newErrors[field.name] = 'Format nomor HP tidak valid (contoh: 08123456789)';
+                    }
+                    break;
+
+                case 'namaLengkap':
+                case 'namaOrangTua':
+                    // Name should only contain letters, spaces, and common punctuation
+                    if (!/^[a-zA-Z\s\'.,-]+$/.test(value)) {
+                        newErrors[field.name] = 'Nama hanya boleh berisi huruf dan spasi';
+                    }
+                    // Minimum 3 characters
+                    if (value.length < 3) {
+                        newErrors[field.name] = 'Nama minimal 3 karakter';
+                    }
+                    break;
+
+                case 'emailOrangTua':
+                    // Basic email validation
+                    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+                        newErrors[field.name] = 'Format email tidak valid';
+                    }
+                    break;
+
+                case 'tempatLahir':
+                case 'asalSekolah':
+                    // Minimum 2 characters
+                    if (value.length < 2) {
+                        newErrors[field.name] = `${field.label} minimal 2 karakter`;
+                    }
+                    break;
+
+                case 'alamatLengkap':
+                    // Minimum 10 characters for address
+                    if (value.length < 10) {
+                        newErrors[field.name] = 'Alamat minimal 10 karakter';
+                    }
+                    break;
             }
         });
 
@@ -91,8 +150,35 @@ export default function PSBForm({
         return Object.keys(newErrors).length === 0;
     };
 
-    // Handle file upload
-    const handleFileUpload = (documentType: string, file: File, maxSizeMB: number) => {
+    // Handle file upload with file type validation
+    const handleFileUpload = (documentType: string, file: File, maxSizeMB: number, acceptedFormats: string[]) => {
+        // Get file extension
+        const fileExtension = '.' + file.name.split('.').pop()?.toLowerCase();
+
+        // Validate file type
+        const allowedExtensions = acceptedFormats.map(f => f.toLowerCase());
+        const allowedMimeTypes = acceptedFormats.map(ext => {
+            switch (ext.toLowerCase()) {
+                case '.jpg':
+                case '.jpeg':
+                    return 'image/jpeg';
+                case '.png':
+                    return 'image/png';
+                case '.pdf':
+                    return 'application/pdf';
+                default:
+                    return '';
+            }
+        }).filter(Boolean);
+
+        if (!allowedExtensions.includes(fileExtension) && !allowedMimeTypes.includes(file.type as typeof allowedMimeTypes[number])) {
+            setErrors(prev => ({
+                ...prev,
+                [documentType]: `Format file tidak valid. Hanya ${acceptedFormats.join(', ')} yang diizinkan`
+            }));
+            return;
+        }
+
         // Validate file size
         if (file.size > maxSizeMB * 1024 * 1024) {
             setErrors(prev => ({
@@ -290,7 +376,22 @@ export default function PSBForm({
     }
 
     return (
-        <div className="w-full max-w-4xl mx-auto px-4 sm:px-0">
+        <div className="w-full max-w-4xl mx-auto px-4 sm:px-0 relative">
+            {/* Loading Overlay */}
+            {isSubmitting && (
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
+                    <div className="bg-white rounded-2xl p-8 shadow-2xl flex flex-col items-center gap-4 max-w-sm mx-4">
+                        <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center">
+                            <Loader2 className="w-8 h-8 text-emerald-600 animate-spin" />
+                        </div>
+                        <h3 className="text-xl font-bold text-emerald-900">Mengirim Pendaftaran</h3>
+                        <p className="text-slate-600 text-center text-sm">
+                            Mohon tunggu, sedang memproses data dan mengunggah dokumen Anda...
+                        </p>
+                    </div>
+                </div>
+            )}
+
             {/* Progress Steps */}
             <div className="flex items-center justify-center mb-8 sm:mb-12">
                 {[
@@ -468,7 +569,7 @@ export default function PSBForm({
                                                     accept={doc.acceptedFormats.join(',')}
                                                     onChange={(e) => {
                                                         const file = e.target.files?.[0];
-                                                        if (file) handleFileUpload(doc.type, file, doc.maxSizeMB);
+                                                        if (file) handleFileUpload(doc.type, file, doc.maxSizeMB, doc.acceptedFormats);
                                                     }}
                                                     className="hidden"
                                                 />
