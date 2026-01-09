@@ -1,52 +1,31 @@
 "use client";
-
 import Link from "next/link";
 import { ArrowRight, Play, BookOpen } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect } from "react";
-
-const heroImages = [
-    "https://res.cloudinary.com/dand8rpbb/image/upload/v1767934623/WhatsApp_Image_2026-01-08_at_11.07.44_PM_w6vmdv.jpg",
-    "https://res.cloudinary.com/dand8rpbb/image/upload/v1767934623/WhatsApp_Image_2026-01-08_at_11.07.46_PM_qqhota.jpg",
-    "https://res.cloudinary.com/dand8rpbb/image/upload/v1767934623/WhatsApp_Image_2026-01-08_at_11.07.46_PM_1_uzkquu.jpg",
-    "https://res.cloudinary.com/dand8rpbb/image/upload/v1767934623/WhatsApp_Image_2026-01-08_at_11.07.43_PM_fgldbp.jpg",
-    "https://res.cloudinary.com/dand8rpbb/image/upload/v1767934623/WhatsApp_Image_2026-01-08_at_11.07.51_PM_mh04yn.jpg"
-];
+import { motion } from "framer-motion";
 
 export function HeroSection() {
-    const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setCurrentImageIndex((prev) => (prev + 1) % heroImages.length);
-        }, 5000);
-        return () => clearInterval(interval);
-    }, []);
 
     return (
         <section className="relative h-screen flex items-center justify-center overflow-hidden bg-emerald-950">
             {/* Background Image Slider */}
-            <div className="absolute inset-0 z-0 select-none">
-                <AnimatePresence mode="popLayout">
-                    <motion.div
-                        key={currentImageIndex}
-                        initial={{ opacity: 0, scale: 1.0 }}
-                        animate={{ opacity: 1, scale: 1.1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{
-                            opacity: { duration: 1.5 },
-                            scale: { duration: 6, ease: "linear" }
-                        }}
-                        className="absolute inset-0 bg-cover bg-center"
-                        style={{
-                            backgroundImage: `url('${heroImages[currentImageIndex]}')`
-                        }}
-                    />
-                </AnimatePresence>
+            {/* Background Video */}
+            <video
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="absolute inset-0 h-full w-full object-cover opacity-30"
+            >
+                <source src="https://res.cloudinary.com/dand8rpbb/video/upload/v1767982358/Untitled_Video_-_Made_With_Clipchamp_1_aqgd2a.mp4" type="video/mp4" />
+            </video>
 
-                {/* Stronger Overlay for text readability */}
-                <div className="absolute inset-0 bg-black/60 z-10" />
-            </div>
+            {/* Darker Overlay for better text readability */}
+            <div className="absolute inset-0 bg-black/20" />
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-emerald-950/20 to-emerald-950/80" />
+
+            {/* Decorative Elements */}
+            <div className="absolute left-1/2 top-0 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gold-500/20 blur-3xl" />
+            <div className="absolute bottom-0 right-0 h-64 w-64 translate-x-1/3 translate-y-1/3 rounded-full bg-emerald-500/20 blur-3xl" />
 
             <div className="container relative z-20 mx-auto px-4 text-center">
                 <motion.div

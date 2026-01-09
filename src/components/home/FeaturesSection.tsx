@@ -41,7 +41,7 @@ export function FeaturesSection() {
 
                     <FadeIn delay={0.6} className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-12">
                         <Link
-                            href="https://wa.me/6281234567890" // Check with user for real number
+                            href="https://wa.me/6282318611707"
                             className="group relative px-8 py-4 bg-gold-500 text-emerald-950 font-bold tracking-widest text-xs overflow-hidden rounded-full transition-all hover:bg-white hover:text-emerald-950 hover:shadow-[0_0_40px_-10px_rgba(255,255,255,0.3)]"
                         >
                             <span className="relative z-10">Hubungi Kami</span>

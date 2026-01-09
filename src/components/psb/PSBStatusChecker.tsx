@@ -95,25 +95,25 @@ export default function PSBStatusChecker() {
                 <label className="block text-sm font-semibold text-slate-700 mb-2">
                     Nomor Pendaftaran
                 </label>
-                <div className="flex gap-3">
+                <div className="flex flex-col sm:flex-row gap-3">
                     <input
                         type="text"
                         value={registrationNumber}
                         onChange={(e) => setRegistrationNumber(e.target.value.toUpperCase())}
-                        placeholder="Contoh: PSB2501SMP123ABC"
-                        className="flex-1 px-4 py-3 border border-slate-300 rounded-lg font-mono uppercase focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                        placeholder="Contoh: PSB2501SMP..."
+                        className="flex-1 px-4 py-3 border border-slate-300 rounded-lg font-mono uppercase focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 w-full"
                     />
                     <button
                         type="submit"
                         disabled={isLoading || !registrationNumber.trim()}
-                        className="px-6 py-3 bg-emerald-600 text-white font-semibold rounded-lg hover:bg-emerald-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                        className="px-6 py-3 bg-emerald-600 text-white font-semibold rounded-lg hover:bg-emerald-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 sm:w-auto w-full"
                     >
                         {isLoading ? (
                             <Loader2 className="w-5 h-5 animate-spin" />
                         ) : (
                             <Search className="w-5 h-5" />
                         )}
-                        <span className="hidden sm:inline">Cek Status</span>
+                        <span>Cek Status</span>
                     </button>
                 </div>
             </form>

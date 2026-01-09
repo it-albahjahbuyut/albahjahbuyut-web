@@ -52,7 +52,7 @@ export default async function NewsPage() {
                 <div
                     className="absolute inset-0 bg-cover bg-center opacity-30 fixed-bg"
                     style={{
-                        backgroundImage: `url('https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=2070&auto=format&fit=crop')`
+                        backgroundImage: `url('https://res.cloudinary.com/dand8rpbb/image/upload/v1767984965/IMG_8054_zkwzrx.jpg')`
                     }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent to-emerald-950/90" />

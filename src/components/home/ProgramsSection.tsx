@@ -40,7 +40,7 @@ export function ProgramsSection({ units }: { units: Unit[] }) {
     }));
 
     return (
-        <section className="pt-10 pb-32 bg-white relative overflow-hidden">
+        <section className="pt-20 pb-32 bg-white relative overflow-hidden">
             <div className="container mx-auto px-4 lg:px-6 relative z-10">
                 <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
                     <div className="max-w-2xl">

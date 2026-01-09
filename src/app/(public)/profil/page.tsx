@@ -26,7 +26,7 @@ export default async function ProfilePage() {
         {
             name: "Abah Sayf Abu Hanifah",
             role: "Pengasuh Al-Bahjah Buyut",
-            image: "https://res.cloudinary.com/dand8rpbb/image/upload/v1767945919/image_sfjvzp.png",
+            image: "https://res.cloudinary.com/dand8rpbb/image/upload/v1767976355/DSC00058_ioql27.jpg",
         },
         {
             name: "Kepala Sekolah SMPIQu",
@@ -48,7 +48,7 @@ export default async function ProfilePage() {
                 <div
                     className="absolute inset-0 bg-cover bg-center opacity-40 fixed-bg"
                     style={{
-                        backgroundImage: `url('https://images.unsplash.com/photo-1541829070764-84a7d30dd3f3?q=80&w=1974&auto=format&fit=crop')`
+                        backgroundImage: `url('https://res.cloudinary.com/dand8rpbb/image/upload/v1767934623/WhatsApp_Image_2026-01-08_at_11.07.46_PM_qqhota.jpg')`
                     }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/20 via-emerald-950/60 to-emerald-950/90" />
@@ -95,10 +95,7 @@ export default async function ProfilePage() {
 
                     {/* Visi & Moto Header */}
                     <FadeIn className="text-center max-w-4xl mx-auto mb-20">
-                        <div className="inline-flex items-center justify-center p-3 bg-emerald-100 rounded-xl mb-6 text-emerald-800">
-                            <Target className="w-6 h-6" />
-                        </div>
-                        <h2 className="text-sm font-bold text-gold-600 uppercase tracking-[0.2em] mb-6">Visi Kami</h2>
+                        <h1 className="text-sm font-bold text-gold-600 uppercase tracking-[0.2em] mb-6">Visi Kami</h1>
                         <p className="text-2xl md:text-4xl font-serif text-emerald-950 leading-tight mb-10 font-medium">
                             "Menjadi lembaga pendidikan profesional yang bisa menghadirkan generasi berkarakter islami, memiliki kecerdasan intelektual, emosi dan spiritual serta mampu mengamalkan Al-Qur'an untuk diri, keluarga dan bangsa."
                         </p>
@@ -129,7 +126,7 @@ export default async function ProfilePage() {
                             ].map((item, i) => (
                                 <FadeIn key={i}>
                                     <div className="h-full bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md hover:border-emerald-100 transition-all duration-300 relative overflow-hidden group">
-                                        <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-50 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-110" />
+                                        <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-100/60 rounded-full blur-2xl -mr-12 -mt-12 pointer-events-none transition-transform group-hover:scale-110" />
                                         <span className="relative z-10 text-5xl font-bold text-emerald-100 mb-4 block group-hover:text-gold-100 transition-colors">
                                             0{i + 1}
                                         </span>

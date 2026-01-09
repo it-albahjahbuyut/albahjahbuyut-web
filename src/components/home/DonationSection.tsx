@@ -12,7 +12,22 @@ interface DonationProgram {
 }
 
 export function DonationSection({ program }: { program: DonationProgram | null }) {
-    if (!program) return null;
+    if (!program) {
+        return (
+            <section className="py-24 bg-white relative">
+                <div className="container mx-auto px-4 lg:px-8">
+                    <div className="bg-emerald-50 rounded-3xl p-12 text-center flex flex-col items-center justify-center border border-emerald-100">
+                        <Heart className="w-16 h-16 text-emerald-200 mb-6" />
+                        <h3 className="text-xl font-bold text-emerald-900 mb-2">Belum ada program infaq aktif</h3>
+                        <p className="text-emerald-600 mb-6">Nantikan program kebaikan selanjutnya dari kami.</p>
+                        <Link href="/infaq" className="text-gold-600 font-bold hover:text-gold-700 underline decoration-2 underline-offset-4">
+                            Lihat Semua Program Infaq
+                        </Link>
+                    </div>
+                </div>
+            </section>
+        );
+    }
 
     return (
         <section className="py-24 bg-white relative">

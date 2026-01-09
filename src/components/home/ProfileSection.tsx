@@ -7,7 +7,7 @@ import Image from "next/image";
 
 export function ProfileSection() {
     return (
-        <section className="pt-20 lg:pt-32 pb-10 bg-white relative overflow-hidden">
+        <section className="pt-20 lg:pt-32 pb-24 bg-white relative overflow-hidden">
             {/* Background Decorations */}
             <div className="absolute top-0 right-0 w-1/3 h-full bg-slate-50 -z-10 hidden lg:block" />
 
@@ -93,7 +93,7 @@ export function ProfileSection() {
                                 <div className="relative aspect-[3/4] w-full overflow-hidden rounded-2xl shadow-xl shadow-emerald-900/10">
                                     <div className="w-full h-full bg-slate-200 flex items-center justify-center relative">
                                         <Image
-                                            src="https://res.cloudinary.com/dand8rpbb/image/upload/v1767945919/image_sfjvzp.png"
+                                            src="https://res.cloudinary.com/dand8rpbb/image/upload/v1767976355/DSC00058_ioql27.jpg"
                                             alt="Abah Sayf Abu Hanifah"
                                             fill
                                             className="object-cover hover:scale-105 transition-transform duration-700"

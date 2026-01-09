@@ -110,7 +110,7 @@ export function Footer() {
                                     href="https://wa.me/6289676539390"
                                     className="text-sm text-emerald-100/80 transition-colors hover:text-gold-400"
                                 >
-                                    0896 7653 9390
+                                    +62 823-1861-1707
                                 </a>
                             </li>
                             <li className="flex items-center gap-3">

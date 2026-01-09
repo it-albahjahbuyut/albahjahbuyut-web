@@ -23,7 +23,7 @@ export default async function DonationPage() {
                 <div
                     className="absolute inset-0 bg-cover bg-center opacity-30 fixed-bg"
                     style={{
-                        backgroundImage: `url('https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?q=80&w=2070&auto=format&fit=crop')`
+                        backgroundImage: `url('https://res.cloudinary.com/dand8rpbb/image/upload/v1767934623/WhatsApp_Image_2026-01-08_at_11.07.46_PM_1_uzkquu.jpg')`
                     }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent to-emerald-950/90" />

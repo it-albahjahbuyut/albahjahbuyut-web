@@ -7,6 +7,7 @@ import { ProfileSection } from "@/components/home/ProfileSection";
 import { FeaturesSection } from "@/components/home/FeaturesSection";
 import { NewsSection } from "@/components/home/NewsSection";
 import { DonationSection } from "@/components/home/DonationSection";
+import { MajelisSection } from "@/components/home/MajelisSection";
 
 export default async function HomePage() {
   const [units, featuredDonation, latestNews, navUnits] = await Promise.all([
@@ -47,13 +48,16 @@ export default async function HomePage() {
         {/* 3. Program Pendidikan */}
         <ProgramsSection units={units} />
 
-        {/* 4. News Section (Moved Up) */}
+        {/* 4. Majelis Rutin */}
+        <MajelisSection />
+
+        {/* 5. News Section */}
         <NewsSection posts={latestNews} />
 
-        {/* 5. Why Choose Us / Features */}
+        {/* 6. Why Choose Us / Features */}
         <FeaturesSection />
 
-        {/* 6. Donation Section */}
+        {/* 7. Donation Section */}
         <DonationSection program={featuredDonation} />
       </main>
 

@@ -24,8 +24,7 @@ export function NewsSection({ posts }: { posts: Post[] }) {
                 <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-4">
                     <div className="max-w-3xl">
                         <FadeIn>
-                            <div className="text-emerald-900 font-bold tracking-widest text-xs mb-3 flex items-center gap-2">
-                                <Newspaper className="w-4 h-4 text-emerald-600" />
+                            <div className="text-emerald-900 uppercase font-bold tracking-widest text-xs mb-3 flex items-center gap-2">
                                 Kabar Pesantren
                             </div>
                         </FadeIn>
