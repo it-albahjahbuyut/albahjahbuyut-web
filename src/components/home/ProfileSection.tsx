@@ -93,7 +93,7 @@ export function ProfileSection() {
                                 <div className="relative aspect-[3/4] w-full overflow-hidden rounded-2xl shadow-xl shadow-emerald-900/10">
                                     <div className="w-full h-full bg-slate-200 flex items-center justify-center relative">
                                         <Image
-                                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3lna5pypNzw2uM5TlKw2kNfWSH9n14VNLmg&s"
+                                            src="https://res.cloudinary.com/dand8rpbb/image/upload/v1767945919/image_sfjvzp.png"
                                             alt="Abah Sayf Abu Hanifah"
                                             fill
                                             className="object-cover hover:scale-105 transition-transform duration-700"

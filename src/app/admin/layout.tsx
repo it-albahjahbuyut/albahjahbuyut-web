@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { AdminSidebar } from "@/components/admin/sidebar";
-import { Providers } from "@/components/providers";
 
 export default async function AdminLayout({
     children,
@@ -15,11 +14,9 @@ export default async function AdminLayout({
     }
 
     return (
-        <Providers>
-            <div className="h-screen bg-gray-50 overflow-hidden">
-                <AdminSidebar />
-                <main className="md:ml-64 h-full overflow-y-auto">{children}</main>
-            </div>
-        </Providers>
+        <div className="h-screen bg-gray-50 overflow-hidden">
+            <AdminSidebar />
+            <main className="md:ml-64 h-full overflow-y-auto">{children}</main>
+        </div>
     );
 }

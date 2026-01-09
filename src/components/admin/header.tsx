@@ -45,7 +45,10 @@ export function AdminHeader({ title, description, children }: AdminHeaderProps) 
                 {children}
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <button className="flex items-center gap-3 rounded-lg p-2 hover:bg-gray-100 transition-colors">
+                        <button
+                            className="flex items-center gap-3 rounded-lg p-2 hover:bg-gray-100 transition-colors"
+                            suppressHydrationWarning
+                        >
                             <Avatar className="h-8 w-8">
                                 <AvatarImage src={session?.user?.image || undefined} />
                                 <AvatarFallback className="bg-green-100 text-green-700">

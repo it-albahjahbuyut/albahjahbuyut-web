@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
+import { Providers } from "@/components/providers";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   variable: "--font-plus-jakarta",
@@ -11,10 +12,10 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 export const metadata: Metadata = {
   metadataBase: new URL('https://albahjahbuyut.com'),
   title: {
-    default: "Pondok Pesantren Al-Bahjah Buyut Cirebon | Pesantren Terbaik di Cirebon",
-    template: "%s | Pondok Pesantren Al-Bahjah Buyut Cirebon",
+    default: "Lembaga Pengembangan Dakwah Al-Bahjah Buyut Cirebon",
+    template: "%s | Lembaga Pengembangan Dakwah Al-Bahjah Buyut Cirebon",
   },
-  description: "Pondok Pesantren Al-Bahjah Buyut - Pesantren terbaik di Cirebon dengan program Tahfidz Al-Qur'an, SMPIQu, SMAIQu, dan Tafaqquh. Pesantren modern di Cirebon yang memadukan pendidikan Islam dan formal. Bimbingan langsung Buya Yahya.",
+  description: "Lembaga Pengembangan Dakwah Al-Bahjah Buyut - Pondok pesantren moder terbaik di Cirebon dengan program SDIQu, SMPIQu, SMAIQu, Tahfidz Al-Qur'an dan Tafaqquh. Lembaga modern di Cirebon yang memadukan pendidikan Islam dan formal. Dibawah naungan Buya Yahya.",
   keywords: [
     // Keywords utama
     "pondok pesantren di cirebon",
@@ -59,8 +60,8 @@ export const metadata: Metadata = {
     locale: 'id_ID',
     url: 'https://albahjahbuyut.com',
     siteName: 'Pondok Pesantren Al-Bahjah Buyut',
-    title: "Pondok Pesantren Al-Bahjah Buyut | Pesantren Terbaik di Cirebon",
-    description: "Pesantren modern di Cirebon dengan program Tahfidz, SMPIQu, SMAIQu, dan Tafaqquh. Pendidikan Islam terbaik dengan bimbingan Buya Yahya.",
+    title: "Lembaga Pengembangan Dakwah Al-Bahjah Buyut Cirebon",
+    description: "Lembaga Pengembangan Dakwah Al-Bahjah Buyut - Pondok pesantren modern terbaik di Cirebon dengan program SDIQu, SMPIQu, SMAIQu, Tahfidz Al-Qur'an dan Tafaqquh. Lembaga modern di Cirebon yang memadukan pendidikan Islam dan formal. Dibawah naungan Buya Yahya.",
     images: [
       {
         url: '/og-image.jpg',
@@ -72,17 +73,17 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: "Pondok Pesantren Al-Bahjah Buyut | Pesantren Terbaik di Cirebon",
-    description: "Pesantren modern di Cirebon dengan program Tahfidz, SMPIQu, SMAIQu, dan Tafaqquh.",
+    title: "Lembaga Pengembangan Dakwah Al-Bahjah Buyut Cirebon",
+    description: "Lembaga Pengembangan Dakwah Al-Bahjah Buyut - Pondok pesantren modern terbaik di Cirebon dengan program SDIQu, SMPIQu, SMAIQu, Tahfidz Al-Qur'an dan Tafaqquh. Lembaga modern di Cirebon yang memadukan pendidikan Islam dan formal. Dibawah naungan Buya Yahya.",
     images: ['/og-image.jpg'],
   },
   alternates: {
     canonical: 'https://albahjahbuyut.com',
   },
   icons: {
-    icon: "/logo-buyut.png",
-    shortcut: "/logo-buyut.png",
-    apple: "/logo-buyut.png",
+    icon: "/favicon.png",
+    shortcut: "/favicon.png",
+    apple: "/favicon.png",
   },
   category: 'education',
   verification: {
@@ -99,7 +100,9 @@ export default function RootLayout({
   return (
     <html lang="id">
       <body className={`${plusJakartaSans.variable} antialiased font-sans overflow-x-hidden`} suppressHydrationWarning>
-        {children}
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   );

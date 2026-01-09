@@ -14,8 +14,9 @@ import {
     Copy,
     Check
 } from 'lucide-react';
-import { FormField, DocumentRequirement } from '@/lib/psb-config';
+import { FormField, DocumentRequirement, getPaymentInfo, BankInfo } from '@/lib/psb-config';
 import { submitPSBRegistration, PSBFormData, DocumentUpload } from '@/actions/psb-actions';
+
 
 interface PSBFormProps {
     unitId: string;
@@ -94,16 +95,32 @@ export default function PSBForm({
                     }
                     break;
 
-                case 'noHpOrangTua':
+                case 'nik':
+                    // NIK must be exactly 16 digits
+                    if (!/^\d{16}$/.test(value)) {
+                        newErrors[field.name] = 'NIK harus berupa 16 digit angka';
+                    }
+                    break;
+
+                case 'noKK':
+                    // No KK must be exactly 16 digits
+                    if (!/^\d{16}$/.test(value)) {
+                        newErrors[field.name] = 'Nomor KK harus berupa 16 digit angka';
+                    }
+                    break;
+
+                case 'noWaIbu':
+                case 'noWaAyah':
                     // Indonesian phone number: 08xx, 62xx, or +62xx formats
                     const phoneClean = value.replace(/[\s-]/g, '');
                     if (!/^(\+62|62|0)8[1-9][0-9]{7,11}$/.test(phoneClean)) {
-                        newErrors[field.name] = 'Format nomor HP tidak valid (contoh: 08123456789)';
+                        newErrors[field.name] = 'Format nomor WA tidak valid (contoh: 08123456789)';
                     }
                     break;
 
                 case 'namaLengkap':
-                case 'namaOrangTua':
+                case 'namaAyah':
+                case 'namaIbu':
                     // Name should only contain letters, spaces, and common punctuation
                     if (!/^[a-zA-Z\s\'.,-]+$/.test(value)) {
                         newErrors[field.name] = 'Nama hanya boleh berisi huruf dan spasi';
@@ -114,10 +131,12 @@ export default function PSBForm({
                     }
                     break;
 
-                case 'emailOrangTua':
-                    // Basic email validation
-                    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-                        newErrors[field.name] = 'Format email tidak valid';
+                case 'anakKe':
+                case 'dariSaudara':
+                case 'jumlahTanggungan':
+                    // Must be a positive number
+                    if (!/^\d+$/.test(value) || parseInt(value) < 1) {
+                        newErrors[field.name] = `${field.label} harus berupa angka positif`;
                     }
                     break;
 
@@ -130,12 +149,14 @@ export default function PSBForm({
                     break;
 
                 case 'alamatLengkap':
+                case 'alamatSekolahAsal':
                     // Minimum 10 characters for address
                     if (value.length < 10) {
                         newErrors[field.name] = 'Alamat minimal 10 karakter';
                     }
                     break;
             }
+
         });
 
         setErrors(newErrors);
@@ -263,22 +284,39 @@ export default function PSBForm({
         setSubmitResult(null);
 
         try {
-            // Prepare form data
+            // Prepare form data sesuai formulir PSB TP. 2026/2027
             const psbFormData: PSBFormData = {
                 unitId,
                 unitName,
                 unitSlug,
+                // Data Santri
                 namaLengkap: formData.namaLengkap || '',
+                nisn: formData.nisn,
+                nik: formData.nik || '',
+                noKK: formData.noKK || '',
+                jenisKelamin: formData.jenisKelamin || '',
                 tempatLahir: formData.tempatLahir || '',
                 tanggalLahir: formData.tanggalLahir || '',
-                jenisKelamin: formData.jenisKelamin || '',
-                alamatLengkap: formData.alamatLengkap || '',
-                nisn: formData.nisn,
                 asalSekolah: formData.asalSekolah || '',
-                namaOrangTua: formData.namaOrangTua || '',
-                noHpOrangTua: formData.noHpOrangTua || '',
-                emailOrangTua: formData.emailOrangTua,
+                alamatSekolahAsal: formData.alamatSekolahAsal || '',
+                // Data Orang Tua
+                namaAyah: formData.namaAyah || '',
+                namaIbu: formData.namaIbu || '',
+                pekerjaanAyah: formData.pekerjaanAyah || '',
+                pekerjaanIbu: formData.pekerjaanIbu || '',
+                penghasilanAyah: formData.penghasilanAyah || '',
+                penghasilanIbu: formData.penghasilanIbu,
+                pendidikanAyah: formData.pendidikanAyah || '',
+                pendidikanIbu: formData.pendidikanIbu || '',
+                anakKe: formData.anakKe || '',
+                dariSaudara: formData.dariSaudara || '',
+                jumlahTanggungan: formData.jumlahTanggungan || '',
+                alamatLengkap: formData.alamatLengkap || '',
+                noWaIbu: formData.noWaIbu || '',
+                noWaAyah: formData.noWaAyah,
+                sumberInfo: formData.sumberInfo || '',
             };
+
 
             // Convert files to base64 (browser-compatible)
             const documentUploads: DocumentUpload[] = await Promise.all(
@@ -543,6 +581,51 @@ export default function PSBForm({
                     <p className="text-sm text-slate-500 mb-6 sm:mb-8">
                         Format: PDF, JPG, atau PNG
                     </p>
+
+                    {/* Info Transfer Pembayaran */}
+                    {(() => {
+                        const paymentInfo = getPaymentInfo(unitSlug);
+                        return (
+                            <div className="mb-6 sm:mb-8 bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 rounded-xl p-4 sm:p-6">
+                                <h3 className="font-bold text-amber-900 mb-3 flex items-center gap-2">
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                                    </svg>
+                                    Informasi Transfer Biaya Pendaftaran
+                                </h3>
+                                <div className="bg-white rounded-lg p-4 border border-amber-100">
+                                    <div className="space-y-3">
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-sm text-slate-600">Bank</span>
+                                            <span className="font-bold text-slate-900">{paymentInfo.bankName}</span>
+                                        </div>
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-sm text-slate-600">No. Rekening</span>
+                                            <div className="flex items-center gap-2">
+                                                <span className="font-mono font-bold text-emerald-700 text-lg">{paymentInfo.accountNumber}</span>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleCopy(paymentInfo.accountNumber)}
+                                                    className="p-1.5 rounded-lg bg-emerald-100 text-emerald-600 hover:bg-emerald-200 transition-colors"
+                                                    title="Salin nomor rekening"
+                                                >
+                                                    {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-sm text-slate-600">Atas Nama</span>
+                                            <span className="font-bold text-slate-900">{paymentInfo.accountName}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p className="text-xs text-amber-700 mt-3">
+                                    <strong>Catatan:</strong> Simpan bukti transfer untuk diupload pada bagian &quot;Bukti Pembayaran&quot; di bawah ini.
+                                </p>
+                            </div>
+                        );
+                    })()}
+
 
                     <div className="space-y-4 sm:space-y-6">
                         {documents.map((doc) => {

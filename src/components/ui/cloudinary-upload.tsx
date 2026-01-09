@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { CldUploadWidget, CloudinaryUploadWidgetResults } from "next-cloudinary";
 import { Button } from "@/components/ui/button";
-import { ImagePlus, Loader2 } from "lucide-react";
+import { ImagePlus, Loader2, AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface CloudinaryUploadProps {
@@ -22,31 +22,58 @@ export function CloudinaryUpload({
     disabled = false,
 }: CloudinaryUploadProps) {
     const [isUploading, setIsUploading] = useState(false);
+    const [isConfigured, setIsConfigured] = useState<boolean | null>(null);
 
-    const handleUpload = useCallback(
-        (result: CloudinaryUploadWidgetResults) => {
-            setIsUploading(false);
+    const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+    const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
 
-            if (result.event === "success" && result.info && typeof result.info !== "string") {
-                const secureUrl = result.info.secure_url;
-                onUploadComplete(secureUrl);
-            }
-        },
-        [onUploadComplete]
-    );
+    // Check configuration on mount
+    useEffect(() => {
+        setIsConfigured(!!(cloudName && uploadPreset));
+    }, [cloudName, uploadPreset]);
 
-    const handleError = useCallback(
-        (error: unknown) => {
-            setIsUploading(false);
-            const errorMessage = error instanceof Error ? error.message : "Upload gagal";
-            onUploadError?.(errorMessage);
-        },
-        [onUploadError]
-    );
+    // Show loading while checking config
+    if (isConfigured === null) {
+        return (
+            <div className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-8 text-center">
+                <Loader2 className="h-8 w-8 text-muted-foreground animate-spin mx-auto" />
+            </div>
+        );
+    }
+
+    // Show error if not configured
+    if (!isConfigured) {
+        console.warn("Cloudinary configuration missing:", { cloudName: !!cloudName, uploadPreset: !!uploadPreset });
+        return (
+            <div className="p-4 border border-amber-200 bg-amber-50 text-amber-700 rounded-lg text-sm">
+                <div className="flex items-center gap-2 mb-1">
+                    <AlertTriangle className="w-4 h-4" />
+                    <p className="font-bold">Upload Gambar Tidak Tersedia</p>
+                </div>
+                <p>Konfigurasi Cloudinary belum lengkap. Silakan hubungi administrator.</p>
+            </div>
+        );
+    }
+
+    const handleUpload = (result: CloudinaryUploadWidgetResults) => {
+        setIsUploading(false);
+
+        if (result.event === "success" && result.info && typeof result.info !== "string") {
+            const secureUrl = result.info.secure_url;
+            onUploadComplete(secureUrl);
+        }
+    };
+
+    const handleError = (error: unknown) => {
+        setIsUploading(false);
+        console.error("Cloudinary Upload Error:", error);
+        const errorMessage = error instanceof Error ? error.message : "Upload gagal - Silakan coba lagi";
+        onUploadError?.(errorMessage);
+    };
 
     return (
         <CldUploadWidget
-            uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}
+            uploadPreset={uploadPreset}
             options={{
                 folder,
                 maxFiles: 1,
@@ -75,8 +102,7 @@ export function CloudinaryUpload({
             }}
             onSuccess={handleUpload}
             onError={handleError}
-            onOpen={() => setIsUploading(true)}
-            onClose={() => setIsUploading(false)}
+            onQueuesEnd={() => setIsUploading(false)}
         >
             {({ open }) => (
                 <div
@@ -85,7 +111,12 @@ export function CloudinaryUpload({
                         disabled && "opacity-50 cursor-not-allowed",
                         className
                     )}
-                    onClick={() => !disabled && open()}
+                    onClick={() => {
+                        if (!disabled) {
+                            setIsUploading(true);
+                            open();
+                        }
+                    }}
                 >
                     {isUploading ? (
                         <div className="flex flex-col items-center gap-2">
@@ -131,6 +162,37 @@ export function CloudinaryMultiUpload({
 }: CloudinaryMultiUploadProps) {
     const [isUploading, setIsUploading] = useState(false);
     const [uploadedUrls, setUploadedUrls] = useState<string[]>([]);
+    const [isConfigured, setIsConfigured] = useState<boolean | null>(null);
+
+    const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+    const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
+
+    // Check configuration on mount
+    useEffect(() => {
+        setIsConfigured(!!(cloudName && uploadPreset));
+    }, [cloudName, uploadPreset]);
+
+    // Show loading while checking config
+    if (isConfigured === null) {
+        return (
+            <div className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-8 text-center">
+                <Loader2 className="h-8 w-8 text-muted-foreground animate-spin mx-auto" />
+            </div>
+        );
+    }
+
+    // Show error if not configured
+    if (!isConfigured) {
+        return (
+            <div className="p-4 border border-amber-200 bg-amber-50 text-amber-700 rounded-lg text-sm">
+                <div className="flex items-center gap-2 mb-1">
+                    <AlertTriangle className="w-4 h-4" />
+                    <p className="font-bold">Upload Gambar Tidak Tersedia</p>
+                </div>
+                <p>Konfigurasi Cloudinary belum lengkap. Silakan hubungi administrator.</p>
+            </div>
+        );
+    }
 
     const handleUpload = useCallback(
         (result: CloudinaryUploadWidgetResults) => {
@@ -161,7 +223,7 @@ export function CloudinaryMultiUpload({
 
     return (
         <CldUploadWidget
-            uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}
+            uploadPreset={uploadPreset}
             options={{
                 folder,
                 maxFiles,
@@ -190,8 +252,7 @@ export function CloudinaryMultiUpload({
             }}
             onSuccess={handleUpload}
             onError={handleError}
-            onOpen={() => setIsUploading(true)}
-            onClose={handleClose}
+            onQueuesEnd={handleClose}
         >
             {({ open }) => (
                 <div
@@ -200,7 +261,12 @@ export function CloudinaryMultiUpload({
                         disabled && "opacity-50 cursor-not-allowed",
                         className
                     )}
-                    onClick={() => !disabled && open()}
+                    onClick={() => {
+                        if (!disabled) {
+                            setIsUploading(true);
+                            open();
+                        }
+                    }}
                 >
                     {isUploading ? (
                         <div className="flex flex-col items-center gap-2">

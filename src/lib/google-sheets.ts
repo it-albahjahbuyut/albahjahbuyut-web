@@ -47,20 +47,35 @@ const initGoogleSheets = () => {
 export interface PSBSpreadsheetData {
     registrationNumber: string;
     namaLengkap: string;
+    nisn?: string;
+    nik?: string;
+    noKK?: string;
+    jenisKelamin: string;
     tempatLahir: string;
     tanggalLahir: string;
-    jenisKelamin: string;
-    alamatLengkap: string;
-    nisn?: string;
     asalSekolah: string;
-    namaOrangTua: string;
-    noHpOrangTua: string;
-    emailOrangTua?: string;
+    alamatSekolahAsal?: string;
+    namaAyah?: string;
+    namaIbu?: string;
+    pekerjaanAyah?: string;
+    pekerjaanIbu?: string;
+    penghasilanAyah?: string;
+    penghasilanIbu?: string;
+    pendidikanAyah?: string;
+    pendidikanIbu?: string;
+    anakKe?: string;
+    dariSaudara?: string;
+    jumlahTanggungan?: string;
+    alamatLengkap: string;
+    noWaIbu?: string;
+    noWaAyah?: string;
+    sumberInfo?: string;
     unitName: string;
     driveFolderUrl: string;
     status: string;
     createdAt: string;
 }
+
 
 /**
  * Get the name of the first sheet in the spreadsheet
@@ -82,77 +97,94 @@ async function getFirstSheetName(): Promise<string> {
     }
 }
 
-// Store the sheet name to use
-let targetSheetName: string | null = null;
+// Helper untuk mendapatkan nama sheet berdasarkan nama unit
+function getSheetNameFromUnit(unitName: string): string {
+    const lowerName = unitName.toLowerCase();
+    if (lowerName.includes('smpiqu') || lowerName.includes('smp')) return 'SMP';
+    if (lowerName.includes('smaiqu') || lowerName.includes('sma')) return 'SMA';
+    if (lowerName.includes('sdiqu') || lowerName.includes('sd')) return 'SD';
+    if (lowerName.includes('paud')) return 'PAUD';
+    if (lowerName.includes('tahfidz')) return 'TAHFIDZ';
+    if (lowerName.includes('tafaqquh')) return 'TAFAQQUH';
+    return 'LAINNYA'; // Fallback
+}
 
 /**
- * Ensure the spreadsheet has the correct headers
+ * Ensure the spreadsheet has the correct headers for specific sheet
  */
-async function ensureSheetHeaders(): Promise<string> {
-    if (!sheets) return 'Sheet1';
+async function ensureSheetHeaders(sheetName: string): Promise<string> {
+    if (!sheets) return sheetName;
 
     const headerRow = [
         'Nomor Pendaftaran',
         'Nama Lengkap',
+        'NISN',
+        'NIK',
+        'No KK',
+        'Jenis Kelamin',
         'Tempat Lahir',
         'Tanggal Lahir',
-        'Jenis Kelamin',
-        'Alamat Lengkap',
-        'NISN',
         'Asal Sekolah',
-        'Nama Orang Tua',
-        'No HP Orang Tua',
-        'Email Orang Tua',
+        'Alamat Sekolah Asal',
+        'Nama Ayah',
+        'Nama Ibu',
+        'Pekerjaan Ayah',
+        'Pekerjaan Ibu',
+        'Penghasilan Ayah',
+        'Penghasilan Ibu',
+        'Pendidikan Ayah',
+        'Pendidikan Ibu',
+        'Anak Ke',
+        'Dari Saudara',
+        'Jumlah Tanggungan',
+        'Alamat Orang Tua',
+        'No WA Ibu',
+        'No WA Ayah',
+        'Sumber Info',
         'Unit Pendidikan',
         'Link Drive',
         'Status',
         'Tanggal Daftar'
     ];
 
-    // If we already know the sheet name, use it
-    if (targetSheetName) {
-        return targetSheetName;
-    }
-
     try {
-        // First, try to use "PSB" sheet
-        const response = await sheets.spreadsheets.values.get({
-            spreadsheetId: GOOGLE_SPREADSHEET_ID,
-            range: 'PSB!A1:O1',
-        });
-
-        const headers = response.data.values?.[0];
-        targetSheetName = 'PSB';
-
-        // If no headers, create them
-        if (!headers || headers.length === 0) {
-            await sheets.spreadsheets.values.update({
-                spreadsheetId: GOOGLE_SPREADSHEET_ID,
-                range: 'PSB!A1:O1',
-                valueInputOption: 'RAW',
-                requestBody: {
-                    values: [headerRow]
-                }
-            });
-            console.log('Spreadsheet headers created in PSB sheet');
-        }
-
-        return targetSheetName;
-    } catch (error: any) {
-        console.log('PSB sheet not found, trying first sheet or creating PSB sheet...');
-
-        // Try to create "PSB" sheet
+        // Cek apakah sheet sudah ada
         try {
+            await sheets.spreadsheets.values.get({
+                spreadsheetId: GOOGLE_SPREADSHEET_ID,
+                range: `'${sheetName}'!A1`,
+            });
+            // Jika sukses, berarti sheet ada. Cek header.
+            const headerCheck = await sheets.spreadsheets.values.get({
+                spreadsheetId: GOOGLE_SPREADSHEET_ID,
+                range: `'${sheetName}'!A1:A1`,
+            });
+
+            // Jika A1 kosong, isi header
+            if (!headerCheck.data.values || headerCheck.data.values.length === 0) {
+                await sheets.spreadsheets.values.update({
+                    spreadsheetId: GOOGLE_SPREADSHEET_ID,
+                    range: `'${sheetName}'!A1`,
+                    valueInputOption: 'RAW',
+                    requestBody: { values: [headerRow] }
+                });
+                console.log(`Headers created in existing sheet: ${sheetName}`);
+            }
+
+        } catch (error) {
+            // Jika error, asumsikan sheet belum ada, maka buat sheet baru
+            console.log(`Sheet '${sheetName}' not found, creating new sheet...`);
+
             await sheets.spreadsheets.batchUpdate({
                 spreadsheetId: GOOGLE_SPREADSHEET_ID,
                 requestBody: {
                     requests: [{
                         addSheet: {
                             properties: {
-                                title: 'PSB',
+                                title: sheetName,
                                 gridProperties: {
                                     rowCount: 1000,
-                                    columnCount: 15
+                                    columnCount: 30
                                 }
                             }
                         }
@@ -160,51 +192,21 @@ async function ensureSheetHeaders(): Promise<string> {
                 }
             });
 
-            // Add headers to new sheet
+            // Isi header untuk sheet baru
             await sheets.spreadsheets.values.update({
                 spreadsheetId: GOOGLE_SPREADSHEET_ID,
-                range: 'PSB!A1:O1',
+                range: `'${sheetName}'!A1`,
                 valueInputOption: 'RAW',
-                requestBody: {
-                    values: [headerRow]
-                }
+                requestBody: { values: [headerRow] }
             });
-
-            console.log('PSB sheet created with headers');
-            targetSheetName = 'PSB';
-            return targetSheetName;
-        } catch (createError: any) {
-            console.log('Could not create PSB sheet, using first sheet instead');
-
-            // Fallback: Use the first existing sheet
-            const firstSheet = await getFirstSheetName();
-            targetSheetName = firstSheet;
-
-            // Try to add headers to first sheet
-            try {
-                const checkResponse = await sheets.spreadsheets.values.get({
-                    spreadsheetId: GOOGLE_SPREADSHEET_ID,
-                    range: `${firstSheet}!A1:O1`,
-                });
-
-                const existingHeaders = checkResponse.data.values?.[0];
-                if (!existingHeaders || existingHeaders.length === 0) {
-                    await sheets.spreadsheets.values.update({
-                        spreadsheetId: GOOGLE_SPREADSHEET_ID,
-                        range: `${firstSheet}!A1:O1`,
-                        valueInputOption: 'RAW',
-                        requestBody: {
-                            values: [headerRow]
-                        }
-                    });
-                    console.log(`Headers created in ${firstSheet}`);
-                }
-            } catch (headerError) {
-                console.error('Error adding headers to first sheet:', headerError);
-            }
-
-            return targetSheetName;
+            console.log(`Sheet '${sheetName}' created with headers`);
         }
+
+        return sheetName;
+    } catch (error) {
+        console.error(`Error ensuring headers for ${sheetName}:`, error);
+        // Fallback ke sheet pertama jika gagal total (jarang terjadi)
+        return 'Sheet1';
     }
 }
 
@@ -220,8 +222,11 @@ export async function appendToSpreadsheet(data: PSBSpreadsheetData): Promise<{ s
     }
 
     try {
-        // Ensure headers exist and get sheet name
-        const sheetName = await ensureSheetHeaders();
+        // Tentukan nama sheet berdasarkan Unit
+        const sheetName = getSheetNameFromUnit(data.unitName);
+
+        // Ensure headers exist for this sheet
+        await ensureSheetHeaders(sheetName);
 
         // Format date for display
         const formattedDate = new Date(data.createdAt).toLocaleDateString('id-ID', {
@@ -232,19 +237,33 @@ export async function appendToSpreadsheet(data: PSBSpreadsheetData): Promise<{ s
             minute: '2-digit'
         });
 
-        // Prepare row data
+        // Prepare row data sesuai formulir PSB TP. 2026/2027
         const rowData = [
             data.registrationNumber,
             data.namaLengkap,
+            data.nisn || '-',
+            data.nik || '-',
+            data.noKK || '-',
+            data.jenisKelamin === 'L' ? 'Laki-laki' : 'Perempuan',
             data.tempatLahir,
             data.tanggalLahir,
-            data.jenisKelamin === 'L' ? 'Laki-laki' : 'Perempuan',
-            data.alamatLengkap,
-            data.nisn || '-',
             data.asalSekolah,
-            data.namaOrangTua,
-            data.noHpOrangTua,
-            data.emailOrangTua || '-',
+            data.alamatSekolahAsal || '-',
+            data.namaAyah || '-',
+            data.namaIbu || '-',
+            data.pekerjaanAyah || '-',
+            data.pekerjaanIbu || '-',
+            data.penghasilanAyah || '-',
+            data.penghasilanIbu || '-',
+            data.pendidikanAyah || '-',
+            data.pendidikanIbu || '-',
+            data.anakKe || '-',
+            data.dariSaudara || '-',
+            data.jumlahTanggungan || '-',
+            data.alamatLengkap,
+            data.noWaIbu || '-',
+            data.noWaAyah || '-',
+            data.sumberInfo || '-',
             data.unitName,
             data.driveFolderUrl,
             data.status,

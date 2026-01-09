@@ -1,13 +1,14 @@
 // Konfigurasi formulir PSB per unit/divisi
-// Bisa dikembangkan lebih lanjut untuk field yang berbeda-beda per unit
+// FORMULIR PENERIMAAN SANTRI BARU TP. 2026/2027
 
 export interface FormField {
     name: string;
     label: string;
-    type: 'text' | 'date' | 'select' | 'textarea' | 'email' | 'tel';
+    type: 'text' | 'date' | 'select' | 'textarea' | 'email' | 'tel' | 'number';
     placeholder?: string;
     required: boolean;
     options?: { value: string; label: string }[];
+    fullWidth?: boolean; // For fields that should span full width
 }
 
 export interface DocumentRequirement {
@@ -27,8 +28,102 @@ export interface UnitFormConfig {
     documents: DocumentRequirement[];
 }
 
-// Field formulir standar (sama untuk semua unit)
+export interface BankInfo {
+    bankName: string;
+    accountNumber: string;
+    accountName: string;
+}
+
+// Informasi rekening untuk pembayaran
+export const PAYMENT_INFO = {
+    SMP: {
+        bankName: 'MUAMALAT',
+        accountNumber: '7459910020100186',
+        accountName: 'SMPIQU AL BAHJAH BUYUT'
+    } as BankInfo,
+    SMA: {
+        bankName: 'MUAMALAT',
+        accountNumber: '7459910020100187',
+        accountName: 'SMAIQU AL BAHJAH BUYUT'
+    } as BankInfo,
+    SD: {
+        bankName: 'MUAMALAT',
+        accountNumber: '7459910020100186',
+        accountName: 'SDIQU AL BAHJAH BUYUT'
+    } as BankInfo,
+    DEFAULT: {
+        bankName: 'MUAMALAT',
+        accountNumber: '7459910020100186',
+        accountName: 'AL BAHJAH BUYUT'
+    } as BankInfo,
+};
+
+// Fungsi untuk mendapatkan info bank berdasarkan unit
+export function getPaymentInfo(unitSlug: string): BankInfo {
+    const slug = unitSlug.toLowerCase();
+    if (slug.includes('sma')) {
+        return PAYMENT_INFO.SMA;
+    } else if (slug.includes('smp')) {
+        return PAYMENT_INFO.SMP;
+    } else if (slug.includes('sd')) {
+        return PAYMENT_INFO.SD;
+    }
+    return PAYMENT_INFO.DEFAULT;
+}
+
+// Opsi Pekerjaan 
+const PEKERJAAN_OPTIONS = [
+    { value: 'PNS', label: 'PNS' },
+    { value: 'TNI/POLRI', label: 'TNI/POLRI' },
+    { value: 'Pegawai Swasta', label: 'Pegawai Swasta' },
+    { value: 'Wiraswasta', label: 'Wiraswasta' },
+    { value: 'Petani', label: 'Petani' },
+    { value: 'Nelayan', label: 'Nelayan' },
+    { value: 'Buruh', label: 'Buruh' },
+    { value: 'Guru/Dosen', label: 'Guru/Dosen' },
+    { value: 'Dokter/Tenaga Medis', label: 'Dokter/Tenaga Medis' },
+    { value: 'Pedagang', label: 'Pedagang' },
+    { value: 'Ibu Rumah Tangga', label: 'Ibu Rumah Tangga' },
+    { value: 'Tidak Bekerja', label: 'Tidak Bekerja' },
+    { value: 'Lainnya', label: 'Lainnya' },
+];
+
+// Opsi Penghasilan
+const PENGHASILAN_OPTIONS = [
+    { value: '< 1 Juta', label: '< Rp 1.000.000' },
+    { value: '1-3 Juta', label: 'Rp 1.000.000 - Rp 3.000.000' },
+    { value: '3-5 Juta', label: 'Rp 3.000.000 - Rp 5.000.000' },
+    { value: '5-10 Juta', label: 'Rp 5.000.000 - Rp 10.000.000' },
+    { value: '> 10 Juta', label: '> Rp 10.000.000' },
+];
+
+// Opsi Pendidikan
+const PENDIDIKAN_OPTIONS = [
+    { value: 'SD/Sederajat', label: 'SD/Sederajat' },
+    { value: 'SMP/Sederajat', label: 'SMP/Sederajat' },
+    { value: 'SMA/Sederajat', label: 'SMA/Sederajat' },
+    { value: 'D1/D2/D3', label: 'D1/D2/D3' },
+    { value: 'S1', label: 'S1' },
+    { value: 'S2', label: 'S2' },
+    { value: 'S3', label: 'S3' },
+];
+
+// Opsi Sumber Info
+const SUMBER_INFO_OPTIONS = [
+    { value: 'Instagram', label: 'Instagram' },
+    { value: 'Facebook', label: 'Facebook' },
+    { value: 'TikTok', label: 'TikTok' },
+    { value: 'YouTube', label: 'YouTube' },
+    { value: 'Website', label: 'Website' },
+    { value: 'Teman/Keluarga', label: 'Teman/Keluarga' },
+    { value: 'Alumni', label: 'Alumni' },
+    { value: 'Brosur/Pamflet', label: 'Brosur/Pamflet' },
+    { value: 'Lainnya', label: 'Lainnya' },
+];
+
+// Field formulir standar sesuai FORMULIR PENERIMAAN SANTRI BARU TP. 2026/2027
 export const STANDARD_FORM_FIELDS: FormField[] = [
+    // Data Santri
     {
         name: 'namaLengkap',
         label: 'Nama Lengkap',
@@ -37,16 +132,24 @@ export const STANDARD_FORM_FIELDS: FormField[] = [
         required: true,
     },
     {
-        name: 'tempatLahir',
-        label: 'Tempat Lahir',
+        name: 'nisn',
+        label: 'NISN (Nomor Induk Siswa Nasional)',
         type: 'text',
-        placeholder: 'Contoh: Jakarta',
+        placeholder: '10 digit NISN',
+        required: false,
+    },
+    {
+        name: 'nik',
+        label: 'NIK (Nomor Induk Kependudukan)',
+        type: 'text',
+        placeholder: '16 digit NIK',
         required: true,
     },
     {
-        name: 'tanggalLahir',
-        label: 'Tanggal Lahir',
-        type: 'date',
+        name: 'noKK',
+        label: 'No. KK (Kartu Keluarga)',
+        type: 'text',
+        placeholder: '16 digit Nomor Kartu Keluarga',
         required: true,
     },
     {
@@ -60,18 +163,17 @@ export const STANDARD_FORM_FIELDS: FormField[] = [
         ],
     },
     {
-        name: 'alamatLengkap',
-        label: 'Alamat Lengkap',
-        type: 'textarea',
-        placeholder: 'Masukkan alamat lengkap termasuk RT/RW, Kelurahan, Kecamatan, Kota/Kabupaten',
+        name: 'tempatLahir',
+        label: 'Tempat Lahir',
+        type: 'text',
+        placeholder: 'Contoh: Cirebon',
         required: true,
     },
     {
-        name: 'nisn',
-        label: 'NISN (Nomor Induk Siswa Nasional)',
-        type: 'text',
-        placeholder: '10 digit NISN',
-        required: false,
+        name: 'tanggalLahir',
+        label: 'Tanggal Lahir',
+        type: 'date',
+        required: true,
     },
     {
         name: 'asalSekolah',
@@ -81,34 +183,141 @@ export const STANDARD_FORM_FIELDS: FormField[] = [
         required: true,
     },
     {
-        name: 'namaOrangTua',
-        label: 'Nama Orang Tua / Wali',
+        name: 'alamatSekolahAsal',
+        label: 'Alamat Sekolah Asal',
+        type: 'textarea',
+        placeholder: 'Masukkan alamat lengkap sekolah asal',
+        required: true,
+        fullWidth: true,
+    },
+
+    // Data Orang Tua - Ayah
+    {
+        name: 'namaAyah',
+        label: 'Nama Ayah',
         type: 'text',
-        placeholder: 'Nama lengkap orang tua atau wali',
+        placeholder: 'Nama lengkap ayah',
         required: true,
     },
     {
-        name: 'noHpOrangTua',
-        label: 'No. HP Orang Tua / Wali',
+        name: 'namaIbu',
+        label: 'Nama Ibu',
+        type: 'text',
+        placeholder: 'Nama lengkap ibu',
+        required: true,
+    },
+    {
+        name: 'pekerjaanAyah',
+        label: 'Pekerjaan Ayah',
+        type: 'select',
+        required: true,
+        options: PEKERJAAN_OPTIONS,
+    },
+    {
+        name: 'pekerjaanIbu',
+        label: 'Pekerjaan Ibu',
+        type: 'select',
+        required: true,
+        options: PEKERJAAN_OPTIONS,
+    },
+    {
+        name: 'penghasilanAyah',
+        label: 'Penghasilan Ayah',
+        type: 'select',
+        required: true,
+        options: PENGHASILAN_OPTIONS,
+    },
+    {
+        name: 'penghasilanIbu',
+        label: 'Penghasilan Ibu',
+        type: 'select',
+        required: false,
+        options: PENGHASILAN_OPTIONS,
+    },
+    {
+        name: 'pendidikanAyah',
+        label: 'Pendidikan Ayah',
+        type: 'select',
+        required: true,
+        options: PENDIDIKAN_OPTIONS,
+    },
+    {
+        name: 'pendidikanIbu',
+        label: 'Pendidikan Ibu',
+        type: 'select',
+        required: true,
+        options: PENDIDIKAN_OPTIONS,
+    },
+    {
+        name: 'anakKe',
+        label: 'Anak ke',
+        type: 'number',
+        placeholder: 'Contoh: 1',
+        required: true,
+    },
+    {
+        name: 'dariSaudara',
+        label: 'Dari berapa bersaudara',
+        type: 'number',
+        placeholder: 'Contoh: 3',
+        required: true,
+    },
+    {
+        name: 'jumlahTanggungan',
+        label: 'Jumlah Tanggungan Orang Tua',
+        type: 'number',
+        placeholder: 'Jumlah orang yang menjadi tanggungan',
+        required: true,
+    },
+    {
+        name: 'alamatLengkap',
+        label: 'Alamat Rumah Orang Tua',
+        type: 'textarea',
+        placeholder: 'Masukkan alamat lengkap termasuk RT/RW, Kelurahan, Kecamatan, Kota/Kabupaten',
+        required: true,
+        fullWidth: true,
+    },
+    {
+        name: 'noWaIbu',
+        label: 'No. WA Ibu',
         type: 'tel',
         placeholder: 'Contoh: 08123456789',
         required: true,
     },
     {
-        name: 'emailOrangTua',
-        label: 'Email Orang Tua / Wali',
-        type: 'email',
-        placeholder: 'email@example.com',
+        name: 'noWaAyah',
+        label: 'No. WA Ayah',
+        type: 'tel',
+        placeholder: 'Contoh: 08123456789',
         required: false,
     },
+    {
+        name: 'sumberInfo',
+        label: 'Tau Al Bahjah Buyut dari mana?',
+        type: 'select',
+        required: true,
+        options: SUMBER_INFO_OPTIONS,
+    },
 ];
+
+// Fields khusus untuk SMP/SMA (pilihan jenjang)
+export const JENJANG_FIELD: FormField = {
+    name: 'daftarKe',
+    label: 'Daftar ke',
+    type: 'select',
+    required: true,
+    options: [
+        { value: 'SMP', label: 'SMP' },
+        { value: 'SMA', label: 'SMA' },
+    ],
+};
 
 // Dokumen standar untuk SMP
 export const SMP_DOCUMENTS: DocumentRequirement[] = [
     {
         type: 'PAS_FOTO',
         label: 'Pas Foto 3x4',
-        description: 'Upload pas foto ukuran 3x4 (4 lembar)',
+        description: 'Upload pas foto ukuran 3x4',
         acceptedFormats: ['.jpg', '.jpeg', '.png'],
         maxSizeMB: 2,
         required: true,
@@ -132,22 +341,14 @@ export const SMP_DOCUMENTS: DocumentRequirement[] = [
     {
         type: 'KTP_ORTU',
         label: 'KTP Orang Tua',
-        description: 'Upload scan KTP Orang Tua',
-        acceptedFormats: ['.pdf', '.jpg', '.jpeg', '.png'],
-        maxSizeMB: 5,
-        required: true,
-    },
-    {
-        type: 'SURAT_KETERANGAN_AKTIF',
-        label: 'Surat Keterangan Aktif Sekolah',
-        description: 'Upload Surat Keterangan Aktif Sekolah dari sekolah asal',
+        description: 'Upload scan KTP Orang Tua (Ayah & Ibu)',
         acceptedFormats: ['.pdf', '.jpg', '.jpeg', '.png'],
         maxSizeMB: 5,
         required: true,
     },
     {
         type: 'IJAZAH_SD',
-        label: 'Ijazah SD / Sederajat (Jika Ada)',
+        label: 'Ijazah SD / Sederajat',
         description: 'Upload scan ijazah SD atau Surat Keterangan Lulus (Bisa menyusul)',
         acceptedFormats: ['.pdf', '.jpg', '.jpeg', '.png'],
         maxSizeMB: 5,
@@ -168,7 +369,7 @@ export const SMA_DOCUMENTS: DocumentRequirement[] = [
     {
         type: 'PAS_FOTO',
         label: 'Pas Foto 3x4',
-        description: 'Upload pas foto ukuran 3x4 (4 lembar)',
+        description: 'Upload pas foto ukuran 3x4',
         acceptedFormats: ['.jpg', '.jpeg', '.png'],
         maxSizeMB: 2,
         required: true,
@@ -192,22 +393,14 @@ export const SMA_DOCUMENTS: DocumentRequirement[] = [
     {
         type: 'KTP_ORTU',
         label: 'KTP Orang Tua',
-        description: 'Upload scan KTP Orang Tua',
-        acceptedFormats: ['.pdf', '.jpg', '.jpeg', '.png'],
-        maxSizeMB: 5,
-        required: true,
-    },
-    {
-        type: 'SURAT_KETERANGAN_AKTIF',
-        label: 'Surat Keterangan Aktif Sekolah',
-        description: 'Upload Surat Keterangan Aktif Sekolah dari sekolah asal',
+        description: 'Upload scan KTP Orang Tua (Ayah & Ibu)',
         acceptedFormats: ['.pdf', '.jpg', '.jpeg', '.png'],
         maxSizeMB: 5,
         required: true,
     },
     {
         type: 'IJAZAH_SMP',
-        label: 'Ijazah SMP / Sederajat (Jika Ada)',
+        label: 'Ijazah SMP / Sederajat',
         description: 'Upload scan ijazah SMP atau Surat Keterangan Lulus (Bisa menyusul)',
         acceptedFormats: ['.pdf', '.jpg', '.jpeg', '.png'],
         maxSizeMB: 5,
@@ -228,7 +421,7 @@ export const PESANTREN_DOCUMENTS: DocumentRequirement[] = [
     {
         type: 'PAS_FOTO',
         label: 'Pas Foto 3x4',
-        description: 'Upload pas foto ukuran 3x4 (4 lembar)',
+        description: 'Upload pas foto ukuran 3x4',
         acceptedFormats: ['.jpg', '.jpeg', '.png'],
         maxSizeMB: 2,
         required: true,
@@ -256,14 +449,6 @@ export const PESANTREN_DOCUMENTS: DocumentRequirement[] = [
         acceptedFormats: ['.pdf', '.jpg', '.jpeg', '.png'],
         maxSizeMB: 5,
         required: true,
-    },
-    {
-        type: 'SURAT_KETERANGAN_AKTIF',
-        label: 'Surat Keterangan Aktif Sekolah',
-        description: 'Upload Surat Keterangan Aktif Sekolah (Jika masih sekolah)',
-        acceptedFormats: ['.pdf', '.jpg', '.jpeg', '.png'],
-        maxSizeMB: 5,
-        required: false,
     },
     {
         type: 'IJAZAH',
@@ -288,7 +473,7 @@ export const SD_DOCUMENTS: DocumentRequirement[] = [
     {
         type: 'PAS_FOTO',
         label: 'Pas Foto 3x4',
-        description: 'Upload pas foto ukuran 3x4 (4 lembar)',
+        description: 'Upload pas foto ukuran 3x4',
         acceptedFormats: ['.jpg', '.jpeg', '.png'],
         maxSizeMB: 2,
         required: true,
@@ -312,7 +497,7 @@ export const SD_DOCUMENTS: DocumentRequirement[] = [
     {
         type: 'KTP_ORTU',
         label: 'KTP Orang Tua',
-        description: 'Upload scan KTP Orang Tua',
+        description: 'Upload scan KTP Orang Tua (Ayah & Ibu)',
         acceptedFormats: ['.pdf', '.jpg', '.jpeg', '.png'],
         maxSizeMB: 5,
         required: true,
@@ -340,7 +525,7 @@ export function getFormConfig(unitSlug: string): { fields: FormField[]; document
     const slug = unitSlug.toLowerCase();
 
     // Field sama untuk semua unit
-    const fields = STANDARD_FORM_FIELDS;
+    const fields = [...STANDARD_FORM_FIELDS];
 
     // Dokumen berbeda berdasarkan unit
     let documents: DocumentRequirement[];

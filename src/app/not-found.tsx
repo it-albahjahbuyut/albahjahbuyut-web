@@ -36,10 +36,6 @@ export default function NotFound() {
                     Kembali ke Beranda
                 </Link>
             </div>
-
-            <div className="absolute bottom-10 w-full text-center text-emerald-900/40 text-sm font-serif italic px-4">
-                "Barangsiapa yang menempuh jalan untuk menuntut ilmu, maka Allah akan mudahkan baginya jalan menuju surga."
-            </div>
         </div>
     )
 }

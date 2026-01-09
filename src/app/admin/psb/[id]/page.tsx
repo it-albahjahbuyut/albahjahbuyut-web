@@ -39,8 +39,8 @@ interface PSBRegistration {
     alamatLengkap: string;
     nisn: string | null;
     asalSekolah: string;
-    namaOrangTua: string;
-    noHpOrangTua: string;
+    namaOrangTua: string | null;
+    noHpOrangTua: string | null;
     emailOrangTua: string | null;
     status: PSBStatus;
     notes: string | null;
@@ -51,6 +51,7 @@ interface PSBRegistration {
     unit: { id: string; name: string; slug: string };
     documents: PSBDocument[];
 }
+
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
     const { id } = await params;
@@ -197,16 +198,19 @@ export default async function AdminPSBDetailPage({ params }: PageProps) {
                         <div className="grid sm:grid-cols-2 gap-4">
                             <div>
                                 <p className="text-xs text-gray-500 uppercase tracking-wide">Nama Orang Tua/Wali</p>
-                                <p className="font-medium text-gray-900">{registration.namaOrangTua}</p>
+                                <p className="font-medium text-gray-900">{registration.namaOrangTua || '-'}</p>
                             </div>
                             <div>
                                 <p className="text-xs text-gray-500 uppercase tracking-wide">No. HP</p>
                                 <p className="font-medium text-gray-900">
-                                    <a href={`tel:${registration.noHpOrangTua}`} className="text-emerald-600 hover:underline">
-                                        {registration.noHpOrangTua}
-                                    </a>
+                                    {registration.noHpOrangTua ? (
+                                        <a href={`tel:${registration.noHpOrangTua}`} className="text-emerald-600 hover:underline">
+                                            {registration.noHpOrangTua}
+                                        </a>
+                                    ) : '-'}
                                 </p>
                             </div>
+
                             <div className="sm:col-span-2">
                                 <p className="text-xs text-gray-500 uppercase tracking-wide">Email</p>
                                 <p className="font-medium text-gray-900">

@@ -9,6 +9,7 @@ datasource db {
   provider = "postgresql"
 }
 
+
 // ============================================
 // AUTH & USER MANAGEMENT
 // ============================================
@@ -57,8 +58,28 @@ model Unit {
   posts            Post[]
   galleries        Gallery[]
   psbRegistrations PSBRegistration[]
+  socialMedia      UnitSocialMedia[]
 
   @@map("units")
+}
+
+// Social Media untuk setiap Unit
+model UnitSocialMedia {
+  id        String   @id @default(cuid())
+  platform  String   // instagram, facebook, youtube, tiktok, whatsapp, twitter, etc
+  url       String   // URL atau nomor (untuk whatsapp)
+  label     String?  // Label kustom, misal "Instagram SMPIQu"
+  order     Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  unitId    String
+  unit      Unit     @relation(fields: [unitId], references: [id], onDelete: Cascade)
+
+  @@index([unitId])
+  @@map("unit_social_media")
 }
 
 // ============================================
@@ -187,16 +208,35 @@ model PSBRegistration {
   
   // Data Pribadi Calon Santri
   namaLengkap       String
+  nisn              String?
+  nik               String?   // NIK Calon Santri
+  noKK              String?   // Nomor Kartu Keluarga
+  jenisKelamin      String    // L / P
   tempatLahir       String
   tanggalLahir      DateTime
-  jenisKelamin      String    // L / P
-  alamatLengkap     String    @db.Text
-  nisn              String?
   asalSekolah       String
+  alamatSekolahAsal String?   @db.Text // Alamat sekolah asal
   
   // Data Orang Tua / Wali
-  namaOrangTua      String
-  noHpOrangTua      String
+  namaAyah          String?
+  namaIbu           String?
+  pekerjaanAyah     String?
+  pekerjaanIbu      String?
+  penghasilanAyah   String?
+  penghasilanIbu    String?
+  pendidikanAyah    String?
+  pendidikanIbu     String?
+  anakKe            String?
+  dariSaudara       String?
+  jumlahTanggungan  String?
+  alamatLengkap     String    @db.Text // Alamat rumah orang tua
+  noWaIbu           String?
+  noWaAyah          String?
+  sumberInfo        String?   // Tau Al Bahjah Buyut dari mana
+  
+  // Legacy fields (untuk backward compatibility)
+  namaOrangTua      String?   // Deprecated: gunakan namaAyah/namaIbu
+  noHpOrangTua      String?   // Deprecated: gunakan noWaIbu/noWaAyah
   emailOrangTua     String?
   
   // Status & Metadata
@@ -220,6 +260,7 @@ model PSBRegistration {
   @@index([registrationNumber])
   @@map("psb_registrations")
 }
+
 
 model PSBDocument {
   id              String   @id @default(cuid())

@@ -26,7 +26,7 @@ export default async function ProfilePage() {
         {
             name: "Abah Sayf Abu Hanifah",
             role: "Pengasuh Al-Bahjah Buyut",
-            image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3lna5pypNzw2uM5TlKw2kNfWSH9n14VNLmg&s",
+            image: "https://res.cloudinary.com/dand8rpbb/image/upload/v1767945919/image_sfjvzp.png",
         },
         {
             name: "Kepala Sekolah SMPIQu",
@@ -85,125 +85,137 @@ export default async function ProfilePage() {
                 </FadeIn>
             </section>
 
-            {/* Vision, Mission, Moto - Standard Minimalist Layout */}
-            <section className="py-24 bg-slate-50">
-                <div className="container mx-auto px-4 lg:px-8 max-w-6xl">
-                    <div className="grid md:grid-cols-2 gap-16 items-start">
-                        {/* Left Side: Visi & Moto */}
-                        <FadeIn>
-                            <div className="space-y-12 sticky top-24">
-                                <div>
-                                    <div className="flex items-center gap-3 mb-4">
-                                        <div className="p-2 bg-emerald-100 rounded-lg text-emerald-800">
-                                            <Target className="w-5 h-5" />
-                                        </div>
-                                        <h2 className="text-2xl font-bold text-emerald-950">Visi Kami</h2>
-                                    </div>
-                                    <p className="text-xl leading-relaxed text-slate-700 font-medium">
-                                        "Menjadi lembaga pendidikan profesional yang bisa menghadirkan generasi berkarakter islami, memiliki kecerdasan intelektual, emosi dan spiritual serta mampu mengamalkan Al-Qur'an untuk diri, keluarga dan bangsa."
-                                    </p>
-                                </div>
+            {/* Visi Misi Section - Modern Centered Layout */}
+            <section className="py-24 bg-slate-50 relative overflow-hidden">
+                {/* Background Blobs */}
+                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-100/40 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+                <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gold-100/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 pointer-events-none" />
 
-                                <div className="p-8 bg-emerald-900 rounded-2xl text-white relative overflow-hidden">
-                                    <Quote className="absolute top-4 right-4 text-emerald-800 w-24 h-24 rotate-12 opacity-50" />
-                                    <div className="relative z-10">
-                                        <span className="text-gold-400 text-xs font-bold uppercase tracking-widest mb-2 block">Moto</span>
-                                        <p className="text-2xl font-serif italic font-medium leading-normal">
-                                            “Tinggalan Kami Jika Tidak Berakhlak”
+                <div className="container mx-auto px-4 lg:px-8 relative z-10">
+
+                    {/* Visi & Moto Header */}
+                    <FadeIn className="text-center max-w-4xl mx-auto mb-20">
+                        <div className="inline-flex items-center justify-center p-3 bg-emerald-100 rounded-xl mb-6 text-emerald-800">
+                            <Target className="w-6 h-6" />
+                        </div>
+                        <h2 className="text-sm font-bold text-gold-600 uppercase tracking-[0.2em] mb-6">Visi Kami</h2>
+                        <p className="text-2xl md:text-4xl font-serif text-emerald-950 leading-tight mb-10 font-medium">
+                            "Menjadi lembaga pendidikan profesional yang bisa menghadirkan generasi berkarakter islami, memiliki kecerdasan intelektual, emosi dan spiritual serta mampu mengamalkan Al-Qur'an untuk diri, keluarga dan bangsa."
+                        </p>
+
+                        <div className="inline-block relative">
+                            <div className="absolute inset-0 bg-gold-400 blur opacity-20 transform rotate-2"></div>
+                            <div className="relative bg-white border border-slate-100 shadow-sm rounded-full py-3 px-8 flex items-center gap-3">
+                                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Moto</span>
+                                <div className="w-px h-4 bg-slate-200"></div>
+                                <span className="text-emerald-900 font-serif italic text-lg">"Tinggalan Kami Jika Tidak Berakhlak"</span>
+                            </div>
+                        </div>
+                    </FadeIn>
+
+                    {/* Misi Grid */}
+                    <div className="max-w-6xl mx-auto mb-20">
+                        <FadeIn className="text-center mb-10">
+                            <h3 className="text-xl font-bold text-emerald-950 inline-flex items-center gap-2 border-b-2 border-gold-400 pb-1">
+                                Misi Kami
+                            </h3>
+                        </FadeIn>
+
+                        <FadeInStagger className="grid md:grid-cols-3 gap-6">
+                            {[
+                                "Membentuk generasi berkarakter islami yang ber-aqidah Ahlussunnah Wal Jama'ah, Al-Asy'ariyah, Sufiyah, dan bermadzhab.",
+                                "Membekali siswa-siswi dengan akhlak yang mulia.",
+                                "Membiasakan siswa-siswi dekat dengan Al-Qur'an."
+                            ].map((item, i) => (
+                                <FadeIn key={i}>
+                                    <div className="h-full bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md hover:border-emerald-100 transition-all duration-300 relative overflow-hidden group">
+                                        <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-50 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-110" />
+                                        <span className="relative z-10 text-5xl font-bold text-emerald-100 mb-4 block group-hover:text-gold-100 transition-colors">
+                                            0{i + 1}
+                                        </span>
+                                        <p className="relative z-10 text-emerald-950 font-medium leading-relaxed">
+                                            {item}
                                         </p>
                                     </div>
-                                </div>
-                            </div>
+                                </FadeIn>
+                            ))}
+                        </FadeInStagger>
+                    </div>
+
+                    {/* Tujuan Grid */}
+                    <div className="max-w-6xl mx-auto">
+                        <FadeIn className="text-center mb-10">
+                            <h3 className="text-xl font-bold text-emerald-950 inline-flex items-center gap-2 border-b-2 border-emerald-600 pb-1">
+                                Tujuan
+                            </h3>
                         </FadeIn>
 
-                        {/* Right Side: Misi List */}
-                        <FadeIn delay={0.2}>
-                            <div className="space-y-12">
-                                <div>
-                                    <div className="flex items-center gap-3 mb-8">
-                                        <div className="p-2 bg-emerald-100 rounded-lg text-emerald-800">
-                                            <Target className="w-5 h-5" />
-                                        </div>
-                                        <h2 className="text-2xl font-bold text-emerald-950">Misi Kami</h2>
+                        <FadeInStagger className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {[
+                                "Membentuk generasi Qur'ani penghafal Al-Qur'an yang berdedikasi.",
+                                "Menghasilkan lulusan yang mampu mengamalkan ilmu Agama Islam.",
+                                "Membentuk lingkungan berakhlaqul karimah melalui pendidikan karakter.",
+                                "Menghasilkan lulusan yang menguasai sains, teknologi, dan berpikir kritis.",
+                                "Meningkatkan kompetensi profesionalisme guru secara berkelanjutan.",
+                                "Menyiapkan peserta didik yang cakap berbahasa Arab dan Inggris."
+                            ].map((item, i) => (
+                                <FadeIn key={i}>
+                                    <div className="flex gap-4 p-5 bg-white rounded-xl border border-slate-100 hover:border-emerald-200 hover:bg-emerald-50/30 transition-all duration-300">
+                                        <div className="flex-shrink-0 w-2 bg-emerald-500 rounded-full" />
+                                        <p className="text-slate-600 text-sm leading-relaxed font-medium">
+                                            {item}
+                                        </p>
                                     </div>
-                                    <ul className="space-y-6">
-                                        {[
-                                            "Membentuk generasi berkarakter islami yang ber-aqidah Ahlussunnah Wal Jama'ah, Al-Asy'ariyah, Sufiyah, dan bermadzhab sehingga mengantarkan peserta didik menjadi generasi kreatif, inovatif, responsif dan kritis serta dinamis yang bertanggung jawab.",
-                                            "Membekali siswa-siswi dengan akhlak yang mulia.",
-                                            "Membiasakan siswa-siswi dekat dengan Al-Qur'an."
-                                        ].map((item, i) => (
-                                            <li key={i} className="flex gap-4">
-                                                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-gold-400 text-white text-sm font-bold flex items-center justify-center mt-1">
-                                                    {i + 1}
-                                                </span>
-                                                <span className="text-slate-600 leading-relaxed text-lg">{item}</span>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-
-                                <div>
-                                    <div className="flex items-center gap-3 mb-8">
-                                        <div className="p-2 bg-emerald-100 rounded-lg text-emerald-800">
-                                            <Target className="w-5 h-5" />
-                                        </div>
-                                        <h2 className="text-2xl font-bold text-emerald-950">Tujuan</h2>
-                                    </div>
-                                    <ul className="space-y-6">
-                                        {[
-                                            "Membentuk generasi Qur'ani sehingga menghasilkan lulusan penghafal Al-Qur'an yang ber-dedikasi di lingkungan masyarakat.",
-                                            "Menghasilkan lulusan yang mampu mengamalkan ilmu Agama Islam bagi pribadi, keluarga dan lingkungan masyarakat.",
-                                            "Membentuk lingkungan yang berakhlaqul karimah melalui pendidikan karakter di pondok pesantren.",
-                                            "Menghasilkan lulusan yang menguasai dasar-dasar ilmu pengetahuan sains dan teknologi serta memiliki kemampuan berfikir kritis, cakap berkomunikasi, bekerjasama dan kreatifitas yang tinggi untuk menghadapi persaingan global.",
-                                            "Meningkatkan kompetensi profesionalisme guru melalui pengembangan profesi yang berkelanjutan.",
-                                            "Menyiapkan peserta didik yang cakap berbahasa Arab dan Inggris sehingga mampu bersaing secara global."
-                                        ].map((item, i) => (
-                                            <li key={i} className="flex gap-4">
-                                                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-600 text-white text-sm font-bold flex items-center justify-center mt-1">
-                                                    {i + 1}
-                                                </span>
-                                                <span className="text-slate-600 leading-relaxed text-lg">{item}</span>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-                            </div>
-                        </FadeIn>
+                                </FadeIn>
+                            ))}
+                        </FadeInStagger>
                     </div>
                 </div>
             </section>
 
-            {/* Figures Section */}
-            <section className="py-24 container mx-auto px-4 lg:px-8">
-                <FadeIn className="text-center mb-16">
-                    <h2 className="text-sm font-bold text-gold-600 uppercase tracking-[0.2em] mb-4">Struktur</h2>
-                    <h3 className="text-3xl font-bold text-emerald-950">Tokoh & Pimpinan</h3>
-                </FadeIn>
+            {/* Figures Section - Minimalist Card Design */}
+            <section className="py-24 bg-slate-50">
+                <div className="container mx-auto px-4 lg:px-8 max-w-6xl">
+                    <FadeIn className="text-center mb-16">
+                        <h2 className="text-sm font-bold text-gold-600 uppercase tracking-[0.2em] mb-4">Struktur</h2>
+                        <h3 className="text-3xl font-bold text-emerald-950">Tokoh & Pimpinan</h3>
+                    </FadeIn>
 
-                <FadeInStagger className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                    {figures.map((figure, idx) => (
-                        <FadeIn key={idx}>
-                            <div className="group text-center">
-                                <div className="relative w-48 h-48 mx-auto mb-6 rounded-full overflow-hidden border-4 border-slate-100 group-hover:border-gold-400 transition-colors duration-300">
-                                    {figure.image ? (
-                                        <Image
-                                            src={figure.image}
-                                            alt={figure.name}
-                                            fill
-                                            className="object-cover group-hover:scale-105 transition-transform duration-500"
-                                        />
-                                    ) : (
-                                        <div className="w-full h-full bg-slate-100 flex items-center justify-center text-slate-300">
-                                            <User className="w-20 h-20" />
-                                        </div>
-                                    )}
+                    {/* Unified Minimalist Grid Leaders */}
+                    <FadeInStagger className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                        {figures.map((figure, idx) => (
+                            <FadeIn key={idx}>
+                                <div className="group text-center">
+                                    {/* Image Container */}
+                                    <div className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-slate-100 mb-4 mx-auto w-full max-w-[280px]">
+                                        {figure.image ? (
+                                            <Image
+                                                src={figure.image}
+                                                alt={figure.name}
+                                                fill
+                                                className="object-cover group-hover:scale-105 transition-transform duration-700"
+                                            />
+                                        ) : (
+                                            <div className="w-full h-full flex items-center justify-center text-slate-300 bg-slate-50">
+                                                <User className="w-16 h-16 opacity-50" />
+                                            </div>
+                                        )}
+                                        {/* Overlay gradient on hover */}
+                                        <div className="absolute inset-0 bg-emerald-950/0 group-hover:bg-emerald-950/10 transition-colors duration-300" />
+                                    </div>
+
+                                    {/* Text Content */}
+                                    <div>
+                                        <h4 className="text-lg font-bold text-emerald-950 mb-1 group-hover:text-emerald-700 transition-colors">
+                                            {figure.name}
+                                        </h4>
+                                        <p className="text-slate-500 text-sm font-medium">{figure.role}</p>
+                                    </div>
                                 </div>
-                                <h4 className="text-xl font-bold text-emerald-950 mb-1">{figure.name}</h4>
-                                <p className="text-slate-500 text-sm uppercase tracking-wider">{figure.role}</p>
-                            </div>
-                        </FadeIn>
-                    ))}
-                </FadeInStagger>
+                            </FadeIn>
+                        ))}
+                    </FadeInStagger>
+                </div>
             </section>
 
             {/* Programs Section - Redesigned Minimalist Grid */}

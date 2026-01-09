@@ -14,15 +14,35 @@ export interface PSBFormData {
     unitId: string;
     unitName: string;
     unitSlug: string;
+    // Data Santri
     namaLengkap: string;
+    nisn?: string;
+    nik: string;
+    noKK: string;
+    jenisKelamin: string;
     tempatLahir: string;
     tanggalLahir: string;
-    jenisKelamin: string;
-    alamatLengkap: string;
-    nisn?: string;
     asalSekolah: string;
-    namaOrangTua: string;
-    noHpOrangTua: string;
+    alamatSekolahAsal: string;
+    // Data Orang Tua
+    namaAyah: string;
+    namaIbu: string;
+    pekerjaanAyah: string;
+    pekerjaanIbu: string;
+    penghasilanAyah: string;
+    penghasilanIbu?: string;
+    pendidikanAyah: string;
+    pendidikanIbu: string;
+    anakKe: string;
+    dariSaudara: string;
+    jumlahTanggungan: string;
+    alamatLengkap: string;
+    noWaIbu: string;
+    noWaAyah?: string;
+    sumberInfo: string;
+    // Legacy fields for backward compatibility
+    namaOrangTua?: string;
+    noHpOrangTua?: string;
     emailOrangTua?: string;
 }
 
@@ -58,6 +78,7 @@ export async function submitPSBRegistration(
         const registration = await db.pSBRegistration.create({
             data: {
                 registrationNumber,
+                // Data Santri (existing schema fields)
                 namaLengkap: formData.namaLengkap,
                 tempatLahir: formData.tempatLahir,
                 tanggalLahir: new Date(formData.tanggalLahir),
@@ -65,15 +86,21 @@ export async function submitPSBRegistration(
                 alamatLengkap: formData.alamatLengkap,
                 nisn: formData.nisn || null,
                 asalSekolah: formData.asalSekolah,
-                namaOrangTua: formData.namaOrangTua,
-                noHpOrangTua: formData.noHpOrangTua,
+                // Data Orang Tua (map to existing schema fields)
+                namaOrangTua: formData.namaAyah || formData.namaOrangTua || '',
+                noHpOrangTua: formData.noWaIbu || formData.noHpOrangTua || '',
                 emailOrangTua: formData.emailOrangTua || null,
+                // Status & Metadata
                 status: 'PENDING',
-                driveFolderId: null, // Will be updated after background upload
+                driveFolderId: null,
                 driveFolderUrl: null,
                 unitId: formData.unitId,
+                // Note: New fields (NIK, No KK, data orang tua lengkap) akan disimpan di Google Sheets
+                // Jalankan prisma db push untuk menambahkan field baru ke database
             },
         });
+
+
 
         console.log(`Registration ${registrationNumber} saved to database`);
 
@@ -169,20 +196,35 @@ async function processUploadsInBackground(
             await appendToSpreadsheet({
                 registrationNumber,
                 namaLengkap: formData.namaLengkap,
+                nisn: formData.nisn || '',
+                nik: formData.nik || '',
+                noKK: formData.noKK || '',
+                jenisKelamin: formData.jenisKelamin,
                 tempatLahir: formData.tempatLahir,
                 tanggalLahir: formData.tanggalLahir,
-                jenisKelamin: formData.jenisKelamin,
-                alamatLengkap: formData.alamatLengkap,
-                nisn: formData.nisn,
                 asalSekolah: formData.asalSekolah,
-                namaOrangTua: formData.namaOrangTua,
-                noHpOrangTua: formData.noHpOrangTua,
-                emailOrangTua: formData.emailOrangTua,
+                alamatSekolahAsal: formData.alamatSekolahAsal || '',
+                namaAyah: formData.namaAyah || '',
+                namaIbu: formData.namaIbu || '',
+                pekerjaanAyah: formData.pekerjaanAyah || '',
+                pekerjaanIbu: formData.pekerjaanIbu || '',
+                penghasilanAyah: formData.penghasilanAyah || '',
+                penghasilanIbu: formData.penghasilanIbu || '',
+                pendidikanAyah: formData.pendidikanAyah || '',
+                pendidikanIbu: formData.pendidikanIbu || '',
+                anakKe: formData.anakKe || '',
+                dariSaudara: formData.dariSaudara || '',
+                jumlahTanggungan: formData.jumlahTanggungan || '',
+                alamatLengkap: formData.alamatLengkap,
+                noWaIbu: formData.noWaIbu || '',
+                noWaAyah: formData.noWaAyah || '',
+                sumberInfo: formData.sumberInfo || '',
                 unitName: formData.unitName,
                 driveFolderUrl: folderResult.folderUrl,
                 status: 'PENDING',
                 createdAt: new Date().toISOString(),
             });
+
             console.log(`[Background] Spreadsheet backup complete for ${registrationNumber}`);
         } catch (sheetError) {
             console.error('[Background] Spreadsheet error:', sheetError);

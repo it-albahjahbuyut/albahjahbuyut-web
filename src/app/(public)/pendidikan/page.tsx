@@ -60,62 +60,111 @@ export default async function PendidikanPage() {
             {/* Content Section */}
             <section className="py-20 bg-white">
                 <div className="container mx-auto px-4 lg:px-8">
-                    <div className="max-w-3xl mx-auto text-center mb-16">
-                        <h2 className="text-3xl font-bold text-emerald-950 tracking-tight mb-4">
-                            Daftar Program
-                        </h2>
-                        <p className="text-slate-600 leading-relaxed">
-                            Pilihlah jenjang pendidikan yang sesuai dengan kebutuhan buah hati Anda. Kami menyediakan berbagai program pendidikan formal dan non-formal yang terintegrasi.
-                        </p>
-                    </div>
+                    {/* Formal Education Section */}
+                    <div className="mb-24">
+                        <div className="max-w-4xl mx-auto text-center mb-16">
+                            <span className="inline-block px-3 py-1 mb-4 bg-emerald-100 text-emerald-800 text-xs font-bold tracking-widest rounded-full">
+                                PENDIDIKAN FORMAL
+                            </span>
+                            <h2 className="text-3xl md:text-4xl font-bold text-emerald-950 tracking-tight mb-8">
+                                Sekolah Islam Qur'ani
+                            </h2>
+                            <div className="prose prose-lg prose-slate mx-auto text-slate-600 leading-relaxed">
+                                <p>
+                                    Pendidikan Formal merupakan salah satu divisi atau bagian dari Lembaga Pengembangan Dakwah (LPD) Al-Bahjah yang berpusat di Cirebon, Jawa Barat.
+                                    Saat ini sudah tersebar puluhan cabang yang berada di Pulau Jawa, Sumatra, Kepulauan Riau, hingga Kalimantan.
+                                </p>
+                                <p>
+                                    Pendidikan formal Al-Bahjah secara umum berfokus pada pendidikan dari jenjang <strong className="text-emerald-800">SD Islam Qurani (SDIQu)</strong>, <strong className="text-emerald-800">SMP Islam Qurani (SMPIQu)</strong>, dan <strong className="text-emerald-800">SMA Islam Qurani (SMAIQu)</strong>.
+                                </p>
+                                <p>
+                                    Memadukan tiga kurikulum yaitu <strong>Kurikulum Pendidikan Nasional</strong>, <strong>Kurikulum Tahfidz</strong>, dan <strong>Kurikulum Kepondokan</strong>. Setiap santri baik itu SDIQu, SMPIQu, dan SMAIQu dapat mengenyam pendidikan formal dan pendidikan pondok secara beriringan.
+                                </p>
+                                <p className="text-sm bg-emerald-50 p-6 rounded-2xl border border-emerald-100 mt-8 not-prose">
+                                    <span className="block font-bold text-emerald-900 mb-2 uppercase tracking-wide text-xs">5 Program Unggulan</span>
+                                    Akhlakul Karimah • Tahfidzul Qur’an • Akademik • Madrasah Diniyah • Bahasa Asing
+                                </p>
+                            </div>
+                        </div>
 
-                    <FadeInStagger className="grid md:grid-cols-12 gap-6">
-                        {units.map((unit, index) => {
-                            const Icon = unitIcons[unit.slug] || BookOpen;
-                            const description = unit.description ? stripHtml(unit.description) : "Program pendidikan unggulan.";
-
-                            // Bento Logic: 0 & 3 wide, others narrow. Loop if more than 4 items.
-                            const isWide = index % 4 === 0 || index % 4 === 3;
-                            const colSpan = isWide ? "col-span-12 md:col-span-8" : "col-span-12 md:col-span-4";
-
-                            return (
-                                <FadeIn
-                                    key={unit.id}
-                                    className={`${colSpan}`}
-                                >
-                                    <Link
-                                        href={`/pendidikan/${unit.slug}`}
-                                        className={`group relative block bg-slate-50 overflow-hidden h-full min-h-[280px] md:min-h-[350px] rounded-2xl md:rounded-3xl hover:bg-emerald-900 transition-all duration-500`}
-                                    >
-                                        <div className="absolute top-8 right-8 text-emerald-900/5 group-hover:text-white/10 transition-colors duration-500">
-                                            <Icon className="w-32 h-32 stroke-[1px]" />
-                                        </div>
-
-                                        <div className="absolute inset-0 p-8 flex flex-col justify-between">
-                                            <div>
-                                                <div className="w-12 h-12 rounded-full border border-emerald-900/10 flex items-center justify-center mb-6 text-emerald-900 group-hover:border-white/20 group-hover:text-gold-400 transition-all duration-500 bg-white group-hover:bg-white/10">
-                                                    <Icon className="w-5 h-5" />
+                        <FadeInStagger className="grid md:grid-cols-3 gap-6">
+                            {units.filter(u => ['sdiqu', 'smpiqu', 'smaiqu'].includes(u.slug)).map((unit) => {
+                                const Icon = unitIcons[unit.slug] || BookOpen;
+                                // Simple card for formal
+                                return (
+                                    <FadeIn key={unit.id} className="h-full">
+                                        <Link
+                                            href={`/pendidikan/${unit.slug}`}
+                                            className="group relative block bg-white border border-slate-200 overflow-hidden h-full rounded-3xl hover:border-emerald-500 hover:shadow-xl hover:shadow-emerald-900/5 transition-all duration-300"
+                                        >
+                                            <div className="p-8 h-full flex flex-col">
+                                                <div className="w-14 h-14 rounded-2xl bg-emerald-50 flex items-center justify-center mb-6 text-emerald-700 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300">
+                                                    <Icon className="w-7 h-7" />
                                                 </div>
-                                                <h3 className="text-2xl md:text-3xl font-bold text-emerald-950 mb-4 group-hover:text-white transition-colors duration-500">
+                                                <h3 className="text-xl font-bold text-slate-900 mb-3 group-hover:text-emerald-800 transition-colors">
                                                     {unit.name}
                                                 </h3>
-                                                <p className="text-slate-500 text-sm leading-relaxed max-w-sm group-hover:text-emerald-100/90 transition-colors duration-500 line-clamp-3">
-                                                    {description}
-                                                </p>
+                                                <div
+                                                    className="text-slate-500 text-sm leading-relaxed mb-6 line-clamp-3"
+                                                    dangerouslySetInnerHTML={{ __html: unit.description ? stripHtml(unit.description) : "" }}
+                                                />
+                                                <div className="mt-auto flex items-center gap-2 text-sm font-bold text-emerald-600 group-hover:text-emerald-800">
+                                                    Lihat Detail <span className="text-lg">→</span>
+                                                </div>
                                             </div>
+                                        </Link>
+                                    </FadeIn>
+                                );
+                            })}
+                        </FadeInStagger>
+                    </div>
 
-                                            <div className="flex items-center gap-4">
-                                                <span className="w-8 h-[1px] bg-emerald-900/20 group-hover:bg-white/30 transition-colors duration-500" />
-                                                <span className="text-xs font-bold uppercase tracking-widest text-emerald-900 group-hover:text-gold-400 transition-colors duration-500">
-                                                    Selengkapnya
-                                                </span>
+                    {/* Non-Formal Education Section */}
+                    <div>
+                        <div className="max-w-3xl mx-auto text-center mb-12">
+                            <span className="inline-block px-3 py-1 mb-4 bg-gold-100 text-gold-800 text-xs font-bold tracking-widest rounded-full">
+                                PENDIDIKAN NON-FORMAL
+                            </span>
+                            <h2 className="text-3xl font-bold text-emerald-950 tracking-tight mb-6">
+                                Program Pesantren & Takhossus
+                            </h2>
+                            <p className="text-slate-600">
+                                Program pendidikan diniyah dan pendalaman ilmu agama untuk mencetak kader ulama.
+                            </p>
+                        </div>
+
+                        <FadeInStagger className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                            {units.filter(u => !['sdiqu', 'smpiqu', 'smaiqu'].includes(u.slug)).map((unit) => {
+                                const Icon = unitIcons[unit.slug] || Scroll;
+                                return (
+                                    <FadeIn key={unit.id}>
+                                        <Link
+                                            href={`/pendidikan/${unit.slug}`}
+                                            className="group flex flex-col md:flex-row bg-emerald-900 rounded-3xl overflow-hidden hover:bg-emerald-800 transition-colors duration-300 text-white h-full"
+                                        >
+                                            <div className="p-8 md:w-full flex flex-col justify-center">
+                                                <div className="flex items-center gap-4 mb-4">
+                                                    <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-gold-400">
+                                                        <Icon className="w-5 h-5" />
+                                                    </div>
+                                                    <h3 className="text-xl font-bold text-white">
+                                                        {unit.name}
+                                                    </h3>
+                                                </div>
+                                                <div
+                                                    className="text-emerald-100/80 text-sm leading-relaxed mb-6 line-clamp-3"
+                                                    dangerouslySetInnerHTML={{ __html: unit.description ? stripHtml(unit.description) : "" }}
+                                                />
+                                                <div className="inline-flex items-center gap-2 text-gold-400 text-xs font-bold tracking-widest uppercase">
+                                                    Selengkapnya <span className="group-hover:translate-x-1 transition-transform">→</span>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </Link>
-                                </FadeIn>
-                            );
-                        })}
-                    </FadeInStagger>
+                                        </Link>
+                                    </FadeIn>
+                                );
+                            })}
+                        </FadeInStagger>
+                    </div>
                 </div>
             </section>
         </main>

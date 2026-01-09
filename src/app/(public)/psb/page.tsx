@@ -79,8 +79,9 @@ export default async function PSBPage() {
                 <div className="relative z-10 container mx-auto px-4 text-center">
                     <FadeIn delay={0.2}>
                         <span className="inline-block px-3 py-1 mb-4 border border-gold-400 text-gold-400 text-xs font-bold tracking-widest">
-                            Tahun Ajaran 2025/2026
+                            Tahun Ajaran 2026/2027
                         </span>
+
                     </FadeIn>
                     <FadeIn delay={0.4}>
                         <h1 className="text-5xl md:text-7xl font-bold text-white tracking-tighter mb-4">
@@ -258,9 +259,198 @@ export default async function PSBPage() {
                     </div>
                 </div>
             </section>
+
+            {/* Program Unggulan & Ekstrakurikuler */}
+            <section className="py-24 bg-white">
+                <div className="container mx-auto px-4 lg:px-8 max-w-6xl">
+                    <div className="grid lg:grid-cols-2 gap-12">
+                        {/* Program Unggulan */}
+                        <FadeIn>
+                            <div className="bg-gradient-to-br from-emerald-900 to-emerald-950 rounded-3xl p-8 text-white h-full">
+                                <div className="flex items-center gap-3 mb-6">
+                                    <div className="w-12 h-12 bg-gold-400/20 rounded-2xl flex items-center justify-center">
+                                        <GraduationCap className="w-6 h-6 text-gold-400" />
+                                    </div>
+                                    <h3 className="text-2xl font-bold">Program Unggulan</h3>
+                                </div>
+                                <ul className="space-y-4">
+                                    {[
+                                        "Akhlakul Karimah",
+                                        "Kurikulum Tahfidzul Qur'an",
+                                        "Kurikulum Diniyah",
+                                        "Kurikulum Kedinasan",
+                                        "Program Bahasa Arab & Bahasa Inggris"
+                                    ].map((item, i) => (
+                                        <li key={i} className="flex items-center gap-3">
+                                            <div className="w-2 h-2 bg-gold-400 rounded-full shrink-0" />
+                                            <span className="text-emerald-100">{item}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        </FadeIn>
+
+                        {/* Ekstrakurikuler */}
+                        <FadeIn delay={0.2}>
+                            <div className="bg-gradient-to-br from-gold-50 to-amber-50 rounded-3xl p-8 border border-gold-200 h-full">
+                                <div className="flex items-center gap-3 mb-6">
+                                    <div className="w-12 h-12 bg-gold-400/20 rounded-2xl flex items-center justify-center">
+                                        <Users className="w-6 h-6 text-gold-600" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-2xl font-bold text-emerald-950">Ekstrakurikuler</h3>
+                                        <p className="text-sm text-slate-500">SMPIQu dan SMAIQu Al-Bahjah Buyut</p>
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    {[
+                                        ["Pramuka", "Hadroh"],
+                                        ["Futsal", "English Club"],
+                                        ["Bola Voli", "Science Club"],
+                                        ["Bola Basket", "Tari Japin"]
+                                    ].map((pair, i) => (
+                                        <div key={i} className="space-y-2">
+                                            {pair.map((item, j) => (
+                                                <div key={j} className="flex items-center gap-2 text-slate-700">
+                                                    <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full shrink-0" />
+                                                    <span className="text-sm">{item}</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </FadeIn>
+                    </div>
+                </div>
+            </section>
+
+            {/* Rincian Biaya */}
+            <section className="py-24 bg-slate-50">
+                <div className="container mx-auto px-4 lg:px-8 max-w-6xl">
+                    <FadeIn className="text-center mb-12">
+                        <span className="text-gold-600 font-medium tracking-wider text-sm">INFORMASI BIAYA</span>
+                        <h2 className="text-3xl lg:text-4xl font-bold text-emerald-950 mt-2">Rincian Biaya Pendaftaran</h2>
+                        <p className="text-slate-500 mt-2">Tahun Pelajaran 2026/2027</p>
+                    </FadeIn>
+
+                    <FadeIn delay={0.2}>
+                        <div className="bg-white rounded-3xl shadow-lg border border-slate-100 overflow-hidden">
+                            <div className="overflow-x-auto">
+                                <table className="w-full">
+                                    <thead>
+                                        <tr className="bg-emerald-900 text-white">
+                                            <th className="px-6 py-4 text-left font-bold text-sm">Rincian</th>
+                                            <th className="px-6 py-4 text-center font-bold text-sm">SMPIQu & SMAIQu</th>
+                                            <th className="px-6 py-4 text-center font-bold text-sm">SDIQu</th>
+                                            <th className="px-6 py-4 text-center font-bold text-sm">PAUDQu</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-slate-100">
+                                        {[
+                                            { item: "Biaya Pendaftaran", smpSma: "Rp 500.000", sd: "Rp 400.000", paud: "Rp 50.000" },
+                                            { item: "Infaq Perlengkapan Sekolah dan Boarding", smpSma: "Rp 4.700.000", sd: "Rp 1.600.000", paud: "Rp 800.000" },
+                                            { item: "Program Kegiatan Sekolah", smpSma: "Rp 4.600.000", sd: "Rp 1.650.000", paud: "Rp 600.000" },
+                                            { item: "Infaq Sarana Pendidikan dan Pengembangan Pondok", smpSma: "Rp 2.600.000", sd: "Rp 2.500.000", paud: "Rp 800.000" },
+                                            { item: "AB Sehat (1 Tahun)", smpSma: "-", sd: "Rp 600.000", paud: "Rp 600.000" },
+                                            { item: "SPP Bulan Pertama", smpSma: "Rp 2.000.000", sd: "Rp 750.000", paud: "Rp 250.000" },
+                                        ].map((row, i) => (
+                                            <tr key={i} className="hover:bg-slate-50 transition-colors">
+                                                <td className="px-6 py-4 text-slate-700 text-sm">{row.item}</td>
+                                                <td className="px-6 py-4 text-center text-slate-700 text-sm font-medium">{row.smpSma}</td>
+                                                <td className="px-6 py-4 text-center text-slate-700 text-sm font-medium">{row.sd}</td>
+                                                <td className="px-6 py-4 text-center text-slate-700 text-sm font-medium">{row.paud}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                    <tfoot>
+                                        <tr className="bg-gradient-to-r from-gold-100 to-gold-50 border-t-2 border-gold-300">
+                                            <td className="px-6 py-4 font-bold text-emerald-900 text-base">TOTAL</td>
+                                            <td className="px-6 py-4 text-center font-bold text-emerald-900 text-base">Rp 15.000.000</td>
+                                            <td className="px-6 py-4 text-center font-bold text-emerald-900 text-base">Rp 7.500.000</td>
+                                            <td className="px-6 py-4 text-center font-bold text-emerald-900 text-base">Rp 2.500.000</td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </FadeIn>
+
+                    {/* Info Rekening */}
+                    <FadeIn delay={0.3} className="mt-8">
+                        <div className="grid md:grid-cols-2 gap-6">
+                            <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
+                                <h4 className="font-bold text-emerald-900 mb-4 flex items-center gap-2">
+                                    <CreditCard className="w-5 h-5 text-gold-500" />
+                                    Transfer SMPIQu
+                                </h4>
+                                <div className="space-y-2 text-sm">
+                                    <p className="text-slate-600">Bank: <span className="font-bold text-slate-900">MUAMALAT</span></p>
+                                    <p className="text-slate-600">No. Rekening: <span className="font-mono font-bold text-emerald-700">7459910020100186</span></p>
+                                    <p className="text-slate-600">Atas Nama: <span className="font-bold text-slate-900">SMPIQU AL BAHJAH BUYUT</span></p>
+                                </div>
+                            </div>
+                            <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
+                                <h4 className="font-bold text-emerald-900 mb-4 flex items-center gap-2">
+                                    <CreditCard className="w-5 h-5 text-gold-500" />
+                                    Transfer SMAIQu
+                                </h4>
+                                <div className="space-y-2 text-sm">
+                                    <p className="text-slate-600">Bank: <span className="font-bold text-slate-900">MUAMALAT</span></p>
+                                    <p className="text-slate-600">No. Rekening: <span className="font-mono font-bold text-emerald-700">7459910020100187</span></p>
+                                    <p className="text-slate-600">Atas Nama: <span className="font-bold text-slate-900">SMAIQU AL BAHJAH BUYUT</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </FadeIn>
+                </div>
+            </section>
+
+            {/* Catatan Penting */}
+            <section className="py-16 bg-white">
+                <div className="container mx-auto px-4 lg:px-8 max-w-6xl">
+                    <FadeIn>
+                        <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-3xl p-8 border border-amber-200">
+                            <div className="flex items-start gap-4">
+                                <div className="w-12 h-12 bg-amber-400/20 rounded-2xl flex items-center justify-center shrink-0">
+                                    <svg className="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 className="text-xl font-bold text-amber-900 mb-4">Catatan Penting</h3>
+                                    <ul className="space-y-3 text-amber-800">
+                                        <li className="flex items-start gap-2">
+                                            <span className="w-1.5 h-1.5 bg-amber-500 rounded-full mt-2 shrink-0" />
+                                            <span>Biaya pendaftaran tidak dapat dikembalikan (<em>non-refundable</em>).</span>
+                                        </li>
+                                        <li className="flex items-start gap-2">
+                                            <span className="w-1.5 h-1.5 bg-amber-500 rounded-full mt-2 shrink-0" />
+                                            <span>Pembayaran dapat dilakukan secara bertahap sesuai kesepakatan dengan pihak sekolah.</span>
+                                        </li>
+                                        <li className="flex items-start gap-2">
+                                            <span className="w-1.5 h-1.5 bg-amber-500 rounded-full mt-2 shrink-0" />
+                                            <span>Calon santri yang diterima wajib melunasi seluruh biaya sebelum masuk asrama.</span>
+                                        </li>
+                                        <li className="flex items-start gap-2">
+                                            <span className="w-1.5 h-1.5 bg-amber-500 rounded-full mt-2 shrink-0" />
+                                            <span>Simpan bukti transfer untuk diupload saat pendaftaran online.</span>
+                                        </li>
+                                        <li className="flex items-start gap-2">
+                                            <span className="w-1.5 h-1.5 bg-amber-500 rounded-full mt-2 shrink-0" />
+                                            <span>Untuk informasi lebih lanjut, hubungi <strong>0896 7653 9390</strong> (WhatsApp).</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </FadeIn>
+                </div>
+            </section>
         </main>
     );
 }
+
 
 function GlobeIcon(props: any) {
     return (

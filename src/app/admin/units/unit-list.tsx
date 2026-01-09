@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { Unit } from "@prisma/client";
 import {
     Card,
@@ -18,7 +19,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
-import { Edit, GraduationCap } from "lucide-react";
+import { Edit, GraduationCap, Share2 } from "lucide-react";
 import { UnitForm } from "./unit-form";
 
 interface UnitListProps {
@@ -27,6 +28,10 @@ interface UnitListProps {
 
 export function UnitList({ units }: UnitListProps) {
     const [editingUnit, setEditingUnit] = useState<Unit | null>(null);
+
+    const stripHtml = (html: string) => {
+        return html.replace(/<[^>]*>?/gm, '');
+    };
 
     return (
         <>
@@ -51,7 +56,7 @@ export function UnitList({ units }: UnitListProps) {
                         </CardHeader>
                         <CardContent>
                             <p className="text-sm text-gray-600 line-clamp-3 mb-4">
-                                {unit.description || "Belum ada deskripsi"}
+                                {unit.description ? stripHtml(unit.description) : "Belum ada deskripsi"}
                             </p>
                             <div className="flex gap-2">
                                 <Button
@@ -61,6 +66,16 @@ export function UnitList({ units }: UnitListProps) {
                                 >
                                     <Edit className="h-4 w-4 mr-2" />
                                     Edit
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    asChild
+                                >
+                                    <Link href={`/admin/units/${unit.id}/social-media`}>
+                                        <Share2 className="h-4 w-4 mr-2" />
+                                        Social Media
+                                    </Link>
                                 </Button>
                             </div>
                         </CardContent>
