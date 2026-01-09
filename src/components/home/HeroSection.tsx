@@ -6,11 +6,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 
 const heroImages = [
-    "https://res-console.cloudinary.com/dand8rpbb/thumbnails/v1/image/upload/v1767934623/V2hhdHNBcHBfSW1hZ2VfMjAyNi0wMS0wOF9hdF8xMS4wNy40NF9QTV93NnZtZHY=/drilldown", // Existing
-    "https://res-console.cloudinary.com/dand8rpbb/thumbnails/v1/image/upload/v1767934623/V2hhdHNBcHBfSW1hZ2VfMjAyNi0wMS0wOF9hdF8xMS4wNy40Nl9QTV9xcWhvdGE=/drilldown", // Mosque interior
-    "https://res-console.cloudinary.com/dand8rpbb/thumbnails/v1/image/upload/v1767934623/V2hhdHNBcHBfSW1hZ2VfMjAyNi0wMS0wOF9hdF8xMS4wNy40Nl9QTV8xX3V6a3F1dQ==/drilldown", // Islamic architecture
-    "https://res-console.cloudinary.com/dand8rpbb/thumbnails/v1/image/upload/v1767934623/V2hhdHNBcHBfSW1hZ2VfMjAyNi0wMS0wOF9hdF8xMS4wNy40M19QTV9mZ2xkYnA=/drilldown", // Quran/Reading
-    "https://res-console.cloudinary.com/dand8rpbb/thumbnails/v1/image/upload/v1767934623/V2hhdHNBcHBfSW1hZ2VfMjAyNi0wMS0wOF9hdF8xMS4wNy41MV9QTV9taDA0eW4=/drilldown"  // Mosque night
+    "https://res.cloudinary.com/dand8rpbb/image/upload/v1767934623/WhatsApp_Image_2026-01-08_at_11.07.44_PM_w6vmdv.jpg",
+    "https://res.cloudinary.com/dand8rpbb/image/upload/v1767934623/WhatsApp_Image_2026-01-08_at_11.07.46_PM_qqhota.jpg",
+    "https://res.cloudinary.com/dand8rpbb/image/upload/v1767934623/WhatsApp_Image_2026-01-08_at_11.07.46_PM_1_uzkquu.jpg",
+    "https://res.cloudinary.com/dand8rpbb/image/upload/v1767934623/WhatsApp_Image_2026-01-08_at_11.07.43_PM_fgldbp.jpg",
+    "https://res.cloudinary.com/dand8rpbb/image/upload/v1767934623/WhatsApp_Image_2026-01-08_at_11.07.51_PM_mh04yn.jpg"
 ];
 
 export function HeroSection() {
