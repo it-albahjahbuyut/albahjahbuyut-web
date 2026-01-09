@@ -6,11 +6,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 
 const heroImages = [
-    "https://images.unsplash.com/photo-1527838832700-5059252407fa?q=80&w=698&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", // Existing
-    "https://images.unsplash.com/photo-1519818187420-8e49de7adeef?q=80&w=1683&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", // Mosque interior
-    "https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?q=80&w=764&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", // Islamic architecture
-    "https://images.unsplash.com/photo-1586767003402-8ade266deb64?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", // Quran/Reading
-    "https://images.unsplash.com/photo-1537181534458-45dcee76ae90?q=80&w=627&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"  // Mosque night
+    "https://res-console.cloudinary.com/dand8rpbb/thumbnails/v1/image/upload/v1767934623/V2hhdHNBcHBfSW1hZ2VfMjAyNi0wMS0wOF9hdF8xMS4wNy40NF9QTV93NnZtZHY=/drilldown", // Existing
+    "https://res-console.cloudinary.com/dand8rpbb/thumbnails/v1/image/upload/v1767934623/V2hhdHNBcHBfSW1hZ2VfMjAyNi0wMS0wOF9hdF8xMS4wNy40Nl9QTV9xcWhvdGE=/drilldown", // Mosque interior
+    "https://res-console.cloudinary.com/dand8rpbb/thumbnails/v1/image/upload/v1767934623/V2hhdHNBcHBfSW1hZ2VfMjAyNi0wMS0wOF9hdF8xMS4wNy40Nl9QTV8xX3V6a3F1dQ==/drilldown", // Islamic architecture
+    "https://res-console.cloudinary.com/dand8rpbb/thumbnails/v1/image/upload/v1767934623/V2hhdHNBcHBfSW1hZ2VfMjAyNi0wMS0wOF9hdF8xMS4wNy40M19QTV9mZ2xkYnA=/drilldown", // Quran/Reading
+    "https://res-console.cloudinary.com/dand8rpbb/thumbnails/v1/image/upload/v1767934623/V2hhdHNBcHBfSW1hZ2VfMjAyNi0wMS0wOF9hdF8xMS4wNy41MV9QTV9taDA0eW4=/drilldown"  // Mosque night
 ];
 
 export function HeroSection() {
