@@ -26,7 +26,7 @@ export async function GET(): Promise<NextResponse<YouTubeLiveResponse>> {
         const searchUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${YOUTUBE_CHANNEL_ID}&eventType=live&type=video&key=${YOUTUBE_API_KEY}`;
 
         const response = await fetch(searchUrl, {
-            next: { revalidate: 60 }, // Cache for 1 minute
+            next: { revalidate: 1800 }, // Cache for 30 minutes (hemat quota API)
         });
 
         if (!response.ok) {
