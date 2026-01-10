@@ -14,9 +14,9 @@ export function HeroSection() {
                 className="absolute inset-0 h-full w-full object-cover opacity-30"
                 poster="https://res.cloudinary.com/dand8rpbb/video/upload/so_0,q_auto,f_jpg/v1768020274/Untitled_Video_-_Made_With_Clipchamp_2_gvcww2.jpg"
             >
-                {/* Optimized video with lower quality for faster loading */}
+                {/* Video with auto quality for better viewing experience */}
                 <source
-                    src="https://res.cloudinary.com/dand8rpbb/video/upload/q_auto:low/v1768020274/Untitled_Video_-_Made_With_Clipchamp_2_gvcww2.mp4"
+                    src="https://res.cloudinary.com/dand8rpbb/video/upload/q_auto/v1768020274/Untitled_Video_-_Made_With_Clipchamp_2_gvcww2.mp4"
                     type="video/mp4"
                 />
             </video>
