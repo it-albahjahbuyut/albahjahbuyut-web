@@ -71,9 +71,19 @@ export function CloudinaryUpload({
         onUploadError?.(errorMessage);
     };
 
+    // Log for debugging in development
+    if (process.env.NODE_ENV === "development") {
+        console.log("Cloudinary Config:", { cloudName, uploadPreset: uploadPreset ? "SET" : "NOT SET" });
+    }
+
     return (
         <CldUploadWidget
-            uploadPreset={uploadPreset}
+            uploadPreset={uploadPreset!}
+            config={{
+                cloud: {
+                    cloudName: cloudName,
+                },
+            }}
             options={{
                 folder,
                 maxFiles: 1,
@@ -104,40 +114,55 @@ export function CloudinaryUpload({
             onError={handleError}
             onQueuesEnd={() => setIsUploading(false)}
         >
-            {({ open }) => (
-                <div
-                    className={cn(
-                        "border-2 border-dashed border-muted-foreground/25 rounded-lg p-8 text-center hover:border-primary/50 transition-colors cursor-pointer",
-                        disabled && "opacity-50 cursor-not-allowed",
-                        className
-                    )}
-                    onClick={() => {
-                        if (!disabled) {
-                            setIsUploading(true);
-                            open();
-                        }
-                    }}
-                >
-                    {isUploading ? (
-                        <div className="flex flex-col items-center gap-2">
-                            <Loader2 className="h-10 w-10 text-primary animate-spin" />
-                            <p className="text-sm text-muted-foreground">
-                                Mengupload gambar...
-                            </p>
-                        </div>
-                    ) : (
-                        <div className="flex flex-col items-center gap-2">
-                            <ImagePlus className="h-10 w-10 text-muted-foreground" />
-                            <p className="text-sm text-muted-foreground">
-                                Klik untuk upload gambar
-                            </p>
-                            <p className="text-xs text-muted-foreground/70">
-                                JPG, PNG, GIF, WebP (maks. 10MB)
-                            </p>
-                        </div>
-                    )}
-                </div>
-            )}
+            {(widget) => {
+                const open = widget?.open;
+
+                return (
+                    <div
+                        className={cn(
+                            "border-2 border-dashed border-muted-foreground/25 rounded-lg p-8 text-center hover:border-primary/50 transition-colors cursor-pointer",
+                            (disabled || !open) && "opacity-50 cursor-not-allowed",
+                            className
+                        )}
+                        onClick={() => {
+                            if (disabled) return;
+
+                            if (open) {
+                                setIsUploading(true);
+                                try {
+                                    open();
+                                } catch (e) {
+                                    console.error("Error opening widget:", e);
+                                    setIsUploading(false);
+                                    onUploadError?.("Gagal membuka widget upload");
+                                }
+                            } else {
+                                console.error("Cloudinary widget not ready or failed to load");
+                                onUploadError?.("Widget upload belum siap. Cek koneksi internet Anda.");
+                            }
+                        }}
+                    >
+                        {isUploading ? (
+                            <div className="flex flex-col items-center gap-2">
+                                <Loader2 className="h-10 w-10 text-primary animate-spin" />
+                                <p className="text-sm text-muted-foreground">
+                                    Mengupload gambar...
+                                </p>
+                            </div>
+                        ) : (
+                            <div className="flex flex-col items-center gap-2">
+                                <ImagePlus className="h-10 w-10 text-muted-foreground" />
+                                <p className="text-sm text-muted-foreground">
+                                    Klik untuk upload gambar
+                                </p>
+                                <p className="text-xs text-muted-foreground/70">
+                                    JPG, PNG, GIF, WebP (maks. 10MB)
+                                </p>
+                            </div>
+                        )}
+                    </div>
+                );
+            }}
         </CldUploadWidget>
     );
 }
@@ -223,7 +248,12 @@ export function CloudinaryMultiUpload({
 
     return (
         <CldUploadWidget
-            uploadPreset={uploadPreset}
+            uploadPreset={uploadPreset!}
+            config={{
+                cloud: {
+                    cloudName: cloudName,
+                },
+            }}
             options={{
                 folder,
                 maxFiles,
