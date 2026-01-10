@@ -16,7 +16,7 @@ export function HeroSection() {
                 playsInline
                 className="absolute inset-0 h-full w-full object-cover opacity-30"
             >
-                <source src="https://res.cloudinary.com/dand8rpbb/video/upload/v1767982358/Untitled_Video_-_Made_With_Clipchamp_1_aqgd2a.mp4" type="video/mp4" />
+                <source src="https://res.cloudinary.com/dand8rpbb/video/upload/v1768020274/Untitled_Video_-_Made_With_Clipchamp_2_gvcww2.mp4" type="video/mp4" />
             </video>
 
             {/* Darker Overlay for better text readability */}
