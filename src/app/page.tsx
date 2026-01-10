@@ -9,6 +9,7 @@ import { NewsSection } from "@/components/home/NewsSection";
 import { DonationSection } from "@/components/home/DonationSection";
 import { MajelisSection } from "@/components/home/MajelisSection";
 import { YouTubeLiveSection } from "@/components/home/YouTubeLiveSection";
+import { LatestVideosSection } from "@/components/home/LatestVideosSection";
 
 export default async function HomePage() {
   const [units, featuredDonation, latestNews, navUnits] = await Promise.all([
@@ -43,17 +44,17 @@ export default async function HomePage() {
         {/* 1. Hero Section */}
         <HeroSection />
 
-        {/* 2. Profile / Sambutan Section */}
+        {/* 2. YouTube Live Stream (appears when channel is live) */}
+        <YouTubeLiveSection />
+
+        {/* 3. Profile / Sambutan Section */}
         <ProfileSection />
 
-        {/* 3. Program Pendidikan */}
+        {/* 4. Program Pendidikan */}
         <ProgramsSection units={units} />
 
-        {/* 4. Majelis Rutin */}
+        {/* 5. Majelis Rutin */}
         <MajelisSection />
-
-        {/* 5. YouTube Live Stream (appears when channel is live) */}
-        <YouTubeLiveSection />
 
         {/* 6. News Section */}
         <NewsSection posts={latestNews} />
@@ -61,7 +62,10 @@ export default async function HomePage() {
         {/* 7. Why Choose Us / Features */}
         <FeaturesSection />
 
-        {/* 8. Donation Section */}
+        {/* 8. Latest Videos */}
+        <LatestVideosSection />
+
+        {/* 9. Donation Section */}
         <DonationSection program={featuredDonation} />
       </main>
 

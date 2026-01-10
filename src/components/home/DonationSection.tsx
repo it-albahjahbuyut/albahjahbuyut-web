@@ -16,13 +16,27 @@ export function DonationSection({ program }: { program: DonationProgram | null }
         return (
             <section className="py-24 bg-white relative">
                 <div className="container mx-auto px-4 lg:px-8">
-                    <div className="bg-emerald-50 rounded-3xl p-12 text-center flex flex-col items-center justify-center border border-emerald-100">
-                        <Heart className="w-16 h-16 text-emerald-200 mb-6" />
-                        <h3 className="text-xl font-bold text-emerald-900 mb-2">Belum ada program infaq aktif</h3>
-                        <p className="text-emerald-600 mb-6">Nantikan program kebaikan selanjutnya dari kami.</p>
-                        <Link href="/infaq" className="text-gold-600 font-bold hover:text-gold-700 underline decoration-2 underline-offset-4">
-                            Lihat Semua Program Infaq
-                        </Link>
+                    <div className="bg-slate-50 rounded-3xl p-12 md:p-16 text-center flex flex-col items-center justify-center border border-slate-100 relative overflow-hidden group">
+                        {/* Decorative Pattern Background */}
+                        <div className="absolute inset-0 opacity-[0.03]"
+                            style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")" }}
+                        />
+
+                        <div className="relative z-10 max-w-lg">
+                            <h3 className="text-2xl md:text-3xl font-bold text-slate-900 mb-4 tracking-tight">
+                                Belum ada program infaq aktif
+                            </h3>
+                            <p className="text-slate-600 mb-8 leading-relaxed font-light text-lg">
+                                Saat ini kami sedang mempersiapkan program kebaikan selanjutnya. Mari bersama-sama menebar manfaat untuk umat.
+                            </p>
+                            <Link
+                                href="/infaq"
+                                className="inline-flex items-center gap-2 px-8 py-3 bg-white text-slate-900 border border-slate-200 rounded-full font-semibold hover:bg-slate-900 hover:text-white hover:border-slate-900 transition-all duration-300 shadow-sm hover:shadow-lg"
+                            >
+                                <span>Lihat Arsip Program</span>
+                                <ArrowRight className="w-4 h-4" />
+                            </Link>
+                        </div>
                     </div>
                 </div>
             </section>
