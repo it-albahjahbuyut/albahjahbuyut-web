@@ -6,6 +6,34 @@ import { format } from "date-fns";
 import { id } from "date-fns/locale";
 import { Calendar, User, ArrowLeft } from "lucide-react";
 
+/**
+ * Format content to ensure proper HTML paragraph structure
+ * If content doesn't have HTML tags, wrap paragraphs in <p> tags
+ */
+function formatContent(content: string): string {
+    if (!content) return "";
+
+    // Check if content already has HTML paragraph tags
+    const hasHtmlTags = /<(p|div|h[1-6]|ul|ol|blockquote)[\s>]/i.test(content);
+
+    if (hasHtmlTags) {
+        // Content already has HTML structure, return as-is
+        return content;
+    }
+
+    // Content is plain text - wrap each paragraph in <p> tags
+    // Split by double newlines (paragraph breaks) or single newlines
+    const paragraphs = content
+        .split(/\n\n+|\n/)
+        .map(p => p.trim())
+        .filter(p => p.length > 0);
+
+    // Wrap each paragraph in <p> tags
+    return paragraphs
+        .map(p => `<p>${p}</p>`)
+        .join('\n');
+}
+
 interface NewsDetailPageProps {
     params: Promise<{ slug: string }>;
 }
@@ -36,6 +64,9 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
         include: {
             author: true,
             unit: true,
+            images: {
+                orderBy: { order: "asc" }
+            }
         },
     });
 
@@ -111,13 +142,42 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
                         </div>
 
                         {/* Article Content */}
-                        <div
+                        <article
                             className="prose prose-lg prose-slate max-w-none 
-                            prose-headings:font-bold prose-headings:text-emerald-950 prose-headings:uppercase prose-headings:tracking-tight
+                            prose-headings:font-bold prose-headings:text-emerald-950 prose-headings:tracking-tight
+                            prose-p:text-slate-700 prose-p:leading-relaxed
                             prose-a:text-emerald-600 prose-a:no-underline hover:prose-a:underline
-                            prose-img:rounded-xl prose-img:shadow-lg"
-                            dangerouslySetInnerHTML={{ __html: post.content }}
+                            prose-img:rounded-xl prose-img:shadow-lg
+                            prose-strong:text-emerald-900
+                            prose-h2:text-xl prose-h2:mt-8 prose-h2:mb-4 prose-h2:border-b-2 prose-h2:border-emerald-500 prose-h2:pb-2
+                            prose-h3:text-lg prose-h3:mt-6 prose-h3:mb-3"
+                            dangerouslySetInnerHTML={{
+                                __html: formatContent(post.content)
+                            }}
                         />
+
+                        {/* Activity Gallery */}
+                        {post.images && post.images.length > 0 && (
+                            <div className="mt-12 pt-12 border-t border-slate-100">
+                                <h3 className="text-xl font-bold text-emerald-950 mb-6 flex items-center gap-3">
+                                    <span className="w-8 h-1 bg-gold-500 rounded-full"></span>
+                                    Galeri Kegiatan
+                                </h3>
+                                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                    {post.images.map((img, index) => (
+                                        <div key={img.id} className="relative aspect-square rounded-xl overflow-hidden group shadow-md hover:shadow-xl transition-all duration-300">
+                                            <Image
+                                                src={img.imageUrl}
+                                                alt={`Dokumentasi ${post.title} - ${index + 1}`}
+                                                fill
+                                                className="object-cover group-hover:scale-110 transition-transform duration-500"
+                                            />
+                                            <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors" />
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                     </div>
 
                     {/* Sidebar */}

@@ -28,7 +28,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { CloudinaryUpload } from "@/components/ui/cloudinary-upload";
-import { X } from "lucide-react";
+import { X, Sparkles, Loader2 } from "lucide-react";
 import { SerializedDonation } from "@/lib/types";
 
 interface DonationFormProps {
@@ -47,6 +47,7 @@ function generateSlug(title: string): string {
 export function DonationForm({ donation }: DonationFormProps) {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
+    const [isAiGenerating, setIsAiGenerating] = useState(false);
     const isEditing = !!donation;
 
     const form = useForm<DonationInput>({
@@ -68,11 +69,66 @@ export function DonationForm({ donation }: DonationFormProps) {
     });
 
     const watchImage = form.watch("image");
+    const watchTitle = form.watch("title");
 
     const handleTitleChange = (value: string) => {
         form.setValue("title", value);
         if (!isEditing && !form.getValues("slug")) {
             form.setValue("slug", generateSlug(value));
+        }
+    };
+
+    const handleAiGenerate = async () => {
+        const title = form.getValues("title");
+        const image = form.getValues("image");
+
+        if (!title) {
+            toast.error("Masukkan judul program terlebih dahulu");
+            return;
+        }
+
+        try {
+            setIsAiGenerating(true);
+            toast.info("Generating deskripsi dengan AI...");
+
+            const response = await fetch("/api/ai/generate-caption", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    title,
+                    imageUrl: image || undefined,
+                    type: "donation",
+                }),
+            });
+
+            const result = await response.json();
+
+            if (!result.success) {
+                throw new Error(result.error || "Gagal generate deskripsi");
+            }
+
+            // Update form fields with AI-generated content
+            if (result.data.slug && !form.getValues("slug")) {
+                form.setValue("slug", result.data.slug);
+            }
+            if (result.data.summary || result.data.content) {
+                // Combine summary and content for donation description
+                const description = result.data.content || result.data.summary;
+                form.setValue("description", description.replace(/<[^>]*>/g, '')); // Strip HTML tags for textarea
+            }
+
+            toast.success("Deskripsi berhasil di-generate dengan AI!");
+        } catch (error) {
+            console.error("AI generation error:", error);
+            toast.error(
+                error instanceof Error
+                    ? error.message
+                    : "Gagal generate deskripsi dengan AI"
+            );
+        } finally {
+            setIsAiGenerating(false);
         }
     };
 
@@ -199,6 +255,30 @@ export function DonationForm({ donation }: DonationFormProps) {
                                 </FormItem>
                             )}
                         />
+
+                        {/* AI Generate Button */}
+                        <Button
+                            type="button"
+                            variant="outline"
+                            className="w-full bg-gradient-to-r from-purple-500/10 to-pink-500/10 border-purple-300 hover:from-purple-500/20 hover:to-pink-500/20"
+                            onClick={handleAiGenerate}
+                            disabled={isAiGenerating || !watchTitle}
+                        >
+                            {isAiGenerating ? (
+                                <>
+                                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                    Generating...
+                                </>
+                            ) : (
+                                <>
+                                    <Sparkles className="h-4 w-4 mr-2 text-purple-500" />
+                                    Generate dengan AI
+                                </>
+                            )}
+                        </Button>
+                        <p className="text-xs text-muted-foreground text-center">
+                            Generate slug dan deskripsi otomatis berdasarkan judul{watchImage ? " dan gambar" : ""}
+                        </p>
                     </CardContent>
                 </Card>
 

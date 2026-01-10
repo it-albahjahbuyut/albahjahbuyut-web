@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { CldUploadWidget, CloudinaryUploadWidgetResults } from "next-cloudinary";
 import { Button } from "@/components/ui/button";
 import { ImagePlus, Loader2, AlertTriangle } from "lucide-react";
@@ -186,8 +186,12 @@ export function CloudinaryMultiUpload({
     disabled = false,
 }: CloudinaryMultiUploadProps) {
     const [isUploading, setIsUploading] = useState(false);
-    const [uploadedUrls, setUploadedUrls] = useState<string[]>([]);
     const [isConfigured, setIsConfigured] = useState<boolean | null>(null);
+    
+    // Use ref to track uploaded URLs to avoid stale closure issues
+    const uploadedUrlsRef = useRef<string[]>([]);
+    // Flag to prevent double callback
+    const hasCalledCompleteRef = useRef(false);
 
     const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
     const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
@@ -223,19 +227,32 @@ export function CloudinaryMultiUpload({
         (result: CloudinaryUploadWidgetResults) => {
             if (result.event === "success" && result.info && typeof result.info !== "string") {
                 const secureUrl = result.info.secure_url;
-                setUploadedUrls((prev) => [...prev, secureUrl]);
+                // Use ref to accumulate URLs to avoid stale closure
+                uploadedUrlsRef.current = [...uploadedUrlsRef.current, secureUrl];
+                console.log("Image uploaded:", secureUrl, "Total:", uploadedUrlsRef.current.length);
             }
         },
         []
     );
 
     const handleClose = useCallback(() => {
-        setIsUploading(false);
-        if (uploadedUrls.length > 0) {
-            onUploadComplete(uploadedUrls);
-            setUploadedUrls([]);
+        // Prevent double callback (onQueuesEnd and onClose might both fire)
+        if (hasCalledCompleteRef.current) {
+            return;
         }
-    }, [uploadedUrls, onUploadComplete]);
+        
+        setIsUploading(false);
+        // Use ref value instead of state to get latest URLs
+        console.log("Widget closed, URLs collected:", uploadedUrlsRef.current.length);
+        if (uploadedUrlsRef.current.length > 0) {
+            hasCalledCompleteRef.current = true;
+            const urlsToSend = [...uploadedUrlsRef.current];
+            // Reset the ref first
+            uploadedUrlsRef.current = [];
+            // Then send the URLs
+            onUploadComplete(urlsToSend);
+        }
+    }, [onUploadComplete]);
 
     const handleError = useCallback(
         (error: unknown) => {
@@ -261,6 +278,8 @@ export function CloudinaryMultiUpload({
                 clientAllowedFormats: ["jpg", "jpeg", "png", "gif", "webp"],
                 maxFileSize: 10485760, // 10MB
                 multiple: true,
+                showUploadMoreButton: true,
+                singleUploadAutoClose: false,
                 sources: ["local", "url", "camera"],
                 styles: {
                     palette: {
@@ -283,6 +302,7 @@ export function CloudinaryMultiUpload({
             onSuccess={handleUpload}
             onError={handleError}
             onQueuesEnd={handleClose}
+            onClose={handleClose}
         >
             {({ open }) => (
                 <div
@@ -293,6 +313,9 @@ export function CloudinaryMultiUpload({
                     )}
                     onClick={() => {
                         if (!disabled) {
+                            // Reset refs before opening new upload session
+                            uploadedUrlsRef.current = [];
+                            hasCalledCompleteRef.current = false;
                             setIsUploading(true);
                             open();
                         }

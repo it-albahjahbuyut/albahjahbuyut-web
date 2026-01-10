@@ -122,10 +122,29 @@ model Post {
   unitId String?
   unit   Unit?   @relation(fields: [unitId], references: [id], onDelete: SetNull)
 
+  // Gallery images for this post
+  images PostImage[]
+
   @@index([status, publishedAt])
   @@index([category])
   @@index([unitId])
   @@map("posts")
+}
+
+// Galeri Foto Kegiatan untuk Berita
+model PostImage {
+  id          String   @id @default(cuid())
+  imageUrl    String   // URL gambar dari Cloudinary
+  caption     String?  // Caption untuk gambar
+  order       Int      @default(0) // Urutan tampilan
+  createdAt   DateTime @default(now())
+
+  // Relation to Post
+  postId String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@index([postId])
+  @@map("post_images")
 }
 
 // ============================================

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Unit } from "@prisma/client";
@@ -10,6 +11,7 @@ import { unitSchema, type UnitInput } from "@/lib/validations";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { CloudinaryUpload } from "@/components/ui/cloudinary-upload";
 import {
     Form,
     FormControl,
@@ -174,6 +176,75 @@ export function UnitForm({ unit, onSuccess }: UnitFormProps) {
                             <FormDescription>
                                 Link ke form pendaftaran online
                             </FormDescription>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+
+                {/* Image Upload Field */}
+                <FormField
+                    control={form.control}
+                    name="image"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Gambar Cover</FormLabel>
+                            <FormDescription className="mb-3">
+                                Gambar ini akan ditampilkan di halaman utama dan hero section detail unit.
+                            </FormDescription>
+
+                            {/* Current Image Preview */}
+                            {field.value && (
+                                <div className="relative mb-4 rounded-lg overflow-hidden border bg-muted/20 aspect-video max-w-sm">
+                                    <Image
+                                        src={field.value}
+                                        alt="Preview gambar unit"
+                                        fill
+                                        className="object-cover"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => field.onChange("")}
+                                        className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1.5 hover:bg-red-600 transition-colors"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            )}
+
+                            {/* URL Input */}
+                            <div className="space-y-4">
+                                <div>
+                                    <FormLabel className="text-sm text-muted-foreground">Masukkan URL Gambar</FormLabel>
+                                    <Input
+                                        placeholder="https://example.com/image.jpg"
+                                        value={field.value || ""}
+                                        onChange={(e) => field.onChange(e.target.value)}
+                                        className="mt-1"
+                                    />
+                                </div>
+
+                                {/* Divider */}
+                                <div className="relative">
+                                    <div className="absolute inset-0 flex items-center">
+                                        <span className="w-full border-t" />
+                                    </div>
+                                    <div className="relative flex justify-center text-xs uppercase">
+                                        <span className="bg-background px-2 text-muted-foreground">atau upload</span>
+                                    </div>
+                                </div>
+
+                                {/* Cloudinary Upload */}
+                                <FormControl>
+                                    <CloudinaryUpload
+                                        folder="abbuyut/units"
+                                        onUploadComplete={(url: string) => field.onChange(url)}
+                                        onUploadError={(error: string) => toast.error(error)}
+                                        disabled={isLoading}
+                                    />
+                                </FormControl>
+                            </div>
                             <FormMessage />
                         </FormItem>
                     )}

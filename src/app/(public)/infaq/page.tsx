@@ -1,11 +1,11 @@
 import { db } from "@/lib/db";
 import { DonationCard } from "@/components/public/DonationCard";
-import { Heart, Landmark } from "lucide-react";
+import { Heart, Landmark, ArrowRight } from "lucide-react";
 import { FadeIn, FadeInStagger } from "@/components/animations/FadeIn";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Program Donasi & Infaq | Pondok Pesantren Al-Bahjah Buyut",
+    title: "Program Infaq & Donasi | Pondok Pesantren Al-Bahjah Buyut",
     description:
         "Salurkan infaq dan sedekah Anda untuk pengembangan Pondok Pesantren Al-Bahjah Buyut. Setiap kontribusi Anda akan menjadi amal jariyah.",
 };
@@ -89,57 +89,62 @@ export default async function DonationPage() {
                             <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6">
                                 <Heart className="w-8 h-8 text-slate-400" />
                             </div>
-                            <h3 className="text-xl font-bold text-slate-700 uppercase tracking-wide mb-2">Belum Ada Program</h3>
-                            <p className="text-slate-500">Saat ini belum ada program donasi yang dibuka.</p>
+                            <h3 className="text-xl font-bold text-emerald-950 tracking-wide mb-2">Belum Ada Program</h3>
+                            <p className="text-slate-500">Saat ini kami sedang mempersiapkan program kebaikan selanjutnya. Mari bersama-sama menebar manfaat untuk umat.</p>
                         </div>
                     )}
 
-                    {/* How to Donate & Confirmation */}
-                    <div className="grid lg:grid-cols-2 gap-12 items-start">
-                        {/* Steps */}
-                        <div className="bg-white p-8 lg:p-10 border border-slate-200 shadow-sm rounded-xl">
-                            <h3 className="text-2xl font-bold text-emerald-950 uppercase tracking-wide mb-8 flex items-center gap-3">
-                                <span className="w-1 h-8 bg-gold-500 block"></span>
-                                Cara Berdonasi
-                            </h3>
-                            <FadeInStagger faster className="space-y-6">
+                    {/* Donation Guide - Integrated Panel Design */}
+                    <div className="bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100">
+                        {/* Process Steps Step Banner */}
+                        <div className="p-8 lg:p-12">
+                            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8 lg:gap-4 relative">
+                                {/* Connecting Line (Desktop) */}
+                                <div className="hidden lg:block absolute top-6 left-16 right-16 h-0.5 bg-slate-100" />
+
                                 {[
-                                    "Pilih program donasi yang ingin Anda dukung.",
-                                    "Salin nomor rekening tujuan yang tertera.",
-                                    "Lakukan transfer melalui ATM atau Mobile Banking.",
-                                    "Lakukan konfirmasi agar donasi tercatat."
+                                    { title: "Pilih Program", desc: "Pilih peluang amal Anda" },
+                                    { title: "Salin Rekening", desc: "Copy nomor rekening" },
+                                    { title: "Lakukan Transfer", desc: "Via ATM / E-Banking" },
+                                    { title: "Konfirmasi", desc: "Kirimi kami bukti transfer" }
                                 ].map((step, idx) => (
-                                    <FadeIn key={idx}>
-                                        <div className="flex gap-5">
-                                            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-emerald-950 text-gold-400 font-bold flex items-center justify-center text-sm border-2 border-emerald-950">
-                                                {idx + 1}
-                                            </div>
-                                            <p className="text-slate-700 font-medium pt-1 text-lg">{step}</p>
+                                    <div key={idx} className="relative z-10 flex lg:flex-col items-center gap-4 lg:gap-6 w-full lg:text-center group">
+                                        <div className="flex-shrink-0 w-12 h-12 rounded-full bg-white border-2 border-slate-100 text-slate-400 font-bold flex items-center justify-center text-lg transition-all duration-300 group-hover:border-gold-500 group-hover:text-gold-500 group-hover:scale-110 shadow-sm">
+                                            {idx + 1}
                                         </div>
-                                    </FadeIn>
+                                        <div className="pt-1 lg:pt-0">
+                                            <h4 className="font-bold text-emerald-950 text-lg mb-1">{step.title}</h4>
+                                            <p className="text-slate-500 text-sm">{step.desc}</p>
+                                        </div>
+                                    </div>
                                 ))}
-                            </FadeInStagger>
+                            </div>
                         </div>
 
-                        {/* Confirmation CTA */}
-                        <div className="bg-emerald-950 text-white p-8 lg:p-10 rounded-xl shadow-xl relative overflow-hidden">
-                            <div className="absolute top-0 right-0 p-8 opacity-5">
-                                <Landmark className="w-48 h-48" />
-                            </div>
-                            <div className="relative z-10 space-y-6">
-                                <h3 className="text-2xl font-bold uppercase tracking-wide text-gold-400">
-                                    Sudah Transfer?
+                        {/* Integrated CTA Section */}
+                        <div className="bg-emerald-950 p-8 lg:px-12 lg:py-10 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
+                            {/* Decorative Background Pattern */}
+                            <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] mix-blend-overlay pointer-events-none" />
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-800/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+
+                            <div className="relative z-10 text-center md:text-left">
+                                <h3 className="text-2xl font-bold text-white mb-2 flex items-center justify-center md:justify-start gap-3">
+                                    Sudah Melakukan Transfer?
                                 </h3>
-                                <p className="text-emerald-100/80 leading-relaxed text-lg">
-                                    Mohon lakukan konfirmasi donasi Anda untuk memudahkan kami dalam pencatatan dan pelaporan amanah.
+                                <p className="text-emerald-100/80 text-sm max-w-xl font-light">
+                                    Mohon konfirmasi donasi Anda agar tercatat dalam sistem kami.
                                 </p>
-                                <a
-                                    href="https://wa.me/6281234567890?text=Assalamualaikum%2C%20saya%20ingin%20konfirmasi%20donasi"
-                                    className="inline-flex w-full items-center justify-center gap-2 bg-gold-500 hover:bg-gold-400 text-emerald-950 px-8 py-4 font-bold uppercase tracking-widest transition-all hover:-translate-y-1 shadow-lg"
-                                >
-                                    Konfirmasi via WhatsApp
-                                </a>
                             </div>
+
+                            <a
+                                href="https://wa.me/6282228682623?text=Assalamualaikum%2C%20saya%20ingin%20konfirmasi%20donasi"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="relative z-10 inline-flex items-center gap-2 bg-gold-500 hover:bg-gold-400 text-emerald-950 px-8 py-3.5 rounded-full font-bold transition-all shadow-lg hover:shadow-gold-500/20 whitespace-nowrap"
+                            >
+                                Konfirmasi via WhatsApp
+                                <ArrowRight className="w-4 h-4" />
+                            </a>
                         </div>
                     </div>
                 </div>

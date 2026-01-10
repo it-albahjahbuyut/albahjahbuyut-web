@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Post, Unit } from "@prisma/client";
+import { Post, Unit, PostImage } from "@prisma/client";
 import { createPost, updatePost } from "@/actions/post";
 import { postSchema, type PostInput } from "@/lib/validations";
 import { Button } from "@/components/ui/button";
@@ -26,14 +26,19 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { TiptapEditor } from "@/components/editor/tiptap";
-import { CloudinaryUpload } from "@/components/ui/cloudinary-upload";
-import { X } from "lucide-react";
+import { CloudinaryUpload, CloudinaryMultiUpload } from "@/components/ui/cloudinary-upload";
+import { X, Sparkles, Loader2, Trash2 } from "lucide-react";
+
+// Extend Post type to include images
+type PostWithImages = Post & {
+    images?: PostImage[];
+};
 
 interface PostFormProps {
-    post?: Post;
+    post?: PostWithImages;
     units: Unit[];
 }
 
@@ -49,6 +54,7 @@ function generateSlug(title: string): string {
 export function PostForm({ post, units }: PostFormProps) {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
+    const [isAiGenerating, setIsAiGenerating] = useState(false);
     const isEditing = !!post;
 
     const form = useForm<PostInput>({
@@ -63,16 +69,75 @@ export function PostForm({ post, units }: PostFormProps) {
             status: post?.status || "DRAFT",
             featured: post?.featured || false,
             unitId: post?.unitId || undefined,
+            galleryImages: post?.images?.map(img => img.imageUrl) || [],
         },
     });
 
     const watchTitle = form.watch("title");
     const watchImage = form.watch("image");
+    const watchGalleryImages = form.watch("galleryImages") || [];
 
     const handleTitleChange = (value: string) => {
         form.setValue("title", value);
         if (!isEditing && !form.getValues("slug")) {
             form.setValue("slug", generateSlug(value));
+        }
+    };
+
+    const handleAiGenerate = async () => {
+        const title = form.getValues("title");
+        const image = form.getValues("image");
+        const category = form.getValues("category");
+
+        if (!title) {
+            toast.error("Masukkan judul terlebih dahulu");
+            return;
+        }
+
+        try {
+            setIsAiGenerating(true);
+            toast.info("Generating konten dengan AI...");
+
+            const response = await fetch("/api/ai/generate-caption", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    title,
+                    imageUrl: image || undefined,
+                    type: "post",
+                    category,
+                }),
+            });
+
+            const result = await response.json();
+
+            if (!result.success) {
+                throw new Error(result.error || "Gagal generate konten");
+            }
+
+            // Update form fields with AI-generated content
+            if (result.data.slug && !form.getValues("slug")) {
+                form.setValue("slug", result.data.slug);
+            }
+            if (result.data.summary) {
+                form.setValue("excerpt", result.data.summary);
+            }
+            if (result.data.content) {
+                form.setValue("content", result.data.content);
+            }
+
+            toast.success("Konten berhasil di-generate dengan AI!");
+        } catch (error) {
+            console.error("AI generation error:", error);
+            toast.error(
+                error instanceof Error
+                    ? error.message
+                    : "Gagal generate konten dengan AI"
+            );
+        } finally {
+            setIsAiGenerating(false);
         }
     };
 
@@ -176,6 +241,90 @@ export function PostForm({ post, units }: PostFormProps) {
                                                     placeholder="Tulis konten artikel..."
                                                 />
                                             </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </CardContent>
+                        </Card>
+
+                        {/* Gallery Section */}
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="text-lg">Galeri Kegiatan</CardTitle>
+                            </CardHeader>
+                            <CardContent className="space-y-4">
+                                <FormField
+                                    control={form.control}
+                                    name="galleryImages"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <div className="space-y-4">
+                                                <div className="flex justify-between items-center">
+                                                    <FormLabel>Foto Kegiatan</FormLabel>
+                                                    {field.value && field.value.length > 0 && (
+                                                        <Button
+                                                            type="button"
+                                                            variant="ghost"
+                                                            size="sm"
+                                                            className="text-red-500 hover:text-red-600 hover:bg-red-50 h-8"
+                                                            onClick={() => field.onChange([])}
+                                                        >
+                                                            Hapus Semua
+                                                        </Button>
+                                                    )}
+                                                </div>
+
+                                                <CloudinaryMultiUpload
+                                                    folder="abbuyut/activities"
+                                                    onUploadComplete={(urls) => {
+                                                        const currentImages = field.value || [];
+                                                        const newImages = [...currentImages, ...urls];
+                                                        field.onChange(newImages);
+                                                        toast.success(`${urls.length} gambar ditambahkan`);
+                                                    }}
+                                                    onUploadError={(err) => toast.error(err)}
+                                                />
+
+                                                {/* Image Grid */}
+                                                {field.value && field.value.length > 0 ? (
+                                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+                                                        {field.value.map((url, index) => (
+                                                            <div key={`${url}-${index}`} className="relative group aspect-square bg-slate-100 rounded-lg overflow-hidden border shadow-sm hover:shadow-md transition-shadow">
+                                                                <img
+                                                                    src={url}
+                                                                    alt={`Galeri ${index + 1}`}
+                                                                    className="w-full h-full object-cover"
+                                                                />
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() => {
+                                                                        const newImages = [...field.value];
+                                                                        newImages.splice(index, 1);
+                                                                        field.onChange(newImages);
+                                                                    }}
+                                                                    className="absolute top-2 right-2 bg-red-500 text-white p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600 shadow-sm z-10"
+                                                                    title="Hapus gambar"
+                                                                >
+                                                                    <Trash2 className="w-3 h-3" />
+                                                                </button>
+                                                                <div className="absolute inset-x-0 bottom-0 bg-black/60 backdrop-blur-sm text-white text-[10px] p-1.5 opacity-0 group-hover:opacity-100 transition-opacity truncate text-center">
+                                                                    Gambar {index + 1}
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                ) : (
+                                                    <div className="text-center py-8 border-2 border-dashed rounded-lg bg-slate-50/50 hover:bg-slate-50 transition-colors">
+                                                        <div className="flex flex-col items-center justify-center text-muted-foreground gap-2">
+                                                            <Sparkles className="w-8 h-8 opacity-20" />
+                                                            <p className="text-sm italic">
+                                                                Belum ada foto kegiatan.
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
                                             <FormMessage />
                                         </FormItem>
                                     )}
@@ -319,6 +468,30 @@ export function PostForm({ post, units }: PostFormProps) {
                                         </FormItem>
                                     )}
                                 />
+
+                                {/* AI Generate Button */}
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    className="w-full bg-gradient-to-r from-purple-500/10 to-pink-500/10 border-purple-300 hover:from-purple-500/20 hover:to-pink-500/20 mt-4"
+                                    onClick={handleAiGenerate}
+                                    disabled={isAiGenerating || !watchTitle}
+                                >
+                                    {isAiGenerating ? (
+                                        <>
+                                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                            Generating...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Sparkles className="h-4 w-4 mr-2 text-purple-500" />
+                                            Generate dengan AI
+                                        </>
+                                    )}
+                                </Button>
+                                <p className="text-xs text-muted-foreground text-center mt-2">
+                                    Generate slug, ringkasan, dan konten otomatis berdasarkan judul{watchImage ? " dan gambar" : ""}
+                                </p>
                             </CardContent>
                         </Card>
 

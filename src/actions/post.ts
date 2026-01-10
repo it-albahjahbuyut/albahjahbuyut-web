@@ -56,6 +56,9 @@ export async function getPost(id: string) {
                 unit: {
                     select: { id: true, name: true, slug: true },
                 },
+                images: {
+                    orderBy: { order: 'asc' },
+                },
             },
         });
 
@@ -78,13 +81,30 @@ export async function createPost(data: PostInput) {
         }
 
         const validated = postSchema.parse(data);
+        const { galleryImages, ...postData } = validated;
 
-        const post = await db.post.create({
-            data: {
-                ...validated,
-                authorId: session.user.id,
-                publishedAt: validated.status === "PUBLISHED" ? new Date() : null,
-            },
+        // Use transaction to create post and images
+        const post = await db.$transaction(async (tx) => {
+            const newPost = await tx.post.create({
+                data: {
+                    ...postData,
+                    authorId: session.user.id,
+                    publishedAt: validated.status === "PUBLISHED" ? new Date() : null,
+                },
+            });
+
+            // Create gallery images if any
+            if (galleryImages && galleryImages.length > 0) {
+                await tx.postImage.createMany({
+                    data: galleryImages.map((url, index) => ({
+                        postId: newPost.id,
+                        imageUrl: url,
+                        order: index,
+                    })),
+                });
+            }
+
+            return newPost;
         });
 
         revalidatePath("/admin/posts");
@@ -105,20 +125,43 @@ export async function updatePost(id: string, data: PostInput) {
         }
 
         const validated = postSchema.parse(data);
+        const { galleryImages, ...postData } = validated;
 
         // Get existing post to check published status
         const existing = await db.post.findUnique({ where: { id } });
 
-        const post = await db.post.update({
-            where: { id },
-            data: {
-                ...validated,
-                publishedAt:
-                    validated.status === "PUBLISHED" && !existing?.publishedAt
-                        ? new Date()
-                        : existing?.publishedAt,
-                updatedAt: new Date(),
-            },
+        // Use transaction to update post and replace images
+        const post = await db.$transaction(async (tx) => {
+            const updatedPost = await tx.post.update({
+                where: { id },
+                data: {
+                    ...postData,
+                    publishedAt:
+                        validated.status === "PUBLISHED" && !existing?.publishedAt
+                            ? new Date()
+                            : existing?.publishedAt,
+                    updatedAt: new Date(),
+                },
+            });
+
+            // Handle gallery images
+            // First, delete existing images
+            await tx.postImage.deleteMany({
+                where: { postId: id },
+            });
+
+            // Then create new images if any
+            if (galleryImages && galleryImages.length > 0) {
+                await tx.postImage.createMany({
+                    data: galleryImages.map((url, index) => ({
+                        postId: id,
+                        imageUrl: url,
+                        order: index,
+                    })),
+                });
+            }
+
+            return updatedPost;
         });
 
         revalidatePath("/admin/posts");

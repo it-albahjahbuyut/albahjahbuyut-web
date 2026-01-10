@@ -30,7 +30,7 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
 import { CloudinaryUpload } from "@/components/ui/cloudinary-upload";
-import { X } from "lucide-react";
+import { X, Sparkles, Loader2 } from "lucide-react";
 import Image from "next/image";
 
 const galleryFormSchema = z.object({
@@ -50,6 +50,7 @@ interface GalleryFormProps {
 export function GalleryForm({ gallery, units }: GalleryFormProps) {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
+    const [isAiGenerating, setIsAiGenerating] = useState(false);
     const isEditing = !!gallery;
 
     const form = useForm<GalleryInput>({
@@ -65,6 +66,62 @@ export function GalleryForm({ gallery, units }: GalleryFormProps) {
     });
 
     const imageUrl = form.watch("imageUrl");
+    const watchTitle = form.watch("title");
+
+    const handleAiGenerate = async () => {
+        const title = form.getValues("title");
+        const image = form.getValues("imageUrl");
+
+        if (!title && !image) {
+            toast.error("Masukkan judul atau upload gambar terlebih dahulu");
+            return;
+        }
+
+        try {
+            setIsAiGenerating(true);
+            toast.info("Generating deskripsi dengan AI...");
+
+            const response = await fetch("/api/ai/generate-caption", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    title: title || "Galeri Foto",
+                    imageUrl: image || undefined,
+                    type: "gallery",
+                }),
+            });
+
+            const result = await response.json();
+
+            if (!result.success) {
+                throw new Error(result.error || "Gagal generate deskripsi");
+            }
+
+            // Update form fields with AI-generated content
+            if (result.data.summary) {
+                form.setValue("description", result.data.summary);
+            }
+            // If no title was provided, use AI suggestion for title
+            if (!title && result.data.content) {
+                // Extract a reasonable title from content
+                const suggestedTitle = result.data.content.split('.')[0].slice(0, 100);
+                form.setValue("title", suggestedTitle);
+            }
+
+            toast.success("Deskripsi berhasil di-generate dengan AI!");
+        } catch (error) {
+            console.error("AI generation error:", error);
+            toast.error(
+                error instanceof Error
+                    ? error.message
+                    : "Gagal generate deskripsi dengan AI"
+            );
+        } finally {
+            setIsAiGenerating(false);
+        }
+    };
 
     const onSubmit = async (data: GalleryInput) => {
         try {
@@ -176,6 +233,30 @@ export function GalleryForm({ gallery, units }: GalleryFormProps) {
                                         </FormItem>
                                     )}
                                 />
+
+                                {/* AI Generate Button */}
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    className="w-full bg-gradient-to-r from-purple-500/10 to-pink-500/10 border-purple-300 hover:from-purple-500/20 hover:to-pink-500/20"
+                                    onClick={handleAiGenerate}
+                                    disabled={isAiGenerating || (!watchTitle && !imageUrl)}
+                                >
+                                    {isAiGenerating ? (
+                                        <>
+                                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                            Generating...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Sparkles className="h-4 w-4 mr-2 text-purple-500" />
+                                            Generate dengan AI
+                                        </>
+                                    )}
+                                </Button>
+                                <p className="text-xs text-muted-foreground text-center">
+                                    Generate deskripsi otomatis berdasarkan {imageUrl ? "gambar" : "judul"}
+                                </p>
                             </CardContent>
                         </Card>
                     </div>

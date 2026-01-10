@@ -118,6 +118,10 @@ export const postSchema = z.object({
         .string()
         .max(100, "ID terlalu panjang")
         .optional(),
+    galleryImages: z
+        .array(z.string().url("URL gambar tidak valid"))
+        .optional()
+        .default([]),
 });
 
 export type PostInput = z.infer<typeof postSchema>;
