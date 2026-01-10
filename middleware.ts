@@ -1,6 +1,14 @@
 import NextAuth from "next-auth";
 import { authConfig } from "@/lib/auth.config";
 import { NextResponse } from "next/server";
+import {
+    checkApiRateLimit,
+    checkLoginRateLimit,
+    isIPBlocked,
+    blockIP,
+    logSecurityEvent,
+    isRateLimitingEnabled
+} from "@/lib/rate-limit";
 
 const { auth } = NextAuth(authConfig);
 
@@ -8,14 +16,14 @@ const { auth } = NextAuth(authConfig);
 // SECURITY CONFIGURATION
 // ============================================
 
-// Rate limit settings
+// Fallback in-memory rate limiting (for when Upstash is not configured)
 const RATE_LIMIT_MAX = 100; // requests per window
 const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
 const LOGIN_RATE_LIMIT_MAX = 5; // login attempts
 const LOGIN_RATE_LIMIT_WINDOW = 15 * 60 * 1000; // 15 minutes
 const BLOCK_DURATION = 60 * 60 * 1000; // 1 hour block
 
-// In-memory stores (use Redis in production for distributed systems)
+// In-memory stores (fallback when Upstash not configured)
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
 const loginAttemptStore = new Map<string, { count: number; resetTime: number }>();
 const blockedIPs = new Set<string>();
@@ -56,7 +64,10 @@ function getClientIP(headers: Headers): string {
     return 'unknown';
 }
 
-function checkRateLimit(
+/**
+ * Fallback in-memory rate limit check (when Upstash not configured)
+ */
+function checkRateLimitInMemory(
     identifier: string,
     isLoginAttempt: boolean = false
 ): { allowed: boolean; resetIn: number } {
@@ -94,6 +105,52 @@ function checkRateLimit(
     return { allowed: true, resetIn: entry.resetTime - now };
 }
 
+/**
+ * Check rate limit using Upstash Redis or fallback to in-memory
+ */
+async function checkRateLimit(
+    identifier: string,
+    isLoginAttempt: boolean = false
+): Promise<{ allowed: boolean; resetIn: number }> {
+    // Use Upstash if configured
+    if (isRateLimitingEnabled()) {
+        try {
+            // Check if IP is blocked in Redis
+            const blocked = await isIPBlocked(identifier);
+            if (blocked) {
+                return { allowed: false, resetIn: BLOCK_DURATION };
+            }
+
+            // Use Upstash rate limiter
+            const result = isLoginAttempt
+                ? await checkLoginRateLimit(identifier)
+                : await checkApiRateLimit(identifier);
+
+            if (!result.success && isLoginAttempt) {
+                // Block IP after too many login attempts
+                await blockIP(identifier, BLOCK_DURATION);
+                await logSecurityEvent({
+                    type: 'BLOCKED',
+                    ip: identifier,
+                    message: 'IP blocked after too many login attempts',
+                });
+            }
+
+            return {
+                allowed: result.success,
+                resetIn: result.reset - Date.now(),
+            };
+        } catch (error) {
+            console.error('[RATE_LIMIT] Upstash error, falling back to in-memory:', error);
+            // Fallback to in-memory on error
+            return checkRateLimitInMemory(identifier, isLoginAttempt);
+        }
+    }
+
+    // Fallback to in-memory rate limiting
+    return checkRateLimitInMemory(identifier, isLoginAttempt);
+}
+
 function isSuspiciousRequest(headers: Headers): boolean {
     const userAgent = headers.get('user-agent') || '';
 
@@ -129,20 +186,20 @@ function addSecurityHeaders(response: NextResponse): NextResponse {
 
 async function checkMaintenanceMode(baseUrl: string): Promise<boolean> {
     const now = Date.now();
-    
+
     // Use cached value if still valid
     if (now - maintenanceModeCache.lastCheck < MAINTENANCE_CACHE_TTL) {
         return maintenanceModeCache.enabled;
     }
-    
+
     try {
         // Use internal fetch with timeout - this must NOT be called during initial request
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 2000);
-        
+
         // Use internal fetch to the API route
         const apiUrl = `${baseUrl}/api/maintenance`;
-        
+
         const response = await fetch(apiUrl, {
             method: 'GET',
             cache: 'no-store',
@@ -152,13 +209,13 @@ async function checkMaintenanceMode(baseUrl: string): Promise<boolean> {
                 'X-Internal-Request': 'true',
             },
         });
-        
+
         clearTimeout(timeoutId);
-        
+
         if (!response.ok) {
             return maintenanceModeCache.enabled;
         }
-        
+
         const data = await response.json();
         maintenanceModeCache = {
             enabled: data.enabled === true,
@@ -185,18 +242,18 @@ export default auth(async (req) => {
     // ============================================
     const hostname = headers.get('host') || '';
     const isPSBSubdomain = hostname.startsWith('psb.') || hostname.includes('psb.albahjahbuyut');
-    
+
     // Handle PSB subdomain routing
     if (isPSBSubdomain) {
         const pathname = nextUrl.pathname;
-        
+
         // Skip if already on /psb path, static assets, or API routes
-        const shouldRewrite = !pathname.startsWith('/psb') && 
-                              !pathname.startsWith('/_next') && 
-                              !pathname.startsWith('/api') &&
-                              !pathname.startsWith('/favicon') &&
-                              !pathname.match(/\.(ico|png|jpg|jpeg|gif|svg|css|js|woff|woff2)$/);
-        
+        const shouldRewrite = !pathname.startsWith('/psb') &&
+            !pathname.startsWith('/_next') &&
+            !pathname.startsWith('/api') &&
+            !pathname.startsWith('/favicon') &&
+            !pathname.match(/\.(ico|png|jpg|jpeg|gif|svg|css|js|woff|woff2)$/);
+
         if (shouldRewrite) {
             // Rewrite to /psb path
             const newUrl = new URL(`/psb${pathname === '/' ? '' : pathname}`, nextUrl);
@@ -236,7 +293,7 @@ export default auth(async (req) => {
 
     // Apply rate limiting for login page
     if (isLoginPage && req.method === 'POST') {
-        const { allowed, resetIn } = checkRateLimit(clientIP, true);
+        const { allowed, resetIn } = await checkRateLimit(clientIP, true);
         if (!allowed) {
             console.warn(`[SECURITY] Login rate limit exceeded for IP: ${clientIP}`);
             const response = new NextResponse(
@@ -258,7 +315,7 @@ export default auth(async (req) => {
 
     // Apply general rate limiting for API routes
     if (nextUrl.pathname.startsWith("/api") && !isApiAuthRoute) {
-        const { allowed, resetIn } = checkRateLimit(clientIP);
+        const { allowed, resetIn } = await checkRateLimit(clientIP);
         if (!allowed) {
             console.warn(`[SECURITY] Rate limit exceeded for IP: ${clientIP}`);
             const response = new NextResponse(

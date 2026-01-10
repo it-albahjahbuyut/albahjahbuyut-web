@@ -6,6 +6,8 @@ import { createRegistrationFolder, uploadToDrive, deleteDriveFolder } from '@/li
 import { appendToSpreadsheet, updateSpreadsheetStatus } from '@/lib/google-sheets';
 import { uploadQueue } from '@/lib/upload-queue';
 import { generateRegistrationNumber } from '@/lib/psb-config';
+import { psbFormSchema, psbDocumentSchema } from '@/lib/validations';
+import { ZodError } from 'zod';
 
 // Define PSBStatus type locally to avoid Prisma client import issues
 export type PSBStatus = 'PENDING' | 'VERIFIED' | 'ACCEPTED' | 'REJECTED';
@@ -59,19 +61,42 @@ export interface SubmitPSBResult {
     message: string;
     registrationNumber?: string;
     error?: string;
+    validationErrors?: Record<string, string>;
 }
 
 /**
  * Submit pendaftaran PSB baru
- * Strategy: Save to DB immediately, upload files in background for fast UX
+ * Strategy: Validate input → Save to DB immediately → Upload files in background
  */
 export async function submitPSBRegistration(
     formData: PSBFormData,
     documents: DocumentUpload[]
 ): Promise<SubmitPSBResult> {
     try {
+        // ============================================
+        // SECURITY: Validate all input data with Zod
+        // ============================================
+
+        // Validate form data
+        const validatedFormData = psbFormSchema.parse(formData);
+
+        // Validate each document
+        const validatedDocuments = documents.map((doc, index) => {
+            try {
+                return psbDocumentSchema.parse(doc);
+            } catch (docError) {
+                if (docError instanceof ZodError) {
+                    // Zod v4+ uses 'issues' property
+                    const issues = docError.issues || [];
+                    const firstError = issues[0];
+                    throw new Error(`Dokumen ${index + 1}: ${firstError?.message || 'Validasi gagal'}`);
+                }
+                throw docError;
+            }
+        });
+
         // Generate nomor pendaftaran
-        const registrationNumber = generateRegistrationNumber(formData.unitSlug);
+        const registrationNumber = generateRegistrationNumber(validatedFormData.unitSlug);
 
         // STEP 1: Simpan ke database DULU (cepat, ~1-2 detik)
         // Dokumen akan diupload di background
@@ -125,6 +150,24 @@ export async function submitPSBRegistration(
         };
     } catch (error) {
         console.error('Error submitting PSB registration:', error);
+
+        // Handle Zod validation errors
+        if (error instanceof ZodError) {
+            const issues = error.issues || [];
+            const validationErrors: Record<string, string> = {};
+            issues.forEach((issue) => {
+                const path = issue.path?.join('.') || 'unknown';
+                validationErrors[path] = issue.message;
+            });
+
+            return {
+                success: false,
+                message: 'Data pendaftaran tidak valid. Silakan periksa kembali.',
+                error: issues[0]?.message || 'Validasi gagal',
+                validationErrors,
+            };
+        }
+
         return {
             success: false,
             message: 'Terjadi kesalahan saat memproses pendaftaran',

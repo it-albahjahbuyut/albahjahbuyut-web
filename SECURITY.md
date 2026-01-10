@@ -28,8 +28,10 @@ Website ini telah dilengkapi dengan berbagai lapisan keamanan untuk melindungi d
 |-------------|-------|-----------|
 | **Request Limit** | 100 req/menit | Limit request per IP per menit |
 | **Login Attempts** | 5 percobaan/15 menit | Limit percobaan login |
+| **PSB Form Limit** | 3 pendaftaran/jam | Limit pendaftaran PSB per IP |
 | **Block Duration** | 1 jam | Durasi blokir setelah melebihi limit |
 | **Suspicious Request Detection** | Aktif | Deteksi dan blokir tools hacking |
+| **Upstash Redis** | ✅ Tersedia | Rate limiting distributed untuk multi-instance |
 
 ### 3. Perlindungan SQL Injection
 
@@ -37,6 +39,7 @@ Website ini telah dilengkapi dengan berbagai lapisan keamanan untuk melindungi d
 |---------|--------|
 | **Prisma ORM** | Parameterized queries otomatis |
 | **Input Validation** | Zod schema dengan strict validation |
+| **PSB Form Validation** | Validasi NIK (16 digit), No KK, nomor telepon Indonesia |
 | **Slug Sanitization** | Regex pattern untuk slug yang aman |
 | **Max Length Limits** | Pembatasan panjang input untuk mencegah DoS |
 
@@ -60,8 +63,9 @@ Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-eval' 'un
 | File | Fungsi |
 |------|--------|
 | `src/lib/security.ts` | Utility functions untuk rate limiting, sanitization, CSRF |
+| `src/lib/rate-limit.ts` | **NEW** Upstash Redis distributed rate limiting |
 | `src/lib/auth.ts` | Konfigurasi NextAuth dengan security enhancements |
-| `src/lib/validations.ts` | Schema validasi dengan proteksi injection |
+| `src/lib/validations.ts` | Schema validasi dengan proteksi injection (termasuk PSB) |
 | `src/lib/audit.ts` | Audit logging untuk tracking aktivitas admin |
 | `src/lib/file-security.ts` | Validasi file upload untuk mencegah malicious files |
 | `src/lib/password-policy.ts` | Password policy untuk enforce strong passwords |
@@ -147,7 +151,15 @@ DATABASE_URL="postgresql://...?sslmode=require"
 2. **Enable HTTPS** - Wajib untuk cookie Secure
 3. **Setup Monitoring** - Log dan alert untuk aktivitas mencurigakan
 4. **Regular Backup** - Backup database secara berkala
-5. **Redis untuk Rate Limiting** - Untuk multiple server instances
+5. ~~**Redis untuk Rate Limiting**~~ ✅ **Sudah diimplementasikan dengan Upstash Redis**
+
+### Environment Variables Upstash (Wajib untuk Production):
+```env
+# Upstash Redis untuk distributed rate limiting
+UPSTASH_REDIS_REST_URL="https://xxx.upstash.io"
+UPSTASH_REDIS_REST_TOKEN="AXxxxxx"
+```
+Dapatkan credentials di: https://upstash.com (gratis tier tersedia)
 
 ---
 
@@ -163,6 +175,8 @@ Jika menemukan masalah keamanan, hubungi:
 
 | Tanggal | Perubahan |
 |---------|-----------|
+| 2026-01-11 | **Upstash Redis integration** untuk distributed rate limiting |
+| 2026-01-11 | **PSB Form Validation** dengan Zod schema (NIK, No KK, telepon) |
 | 2026-01-06 | Implementasi rate limiting, security headers, dan input validation |
 | 2026-01-06 | Enhanced authentication dengan timing attack protection |
 | 2026-01-06 | Content Security Policy (CSP) implementation |
