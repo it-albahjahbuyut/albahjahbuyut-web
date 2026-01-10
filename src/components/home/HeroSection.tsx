@@ -1,37 +1,39 @@
 "use client";
 import Link from "next/link";
-import { ArrowRight, Play, BookOpen } from "lucide-react";
 import { motion } from "framer-motion";
 
 export function HeroSection() {
-
     return (
         <section className="relative h-screen flex items-center justify-center overflow-hidden bg-emerald-950">
-            {/* Background Image Slider */}
-            {/* Background Video */}
+            {/* Background Video - optimized for all devices */}
             <video
                 autoPlay
                 loop
                 muted
                 playsInline
                 className="absolute inset-0 h-full w-full object-cover opacity-30"
+                poster="https://res.cloudinary.com/dand8rpbb/video/upload/so_0,q_auto,f_jpg/v1768020274/Untitled_Video_-_Made_With_Clipchamp_2_gvcww2.jpg"
             >
-                <source src="https://res.cloudinary.com/dand8rpbb/video/upload/v1768020274/Untitled_Video_-_Made_With_Clipchamp_2_gvcww2.mp4" type="video/mp4" />
+                {/* Optimized video with lower quality for faster loading */}
+                <source
+                    src="https://res.cloudinary.com/dand8rpbb/video/upload/q_auto:low/v1768020274/Untitled_Video_-_Made_With_Clipchamp_2_gvcww2.mp4"
+                    type="video/mp4"
+                />
             </video>
 
             {/* Darker Overlay for better text readability */}
             <div className="absolute inset-0 bg-black/20" />
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-emerald-950/20 to-emerald-950/80" />
 
-            {/* Decorative Elements */}
-            <div className="absolute left-1/2 top-0 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gold-500/20 blur-3xl" />
-            <div className="absolute bottom-0 right-0 h-64 w-64 translate-x-1/3 translate-y-1/3 rounded-full bg-emerald-500/20 blur-3xl" />
+            {/* Decorative Elements - Hidden on mobile for performance */}
+            <div className="hidden md:block absolute left-1/2 top-0 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gold-500/20 blur-3xl" />
+            <div className="hidden md:block absolute bottom-0 right-0 h-64 w-64 translate-x-1/3 translate-y-1/3 rounded-full bg-emerald-500/20 blur-3xl" />
 
             <div className="container relative z-20 mx-auto px-4 text-center">
                 <motion.div
-                    initial={{ opacity: 0, y: 30 }}
+                    initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, ease: "easeOut" }}
+                    transition={{ duration: 0.5, ease: "easeOut" }}
                     className="max-w-4xl mx-auto"
                 >
                     <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 tracking-tight">
@@ -59,8 +61,6 @@ export function HeroSection() {
                     </div>
                 </motion.div>
             </div>
-
-
         </section>
     );
 }
