@@ -23,13 +23,13 @@ import {
 } from "@/components/ui/form";
 import { toast } from "sonner";
 import { TiptapEditor } from "@/components/editor/tiptap";
+import { X } from "lucide-react";
 
-interface UnitFormProps {
+interface UnitEditFormProps {
     unit: Unit;
-    onSuccess?: () => void;
 }
 
-export function UnitForm({ unit, onSuccess }: UnitFormProps) {
+export function UnitEditForm({ unit }: UnitEditFormProps) {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
 
@@ -48,6 +48,8 @@ export function UnitForm({ unit, onSuccess }: UnitFormProps) {
         },
     });
 
+    const imageValue = form.watch("image");
+
     const onSubmit = async (data: UnitInput) => {
         try {
             setIsLoading(true);
@@ -59,8 +61,8 @@ export function UnitForm({ unit, onSuccess }: UnitFormProps) {
             }
 
             toast.success("Unit berhasil diperbarui");
+            router.push("/admin/units");
             router.refresh();
-            onSuccess?.();
         } catch {
             toast.error("Terjadi kesalahan");
         } finally {
@@ -193,10 +195,10 @@ export function UnitForm({ unit, onSuccess }: UnitFormProps) {
                             </FormDescription>
 
                             {/* Current Image Preview */}
-                            {field.value && (
-                                <div className="relative mb-4 rounded-lg overflow-hidden border bg-muted/20 aspect-video max-w-sm">
+                            {imageValue ? (
+                                <div className="relative mb-4 rounded-lg overflow-hidden border bg-muted/20 aspect-video max-w-md">
                                     <Image
-                                        src={field.value}
+                                        src={imageValue}
                                         alt="Preview gambar unit"
                                         fill
                                         className="object-cover"
@@ -206,55 +208,51 @@ export function UnitForm({ unit, onSuccess }: UnitFormProps) {
                                         onClick={() => field.onChange("")}
                                         className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1.5 hover:bg-red-600 transition-colors"
                                     >
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                                            <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                                        </svg>
+                                        <X className="h-4 w-4" />
                                     </button>
                                 </div>
-                            )}
-
-                            {/* URL Input */}
-                            <div className="space-y-4">
-                                <div>
-                                    <FormLabel className="text-sm text-muted-foreground">Masukkan URL Gambar</FormLabel>
-                                    <Input
-                                        placeholder="https://example.com/image.jpg"
-                                        value={field.value || ""}
-                                        onChange={(e) => field.onChange(e.target.value)}
-                                        className="mt-1"
-                                    />
-                                </div>
-
-                                {/* Divider */}
-                                <div className="relative">
-                                    <div className="absolute inset-0 flex items-center">
-                                        <span className="w-full border-t" />
+                            ) : (
+                                <div className="space-y-4">
+                                    {/* URL Input */}
+                                    <div>
+                                        <FormLabel className="text-sm text-muted-foreground">Masukkan URL Gambar</FormLabel>
+                                        <Input
+                                            placeholder="https://example.com/image.jpg"
+                                            value={field.value || ""}
+                                            onChange={(e) => field.onChange(e.target.value)}
+                                            className="mt-1"
+                                        />
                                     </div>
-                                    <div className="relative flex justify-center text-xs uppercase">
-                                        <span className="bg-background px-2 text-muted-foreground">atau upload</span>
-                                    </div>
-                                </div>
 
-                                {/* Cloudinary Upload */}
-                                <FormControl>
+                                    {/* Divider */}
+                                    <div className="relative">
+                                        <div className="absolute inset-0 flex items-center">
+                                            <span className="w-full border-t" />
+                                        </div>
+                                        <div className="relative flex justify-center text-xs uppercase">
+                                            <span className="bg-card px-2 text-muted-foreground">atau upload</span>
+                                        </div>
+                                    </div>
+
+                                    {/* Cloudinary Upload */}
                                     <CloudinaryUpload
                                         folder="abbuyut/units"
                                         onUploadComplete={(url: string) => field.onChange(url)}
                                         onUploadError={(error: string) => toast.error(error)}
                                         disabled={isLoading}
                                     />
-                                </FormControl>
-                            </div>
+                                </div>
+                            )}
                             <FormMessage />
                         </FormItem>
                     )}
                 />
 
-                <div className="flex justify-end gap-3">
+                <div className="flex justify-end gap-3 pt-4 border-t">
                     <Button
                         type="button"
                         variant="outline"
-                        onClick={onSuccess}
+                        onClick={() => router.push("/admin/units")}
                         disabled={isLoading}
                     >
                         Batal

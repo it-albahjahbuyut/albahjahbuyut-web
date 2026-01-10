@@ -91,7 +91,9 @@ export function CloudinaryUpload({
                 clientAllowedFormats: ["jpg", "jpeg", "png", "gif", "webp"],
                 maxFileSize: 10485760, // 10MB
                 cropping: false,
-                sources: ["local", "url", "camera"],
+                sources: ["local", "url", "camera", "google_drive", "dropbox"],
+                googleApiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY,
+                showPoweredBy: false,
                 styles: {
                     palette: {
                         window: "#1e1e1e",
@@ -108,6 +110,9 @@ export function CloudinaryUpload({
                         complete: "#22c55e",
                         sourceBg: "#292929",
                     },
+                    frame: {
+                        background: "rgba(0,0,0,0.8)",
+                    },
                 },
             }}
             onSuccess={handleUpload}
@@ -116,18 +121,19 @@ export function CloudinaryUpload({
         >
             {(widget) => {
                 const open = widget?.open;
+                const isWidgetReady = typeof open === 'function';
 
                 return (
                     <div
                         className={cn(
                             "border-2 border-dashed border-muted-foreground/25 rounded-lg p-8 text-center hover:border-primary/50 transition-colors cursor-pointer",
-                            (disabled || !open) && "opacity-50 cursor-not-allowed",
+                            disabled && "opacity-50 cursor-not-allowed",
                             className
                         )}
                         onClick={() => {
                             if (disabled) return;
 
-                            if (open) {
+                            if (isWidgetReady) {
                                 setIsUploading(true);
                                 try {
                                     open();
@@ -138,7 +144,7 @@ export function CloudinaryUpload({
                                 }
                             } else {
                                 console.error("Cloudinary widget not ready or failed to load");
-                                onUploadError?.("Widget upload belum siap. Cek koneksi internet Anda.");
+                                onUploadError?.("Widget upload belum siap. Coba refresh halaman.");
                             }
                         }}
                     >
@@ -280,7 +286,8 @@ export function CloudinaryMultiUpload({
                 multiple: true,
                 showUploadMoreButton: true,
                 singleUploadAutoClose: false,
-                sources: ["local", "url", "camera"],
+                sources: ["local", "url", "camera", "google_drive", "dropbox"],
+                googleApiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY,
                 styles: {
                     palette: {
                         window: "#1e1e1e",

@@ -321,3 +321,18 @@ model PSBDocument {
   @@index([documentType])
   @@map("psb_documents")
 }
+
+// ============================================
+// SITE SETTINGS
+// ============================================
+
+model SiteSetting {
+  id          String   @id @default(cuid())
+  key         String   @unique // maintenance_mode, site_title, etc
+  value       String   @db.Text // JSON value
+  description String?
+  updatedAt   DateTime @updatedAt
+  updatedBy   String?  // User ID who last updated
+
+  @@map("site_settings")
+}

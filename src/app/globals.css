@@ -247,3 +247,15 @@
 .prose > *:last-child {
   margin-bottom: 0;
 }
+
+/* Cloudinary Widget z-index override to appear above dialogs */
+.cloudinary-widget,
+iframe[src*="cloudinary"],
+div[class*="cloudinary"] {
+  z-index: 100000 !important;
+}
+
+/* Cloudinary widget overlay */
+.cloudinary-overlay {
+  z-index: 99999 !important;
+}

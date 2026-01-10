@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import { Unit } from "@prisma/client";
 import {
@@ -12,23 +11,13 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-} from "@/components/ui/dialog";
 import { Edit, GraduationCap, Share2 } from "lucide-react";
-import { UnitForm } from "./unit-form";
 
 interface UnitListProps {
     units: Unit[];
 }
 
 export function UnitList({ units }: UnitListProps) {
-    const [editingUnit, setEditingUnit] = useState<Unit | null>(null);
-
     const stripHtml = (html: string) => {
         return html.replace(/<[^>]*>?/gm, '');
     };
@@ -62,10 +51,12 @@ export function UnitList({ units }: UnitListProps) {
                                 <Button
                                     variant="outline"
                                     size="sm"
-                                    onClick={() => setEditingUnit(unit)}
+                                    asChild
                                 >
-                                    <Edit className="h-4 w-4 mr-2" />
-                                    Edit
+                                    <Link href={`/admin/units/${unit.id}/edit`}>
+                                        <Edit className="h-4 w-4 mr-2" />
+                                        Edit
+                                    </Link>
                                 </Button>
                                 <Button
                                     variant="outline"
@@ -92,24 +83,6 @@ export function UnitList({ units }: UnitListProps) {
                     </p>
                 </div>
             )}
-
-            {/* Edit Dialog */}
-            <Dialog open={!!editingUnit} onOpenChange={() => setEditingUnit(null)}>
-                <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-                    <DialogHeader>
-                        <DialogTitle>Edit Unit: {editingUnit?.name}</DialogTitle>
-                        <DialogDescription>
-                            Perbarui informasi unit pendidikan
-                        </DialogDescription>
-                    </DialogHeader>
-                    {editingUnit && (
-                        <UnitForm
-                            unit={editingUnit}
-                            onSuccess={() => setEditingUnit(null)}
-                        />
-                    )}
-                </DialogContent>
-            </Dialog>
         </>
     );
 }

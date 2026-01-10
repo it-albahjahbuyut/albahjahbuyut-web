@@ -2,9 +2,13 @@ import { AdminHeader } from "@/components/admin/header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { auth } from "@/lib/auth";
 import { User, Shield, Database } from "lucide-react";
+import { MaintenanceToggle } from "./maintenance-toggle";
+import { getMaintenanceMode } from "@/actions/settings";
 
 export default async function SettingsPage() {
     const session = await auth();
+    const maintenanceStatus = await getMaintenanceMode();
+    const isSuperAdmin = session?.user?.role === "SUPER_ADMIN";
 
     return (
         <div>
@@ -14,6 +18,15 @@ export default async function SettingsPage() {
             />
             <div className="p-6">
                 <div className="grid gap-6 md:grid-cols-2">
+                    {/* Maintenance Mode Card - Full Width */}
+                    <div className="md:col-span-2">
+                        <MaintenanceToggle 
+                            initialEnabled={maintenanceStatus.enabled}
+                            initialMessage={maintenanceStatus.message}
+                            isSuperAdmin={isSuperAdmin}
+                        />
+                    </div>
+
                     {/* Profile Card */}
                     <Card>
                         <CardHeader>

@@ -33,7 +33,7 @@ export function DonationSection({ program }: { program: DonationProgram | null }
                                 href="/infaq"
                                 className="inline-flex items-center gap-2 px-8 py-3 bg-white text-slate-900 border border-slate-200 rounded-full font-semibold hover:bg-slate-900 hover:text-white hover:border-slate-900 transition-all duration-300 shadow-sm hover:shadow-lg"
                             >
-                                <span>Lihat Arsip Program</span>
+                                <span>Lihat Program</span>
                                 <ArrowRight className="w-4 h-4" />
                             </Link>
                         </div>

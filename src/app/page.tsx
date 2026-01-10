@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import { redirect } from "next/navigation";
 import { Navbar } from "@/components/public/Navbar";
 import { Footer } from "@/components/public/Footer";
 import { HeroSection } from "../components/home/HeroSection";
@@ -12,6 +13,27 @@ import { YouTubeLiveSection } from "@/components/home/YouTubeLiveSection";
 import { LatestVideosSection } from "@/components/home/LatestVideosSection";
 
 export default async function HomePage() {
+  // Check maintenance mode first
+  let isMaintenanceMode = false;
+  
+  try {
+    const maintenanceSetting = await db.siteSetting.findUnique({
+      where: { key: "maintenance_mode" },
+    });
+
+    if (maintenanceSetting) {
+      const value = JSON.parse(maintenanceSetting.value);
+      isMaintenanceMode = value.enabled === true;
+    }
+  } catch (error) {
+    console.error("Failed to check maintenance mode:", error);
+  }
+
+  // Redirect after try-catch to avoid catching NEXT_REDIRECT
+  if (isMaintenanceMode) {
+    redirect("/maintenance");
+  }
+
   const [units, featuredDonation, latestNews, navUnits] = await Promise.all([
     db.unit.findMany({
       where: { isActive: true },

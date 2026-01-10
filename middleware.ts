@@ -20,6 +20,14 @@ const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
 const loginAttemptStore = new Map<string, { count: number; resetTime: number }>();
 const blockedIPs = new Set<string>();
 
+// Maintenance mode cache - using in-memory with shorter TTL for faster updates
+let maintenanceModeCache: { enabled: boolean; message: string; lastCheck: number } = {
+    enabled: false,
+    message: "",
+    lastCheck: 0,
+};
+const MAINTENANCE_CACHE_TTL = 2000; // 2 seconds for faster response
+
 // Security headers
 const securityHeaders = {
     'X-DNS-Prefetch-Control': 'on',
@@ -119,11 +127,56 @@ function addSecurityHeaders(response: NextResponse): NextResponse {
     return response;
 }
 
+async function checkMaintenanceMode(baseUrl: string): Promise<boolean> {
+    const now = Date.now();
+    
+    // Use cached value if still valid
+    if (now - maintenanceModeCache.lastCheck < MAINTENANCE_CACHE_TTL) {
+        return maintenanceModeCache.enabled;
+    }
+    
+    try {
+        // Use internal fetch with timeout - this must NOT be called during initial request
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 2000);
+        
+        // Use internal fetch to the API route
+        const apiUrl = `${baseUrl}/api/maintenance`;
+        
+        const response = await fetch(apiUrl, {
+            method: 'GET',
+            cache: 'no-store',
+            signal: controller.signal,
+            headers: {
+                'Accept': 'application/json',
+                'X-Internal-Request': 'true',
+            },
+        });
+        
+        clearTimeout(timeoutId);
+        
+        if (!response.ok) {
+            return maintenanceModeCache.enabled;
+        }
+        
+        const data = await response.json();
+        maintenanceModeCache = {
+            enabled: data.enabled === true,
+            message: data.message || "",
+            lastCheck: now,
+        };
+        return maintenanceModeCache.enabled;
+    } catch {
+        // Silently fail and use cached value
+        return maintenanceModeCache.enabled;
+    }
+}
+
 // ============================================
 // MIDDLEWARE
 // ============================================
 
-export default auth((req) => {
+export default auth(async (req) => {
     const { nextUrl, headers } = req;
     const isLoggedIn = !!req.auth;
 
@@ -163,6 +216,12 @@ export default auth((req) => {
     if (isStaticAsset) {
         return NextResponse.next();
     }
+
+    // ============================================
+    // MAINTENANCE MODE CHECK (handled in public layout instead)
+    // ============================================
+    // Note: Actual maintenance redirect happens in (public)/layout.tsx
+    // The middleware cannot reliably fetch its own API routes
 
     // Get client IP for rate limiting
     const clientIP = getClientIP(headers);
