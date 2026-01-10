@@ -192,6 +192,25 @@ model Setting {
 }
 
 // ============================================
+// MAJELIS RUTIN (Kegiatan Rutin Mingguan)
+// ============================================
+
+model Majelis {
+  id          String   @id @default(cuid())
+  title       String   // Nama kegiatan, misal "Jalsah Itsnain"
+  subtitle    String?  // Deskripsi singkat, misal "Majelis Rasulullah SAW"
+  schedule    String   // Jadwal, misal "Senin Malam Selasa"
+  time        String   // Waktu, misal "18.30 WIB (Ba'da Maghrib)"
+  location    String?  // Lokasi, misal "Masjid Al-Bahjah Buyut"
+  order       Int      @default(0) // Urutan tampilan
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("majelis")
+}
+
+// ============================================
 // PSB (PENERIMAAN SANTRI BARU)
 // ============================================
 

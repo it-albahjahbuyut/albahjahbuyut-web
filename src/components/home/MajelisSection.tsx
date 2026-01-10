@@ -1,30 +1,69 @@
-import { Calendar, Clock, MapPin } from "lucide-react";
+import { Calendar, Clock } from "lucide-react";
+import { db } from "@/lib/db";
 
-const activities = [
-    {
-        title: "Jalsah Itsnain",
-        subtitle: "Majelis Rasulullah SAW",
-        schedule: "Senin Malam Selasa",
-        time: "18.30 WIB (Ba'da Maghrib)",
-        location: "Masjid Al-Bahjah Buyut"
-    },
-    {
-        title: "Kajian Tafsir",
-        subtitle: "Tafsir Al-Jalalain Bersama Buya Yahya",
-        schedule: "Setiap Rabu Pagi",
-        time: "07.00 WIB - Selesai",
-        location: "Masjid Al-Bahjah Buyut"
-    },
-    {
-        title: "Rotib Al-Haddad",
-        subtitle: "Pembacaan Rotib & Maulid",
-        schedule: "Kamis Malam Jumat",
-        time: "18.30 WIB (Ba'da Maghrib)",
-        location: "Masjid Al-Bahjah Buyut"
+interface MajelisData {
+    id: string;
+    title: string;
+    subtitle: string | null;
+    schedule: string;
+    time: string;
+    location: string | null;
+}
+
+async function getMajelisList(): Promise<MajelisData[]> {
+    try {
+        const majelisList = await db.majelis.findMany({
+            where: { isActive: true },
+            orderBy: { order: "asc" },
+            select: {
+                id: true,
+                title: true,
+                subtitle: true,
+                schedule: true,
+                time: true,
+                location: true,
+            },
+        });
+        return majelisList;
+    } catch (error) {
+        console.error("Failed to fetch majelis:", error);
+        // Return default data if database fails
+        return [
+            {
+                id: "1",
+                title: "Jalsah Itsnain",
+                subtitle: "Majelis Rasulullah SAW",
+                schedule: "Senin Malam Selasa",
+                time: "18.30 WIB (Ba'da Maghrib)",
+                location: "Masjid Al-Bahjah Buyut"
+            },
+            {
+                id: "2",
+                title: "Kajian Tafsir",
+                subtitle: "Tafsir Al-Jalalain Bersama Buya Yahya",
+                schedule: "Setiap Rabu Pagi",
+                time: "07.00 WIB - Selesai",
+                location: "Masjid Al-Bahjah Buyut"
+            },
+            {
+                id: "3",
+                title: "Rotib Al-Haddad",
+                subtitle: "Pembacaan Rotib & Maulid",
+                schedule: "Kamis Malam Jumat",
+                time: "18.30 WIB (Ba'da Maghrib)",
+                location: "Masjid Al-Bahjah Buyut"
+            }
+        ];
     }
-];
+}
 
-export function MajelisSection() {
+export async function MajelisSection() {
+    const activities = await getMajelisList();
+
+    if (activities.length === 0) {
+        return null;
+    }
+
     return (
         <section className="py-24 bg-white border-t border-slate-100">
             <div className="container mx-auto px-6 md:px-12 lg:px-24">
@@ -41,9 +80,9 @@ export function MajelisSection() {
                 </div>
 
                 <div className="grid gap-6 lg:gap-8 md:grid-cols-3">
-                    {activities.map((activity, index) => (
+                    {activities.map((activity) => (
                         <div
-                            key={index}
+                            key={activity.id}
                             className="group bg-slate-50 hover:bg-white rounded-2xl p-8 border border-slate-100 hover:border-emerald-100 hover:shadow-xl hover:shadow-emerald-900/5 transition-all duration-300"
                         >
                             <div className="flex flex-col h-full">
@@ -51,9 +90,11 @@ export function MajelisSection() {
                                     <h3 className="text-xl font-bold text-slate-900 mb-2 group-hover:text-emerald-700 transition-colors">
                                         {activity.title}
                                     </h3>
-                                    <p className="text-slate-500 text-sm font-medium">
-                                        {activity.subtitle}
-                                    </p>
+                                    {activity.subtitle && (
+                                        <p className="text-slate-500 text-sm font-medium">
+                                            {activity.subtitle}
+                                        </p>
+                                    )}
                                 </div>
 
                                 <div className="mt-auto space-y-4 pt-6 border-t border-slate-200/60 group-hover:border-emerald-100 transition-colors">
