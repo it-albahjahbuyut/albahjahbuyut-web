@@ -20,6 +20,13 @@ export interface SerializedDonation {
     endDate: Date | null;
     createdAt: Date;
     updatedAt: Date;
+    // Gallery images
+    images?: {
+        id: string;
+        imageUrl: string;
+        caption: string | null;
+        order: number;
+    }[];
 }
 
 // Helper function to serialize a Prisma DonationProgram

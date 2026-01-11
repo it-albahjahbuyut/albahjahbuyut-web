@@ -169,8 +169,27 @@ model DonationProgram {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
+  // Gallery images for this donation program
+  images        DonationProgramImage[]
+
   @@index([isActive])
   @@map("donation_programs")
+}
+
+// Galeri Foto untuk Program Donasi
+model DonationProgramImage {
+  id          String   @id @default(cuid())
+  imageUrl    String   // URL gambar dari Cloudinary
+  caption     String?  // Caption untuk gambar
+  order       Int      @default(0) // Urutan tampilan
+  createdAt   DateTime @default(now())
+
+  // Relation to DonationProgram
+  programId   String
+  program     DonationProgram @relation(fields: [programId], references: [id], onDelete: Cascade)
+
+  @@index([programId])
+  @@map("donation_program_images")
 }
 
 // ============================================

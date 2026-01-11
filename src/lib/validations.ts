@@ -185,6 +185,10 @@ export const donationSchema = z.object({
     isActive: z.boolean().default(true),
     isFeatured: z.boolean().default(false),
     endDate: z.date().optional(),
+    galleryImages: z
+        .array(z.string().url("URL gambar tidak valid"))
+        .optional()
+        .default([]),
 });
 
 export type DonationInput = z.infer<typeof donationSchema>;

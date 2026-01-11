@@ -23,8 +23,8 @@ async function seedMajelis() {
             isActive: true,
         },
         {
-            title: "Malejis Keliling",
-            subtitle: "Malejis Keliling di Cirebon",
+            title: "Majelis Keliling",
+            subtitle: "Majelis Keliling di Cirebon",
             schedule: "Setiap Sabtu Malam Ahad",
             time: "20.00 WIB (Ba'da Isha)",
             location: "Masjid di Cirebon",
@@ -33,13 +33,10 @@ async function seedMajelis() {
         },
     ];
 
-    // Check if majelis already exists
-    const existingCount = await db.majelis.count();
-
-    if (existingCount > 0) {
-        console.log(`✅ Majelis data already exists (${existingCount} entries). Skipping seed.`);
-        return;
-    }
+    // Clear existing data to ensure fresh seed
+    console.log("  ↺ Clearing existing Majelis data...");
+    await db.majelis.deleteMany({});
+    console.log("  ✓ Cleared existing data.");
 
     // Create majelis entries
     for (const majelis of majelisData) {

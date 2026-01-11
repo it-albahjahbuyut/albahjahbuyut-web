@@ -4,14 +4,20 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 
 export function HeroSection() {
-    const [videoSrc, setVideoSrc] = useState<string>("");
+    const [activeVideo, setActiveVideo] = useState<{ src: string; poster: string } | null>(null);
 
     useEffect(() => {
         const videos = [
-            "https://res.cloudinary.com/dand8rpbb/video/upload/q_auto/v1768020274/Untitled_Video_-_Made_With_Clipchamp_2_gvcww2.mp4",
-            "https://res.cloudinary.com/dand8rpbb/video/upload/v1767984439/Untitled_Video_-_Made_With_Clipchamp_rpbfw1.mp4"
+            {
+                src: "https://res.cloudinary.com/dand8rpbb/video/upload/q_auto/v1768020274/Untitled_Video_-_Made_With_Clipchamp_2_gvcww2.mp4",
+                poster: "https://res.cloudinary.com/dand8rpbb/video/upload/so_0,q_auto,f_jpg/v1768020274/Untitled_Video_-_Made_With_Clipchamp_2_gvcww2.jpg"
+            },
+            {
+                src: "https://res.cloudinary.com/dand8rpbb/video/upload/v1767984439/Untitled_Video_-_Made_With_Clipchamp_rpbfw1.mp4",
+                poster: "https://res.cloudinary.com/dand8rpbb/video/upload/so_0,q_auto,f_jpg/v1767984439/Untitled_Video_-_Made_With_Clipchamp_rpbfw1.jpg"
+            }
         ];
-        setVideoSrc(videos[Math.floor(Math.random() * videos.length)]);
+        setActiveVideo(videos[Math.floor(Math.random() * videos.length)]);
     }, []);
 
     return (
@@ -22,10 +28,10 @@ export function HeroSection() {
                 loop
                 muted
                 playsInline
-                className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ${videoSrc ? 'opacity-30' : 'opacity-0'}`}
-                poster="https://res.cloudinary.com/dand8rpbb/video/upload/so_0,q_auto,f_jpg/v1768020274/Untitled_Video_-_Made_With_Clipchamp_2_gvcww2.jpg"
+                className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ${activeVideo ? 'opacity-30' : 'opacity-0'}`}
+                poster={activeVideo?.poster}
             >
-                {videoSrc && <source src={videoSrc} type="video/mp4" />}
+                {activeVideo && <source src={activeVideo.src} type="video/mp4" />}
             </video>
 
             {/* Darker Overlay for better text readability */}

@@ -34,6 +34,11 @@ export async function getDonation(id: string) {
     try {
         const donation = await db.donationProgram.findUnique({
             where: { id },
+            include: {
+                images: {
+                    orderBy: { order: "asc" }
+                }
+            }
         });
 
         if (!donation) {
@@ -55,17 +60,26 @@ export async function createDonation(data: DonationInput) {
         }
 
         const validated = donationSchema.parse(data);
+        const { galleryImages, ...donationData } = validated;
 
         const donation = await db.donationProgram.create({
             data: {
-                ...validated,
-                targetAmount: validated.targetAmount,
-                currentAmount: validated.currentAmount || 0,
+                ...donationData,
+                targetAmount: donationData.targetAmount,
+                currentAmount: donationData.currentAmount || 0,
+                // Create gallery images if provided
+                images: galleryImages && galleryImages.length > 0 ? {
+                    create: galleryImages.map((url, index) => ({
+                        imageUrl: url,
+                        order: index,
+                    })),
+                } : undefined,
             },
         });
 
         revalidatePath("/admin/donations");
         revalidatePath("/donasi");
+        revalidatePath("/infaq");
 
         return { success: true, data: serializeDonation(donation) };
     } catch (error) {
@@ -82,20 +96,39 @@ export async function updateDonation(id: string, data: DonationInput) {
         }
 
         const validated = donationSchema.parse(data);
+        const { galleryImages, ...donationData } = validated;
 
-        const donation = await db.donationProgram.update({
-            where: { id },
-            data: {
-                ...validated,
-                targetAmount: validated.targetAmount,
-                currentAmount: validated.currentAmount || 0,
-                updatedAt: new Date(),
-            },
+        // Delete existing gallery images and create new ones in a transaction
+        const donation = await db.$transaction(async (tx) => {
+            // Delete existing gallery images
+            await tx.donationProgramImage.deleteMany({
+                where: { programId: id },
+            });
+
+            // Update donation with new gallery images
+            return tx.donationProgram.update({
+                where: { id },
+                data: {
+                    ...donationData,
+                    targetAmount: donationData.targetAmount,
+                    currentAmount: donationData.currentAmount || 0,
+                    updatedAt: new Date(),
+                    // Create new gallery images if provided
+                    images: galleryImages && galleryImages.length > 0 ? {
+                        create: galleryImages.map((url, index) => ({
+                            imageUrl: url,
+                            order: index,
+                        })),
+                    } : undefined,
+                },
+            });
         });
 
         revalidatePath("/admin/donations");
         revalidatePath(`/admin/donations/${id}`);
         revalidatePath(`/donasi/${donation.slug}`);
+        revalidatePath(`/infaq/${donation.slug}`);
+        revalidatePath("/infaq");
 
         return { success: true, data: serializeDonation(donation) };
     } catch (error) {

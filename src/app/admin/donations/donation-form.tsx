@@ -27,8 +27,8 @@ import {
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { CloudinaryUpload } from "@/components/ui/cloudinary-upload";
-import { X, Sparkles, Loader2 } from "lucide-react";
+import { CloudinaryUpload, CloudinaryMultiUpload } from "@/components/ui/cloudinary-upload";
+import { X, Sparkles, Loader2, Trash2, ImageIcon } from "lucide-react";
 import { SerializedDonation } from "@/lib/types";
 
 interface DonationFormProps {
@@ -65,11 +65,13 @@ export function DonationForm({ donation }: DonationFormProps) {
             isActive: donation?.isActive ?? true,
             isFeatured: donation?.isFeatured ?? false,
             endDate: donation?.endDate || undefined,
+            galleryImages: donation?.images?.map((img: { imageUrl: string }) => img.imageUrl) || [],
         },
     });
 
     const watchImage = form.watch("image");
     const watchTitle = form.watch("title");
+    const watchGalleryImages = form.watch("galleryImages") || [];
 
     const handleTitleChange = (value: string) => {
         form.setValue("title", value);
@@ -378,6 +380,94 @@ export function DonationForm({ donation }: DonationFormProps) {
                                     <FormDescription>
                                         Tampilkan program ini di halaman depan website
                                     </FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </CardContent>
+                </Card>
+
+                {/* Gallery Section */}
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                            <ImageIcon className="w-5 h-5" />
+                            Galeri Dokumentasi
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <FormField
+                            control={form.control}
+                            name="galleryImages"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <div className="space-y-4">
+                                        <div className="flex justify-between items-center">
+                                            <FormLabel>Foto Dokumentasi & Perencanaan</FormLabel>
+                                            {field.value && field.value.length > 0 && (
+                                                <Button
+                                                    type="button"
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    className="text-red-500 hover:text-red-600 hover:bg-red-50 h-8"
+                                                    onClick={() => field.onChange([])}
+                                                >
+                                                    Hapus Semua
+                                                </Button>
+                                            )}
+                                        </div>
+
+                                        <CloudinaryMultiUpload
+                                            folder="abbuyut/donations/gallery"
+                                            onUploadComplete={(urls) => {
+                                                // Use form.getValues to get fresh values, avoiding stale closure
+                                                const currentImages = form.getValues("galleryImages") || [];
+                                                const newImages = [...currentImages, ...urls];
+                                                form.setValue("galleryImages", newImages, { shouldDirty: true });
+                                                toast.success(`${urls.length} gambar ditambahkan`);
+                                            }}
+                                            onUploadError={(err) => toast.error(err)}
+                                        />
+
+                                        {/* Image Grid */}
+                                        {field.value && field.value.length > 0 ? (
+                                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+                                                {field.value.map((url, index) => (
+                                                    <div key={`${url}-${index}`} className="relative group aspect-square bg-slate-100 rounded-lg overflow-hidden border shadow-sm hover:shadow-md transition-shadow">
+                                                        <img
+                                                            src={url}
+                                                            alt={`Galeri ${index + 1}`}
+                                                            className="w-full h-full object-cover"
+                                                        />
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => {
+                                                                const newImages = [...field.value];
+                                                                newImages.splice(index, 1);
+                                                                field.onChange(newImages);
+                                                            }}
+                                                            className="absolute top-2 right-2 bg-red-500 text-white p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600 shadow-sm z-10"
+                                                            title="Hapus gambar"
+                                                        >
+                                                            <Trash2 className="w-3 h-3" />
+                                                        </button>
+                                                        <div className="absolute inset-x-0 bottom-0 bg-black/60 backdrop-blur-sm text-white text-[10px] p-1.5 opacity-0 group-hover:opacity-100 transition-opacity truncate text-center">
+                                                            Gambar {index + 1}
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <div className="text-center py-8 border-2 border-dashed rounded-lg bg-slate-50/50 hover:bg-slate-50 transition-colors">
+                                                <div className="flex flex-col items-center justify-center text-muted-foreground gap-2">
+                                                    <ImageIcon className="w-8 h-8 opacity-20" />
+                                                    <p className="text-sm italic">
+                                                        Belum ada foto dokumentasi. Upload foto perencanaan atau progress program.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
                                     <FormMessage />
                                 </FormItem>
                             )}

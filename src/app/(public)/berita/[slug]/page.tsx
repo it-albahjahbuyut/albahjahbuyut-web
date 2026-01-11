@@ -5,6 +5,7 @@ import { db } from "@/lib/db";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
 import { Calendar, User, ArrowLeft } from "lucide-react";
+import { NewsGallery } from "./news-gallery";
 
 /**
  * Format content to ensure proper HTML paragraph structure
@@ -163,19 +164,14 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
                                     <span className="w-8 h-1 bg-gold-500 rounded-full"></span>
                                     Galeri Kegiatan
                                 </h3>
-                                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                                    {post.images.map((img, index) => (
-                                        <div key={img.id} className="relative aspect-square rounded-xl overflow-hidden group shadow-md hover:shadow-xl transition-all duration-300">
-                                            <Image
-                                                src={img.imageUrl}
-                                                alt={`Dokumentasi ${post.title} - ${index + 1}`}
-                                                fill
-                                                className="object-cover group-hover:scale-110 transition-transform duration-500"
-                                            />
-                                            <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors" />
-                                        </div>
-                                    ))}
-                                </div>
+                                <NewsGallery
+                                    images={post.images.map(img => ({
+                                        id: img.id,
+                                        imageUrl: img.imageUrl,
+                                        caption: img.caption
+                                    }))}
+                                    title={post.title}
+                                />
                             </div>
                         )}
                     </div>

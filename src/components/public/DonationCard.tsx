@@ -2,7 +2,8 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { Copy, Check, Landmark } from "lucide-react";
+import Link from "next/link";
+import { Copy, Check, Landmark, ArrowRight } from "lucide-react";
 import { useState } from "react";
 
 interface DonationCardProps {
@@ -137,6 +138,15 @@ export function DonationCard({ program, index = 0, featured = false }: DonationC
                         </button>
                     </div>
                 </div>
+
+                {/* Detail Link */}
+                <Link
+                    href={`/infaq/${program.slug}`}
+                    className="flex items-center justify-center gap-2 w-full mt-4 py-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-semibold rounded-xl transition-all group"
+                >
+                    Lihat Detail
+                    <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                </Link>
             </div>
         </motion.div>
     );

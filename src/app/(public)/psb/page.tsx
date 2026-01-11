@@ -12,6 +12,7 @@ import {
     Users
 } from "lucide-react";
 import { FadeIn, FadeInStagger } from "@/components/animations/FadeIn";
+import { FAQSection } from "@/components/psb/FAQSection";
 
 export const metadata = {
     title: "Penerimaan Santri Baru (PSB) | Pondok Pesantren Al-Bahjah Buyut",
@@ -424,6 +425,9 @@ export default async function PSBPage() {
                 </div>
             </section>
 
+            {/* FAQ Section */}
+            <FAQSection />
+
             {/* Catatan Penting */}
             <section className="py-24 bg-white relative overflow-hidden">
                 <div className="absolute inset-0 bg-gold-50/30" />
@@ -466,7 +470,7 @@ export default async function PSBPage() {
                     </FadeIn>
                 </div>
             </section>
-        </main>
+        </main >
     );
 }
 

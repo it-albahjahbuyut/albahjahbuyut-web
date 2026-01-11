@@ -9,6 +9,19 @@ interface DonationProgram {
     description: string | null;
     image: string | null;
     slug: string;
+    // Prisma Decimal type, will be converted to number
+    targetAmount: { toNumber(): number } | number;
+    currentAmount: { toNumber(): number } | number;
+}
+
+// Format currency to Indonesian Rupiah
+function formatCurrency(amount: number): string {
+    return new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+    }).format(amount);
 }
 
 export function DonationSection({ program }: { program: DonationProgram | null }) {
@@ -83,28 +96,58 @@ export function DonationSection({ program }: { program: DonationProgram | null }
 
                         <div className="flex items-center justify-center">
                             <FadeIn delay={0.3} className="w-full max-w-sm">
-                                <div className="aspect-[4/3] bg-emerald-900 relative shadow-2xl border-4 border-emerald-900 mb-6 rounded-xl overflow-hidden">
+                                <Link
+                                    href={`/infaq/${program.slug}`}
+                                    className="block aspect-[4/3] bg-emerald-900 relative shadow-2xl border-4 border-emerald-900 mb-6 rounded-xl overflow-hidden group"
+                                >
                                     {program.image ? (
                                         <Image
                                             src={program.image}
                                             alt={program.title}
                                             fill
-                                            className="object-cover"
+                                            className="object-cover transition-transform duration-500 group-hover:scale-105"
                                         />
                                     ) : (
                                         <div className="absolute inset-0 flex items-center justify-center text-emerald-700">
                                             <Heart className="w-16 h-16" />
                                         </div>
                                     )}
-                                </div>
+                                    {/* Hover Overlay */}
+                                    <div className="absolute inset-0 bg-emerald-950/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                        <span className="text-white font-bold text-sm uppercase tracking-wider">Lihat Detail</span>
+                                    </div>
+                                </Link>
                                 <h3 className="text-xl font-bold mb-2 uppercase tracking-wide truncate text-center lg:text-left">{program.title}</h3>
-                                <div className="h-1 w-full bg-emerald-900/50 mb-4 rounded-full overflow-hidden">
-                                    <div className="h-full bg-emerald-500 w-3/4" />
-                                </div>
-                                <div className="flex justify-between text-xs text-emerald-400 font-bold uppercase tracking-wider">
-                                    <span>Terkumpul</span>
-                                    <span className="text-white">Sedang Berjalan</span>
-                                </div>
+                                {(() => {
+                                    const current = typeof program.currentAmount === 'number'
+                                        ? program.currentAmount
+                                        : program.currentAmount.toNumber();
+                                    const target = typeof program.targetAmount === 'number'
+                                        ? program.targetAmount
+                                        : program.targetAmount.toNumber();
+                                    const percentage = target > 0 ? Math.min((current / target) * 100, 100) : 0;
+
+                                    return (
+                                        <>
+                                            <div className="h-2 w-full bg-emerald-900/50 mb-4 rounded-full overflow-hidden">
+                                                <div
+                                                    className="h-full bg-gradient-to-r from-emerald-400 to-emerald-500 transition-all duration-500"
+                                                    style={{ width: `${percentage}%` }}
+                                                />
+                                            </div>
+                                            <div className="flex justify-between items-center text-xs font-bold uppercase tracking-wider">
+                                                <div className="flex flex-col">
+                                                    <span className="text-emerald-400">Terkumpul</span>
+                                                    <span className="text-white text-sm normal-case">{formatCurrency(current)}</span>
+                                                </div>
+                                                <div className="flex flex-col text-right">
+                                                    <span className="text-emerald-400">{percentage.toFixed(0)}%</span>
+                                                    <span className="text-white/70 text-[10px] normal-case">dari {formatCurrency(target)}</span>
+                                                </div>
+                                            </div>
+                                        </>
+                                    );
+                                })()}
                             </FadeIn>
                         </div>
                     </div>
