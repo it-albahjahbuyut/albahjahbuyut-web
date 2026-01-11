@@ -1,51 +1,30 @@
 import { db } from "@/lib/db";
+import { formatCurrency } from "@/lib/utils";
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import Link from "next/link";
-import { Landmark, ArrowLeft, Calendar, Target, Heart, Share2, MessageCircle } from "lucide-react";
-import { FadeIn } from "@/components/animations/FadeIn";
-import type { Metadata } from "next";
-import { CopyButton } from "@/components/ui/copy-button";
-import { ShareButton } from "@/components/ui/share-button";
+import { Landmark, ArrowRight, Share2, Target, Calendar, Clock, Copy, Check } from "lucide-react";
+import { FadeIn, FadeInStagger } from "@/components/animations/FadeIn";
+import { CopyButton } from "./copy-button";
+import { ShareButton } from "./share-button";
 import { InfaqGallery } from "./infaq-gallery";
+import Link from "next/link";
 
 interface PageProps {
     params: Promise<{ slug: string }>;
 }
 
-// Format currency to Indonesian Rupiah
-function formatCurrency(amount: number): string {
-    return new Intl.NumberFormat("id-ID", {
-        style: "currency",
-        currency: "IDR",
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-    }).format(amount);
-}
-
-// Format date
-function formatDate(date: Date): string {
-    return new Intl.DateTimeFormat("id-ID", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-    }).format(date);
-}
-
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: PageProps) {
     const { slug } = await params;
     const program = await db.donationProgram.findUnique({
         where: { slug },
     });
 
-    if (!program) {
-        return {
-            title: "Program Tidak Ditemukan | Al-Bahjah Buyut",
-        };
+    if (!program || !program.isActive) {
+        return null;
     }
 
     return {
-        title: `${program.title} | Program Infaq Al-Bahjah Buyut`,
+        title: `${program.title} | Infaq Al-Bahjah Buyut`,
         description: program.description.slice(0, 160),
         openGraph: {
             title: program.title,
@@ -75,241 +54,189 @@ export default async function DonationDetailPage({ params }: PageProps) {
     const current = Number(program.currentAmount);
     const percentage = target > 0 ? Math.min((current / target) * 100, 100) : 0;
 
+    // Type assertion for hideProgress if needed, though Prisma should provide it
+    // @ts-ignore
+    const hideProgress = program.hideProgress as boolean;
+
     return (
-        <main className="bg-slate-50 min-h-screen">
-            {/* Hero Section with Image */}
-            {/* Hero Section with Image */}
-            <section className="relative min-h-[60vh] flex items-end bg-emerald-950 overflow-hidden">
-                {/* Background Image */}
-                {program.image ? (
+        <main className="bg-slate-50 min-h-screen pb-20">
+            {/* Hero Header */}
+            <div className="relative h-[60vh] bg-emerald-950 overflow-hidden flex items-end">
+                {program.image && (
                     <Image
                         src={program.image}
                         alt={program.title}
                         fill
-                        className="object-cover"
+                        className="object-cover opacity-60"
                         priority
                     />
-                ) : (
-                    <div className="absolute inset-0 bg-gradient-to-br from-emerald-800 to-emerald-950" />
                 )}
+                <div className="absolute inset-0 bg-gradient-to-t from-emerald-950 via-emerald-950/40 to-transparent" />
+                <div className="absolute inset-0 bg-emerald-950/30" />
 
-                {/* Dark Overlay for consistency */}
-                <div className="absolute inset-0 bg-emerald-950/60" />
-
-                {/* Bottom Gradient */}
-                <div className="absolute inset-0 bg-gradient-to-t from-emerald-950 via-emerald-950/80 to-transparent" />
-
-                {/* Content */}
-                <div className="relative z-10 container mx-auto px-4 lg:px-8 pb-12 pt-32">
+                {/* Hero Content */}
+                <div className="relative z-10 container mx-auto px-4 lg:px-8 pb-12">
                     <FadeIn>
                         <Link
                             href="/infaq"
-                            className="inline-flex items-center gap-2 text-emerald-100/80 hover:text-white transition-colors mb-6 text-sm"
+                            className="inline-flex items-center gap-2 text-white/90 hover:text-white transition-colors bg-white/10 hover:bg-white/20 backdrop-blur-md px-4 py-2 rounded-full text-sm font-medium border border-white/10 mb-8"
                         >
-                            <ArrowLeft className="w-4 h-4" />
-                            Kembali ke Daftar Program
+                            <ArrowRight className="w-4 h-4 rotate-180" />
+                            Kembali
                         </Link>
-                    </FadeIn>
-
-                    <FadeIn delay={0.1}>
-                        <div className="flex flex-wrap gap-3 mb-4">
-                            {program.isFeatured && (
-                                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-gold-500 text-emerald-950 text-xs font-bold rounded-full">
-                                    <Heart className="w-3 h-3" />
-                                    Program Unggulan
+                        <div className="max-w-4xl">
+                            <div className="flex flex-wrap gap-3 mb-6">
+                                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-gold-500 text-emerald-950 text-xs font-bold uppercase tracking-wider rounded-full">
+                                    <Target className="w-3.5 h-3.5" />
+                                    Program Infaq
                                 </span>
-                            )}
-                            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-500/20 border border-emerald-400/30 text-emerald-100 text-xs font-medium rounded-full">
-                                <Calendar className="w-3 h-3" />
-                                Mulai {formatDate(program.startDate)}
-                            </span>
+                                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/10 border border-white/20 text-white/90 text-xs font-medium rounded-full backdrop-blur-sm">
+                                    <Calendar className="w-3.5 h-3.5" />
+                                    {program.createdAt.toLocaleDateString("id-ID", {
+                                        day: "numeric",
+                                        month: "long",
+                                        year: "numeric"
+                                    })}
+                                </span>
+                            </div>
+                            <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight tracking-tight">
+                                {program.title}
+                            </h1>
                         </div>
                     </FadeIn>
-
-                    <FadeIn delay={0.2}>
-                        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-tight mb-4 max-w-3xl">
-                            {program.title}
-                        </h1>
-                    </FadeIn>
                 </div>
-            </section>
+            </div>
 
             {/* Main Content */}
-            <section className="py-12 lg:py-16">
-                <div className="container mx-auto px-4 lg:px-8">
-                    <div className="grid lg:grid-cols-3 gap-8 lg:gap-12">
-                        {/* Left Column - Description */}
-                        <div className="lg:col-span-2 space-y-8">
-                            {/* Progress Card */}
-                            {/* Progress Card - Minimalist */}
-                            <FadeIn>
-                                <div className="bg-white rounded-[2rem] border border-slate-100 p-8">
-                                    <div className="flex justify-between items-start mb-2">
-                                        <div>
-                                            <p className="text-slate-500 font-medium text-sm uppercase tracking-wider mb-1">Terkumpul</p>
-                                            <p className="text-4xl lg:text-5xl font-bold text-emerald-950 tracking-tight">
-                                                {formatCurrency(current)}
-                                            </p>
-                                        </div>
-                                        <div className="text-right">
-                                            <div className="inline-flex items-center justify-center px-3 py-1 bg-emerald-50 text-emerald-700 rounded-full text-xs font-bold">
-                                                {percentage.toFixed(1)}%
-                                            </div>
-                                        </div>
-                                    </div>
+            <div className="container mx-auto px-4 lg:px-8 py-16">
+                <div className="grid lg:grid-cols-12 gap-12">
+                    {/* Left Column: Description */}
+                    <div className="lg:col-span-8 space-y-12">
+                        {/* Description */}
+                        <FadeIn delay={0.1}>
+                            <div className="prose prose-lg prose-slate max-w-none prose-p:leading-loose prose-headings:font-bold prose-headings:text-emerald-950 prose-a:text-emerald-600 prose-strong:text-emerald-900">
+                                <p className="whitespace-pre-line text-slate-600 font-light text-lg">
+                                    {program.description}
+                                </p>
+                            </div>
+                        </FadeIn>
 
-                                    <div className="mb-6 mt-6">
-                                        <div className="h-2 overflow-hidden rounded-full bg-slate-100">
-                                            <div
-                                                className="h-full rounded-full bg-emerald-500 transition-all duration-1000"
-                                                style={{ width: `${percentage}%` }}
-                                            />
-                                        </div>
-                                        <div className="flex justify-between mt-2 text-xs font-medium text-slate-400">
-                                            <span>0%</span>
-                                            <span>Target: {formatCurrency(target)}</span>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex items-center gap-2 text-emerald-800 bg-emerald-50/50 p-3 rounded-xl">
-                                        <Target className="w-4 h-4 text-emerald-600" />
-                                        <p className="text-xs font-medium">Bantu kami mencapai target kebaikan ini.</p>
-                                    </div>
-                                </div>
-                            </FadeIn>
-
-                            {/* Description Card */}
-                            {/* Description Section - Redesigned */}
-                            <FadeIn delay={0.1}>
-                                <div className="bg-white rounded-[2rem] border border-slate-100 p-8 lg:p-12 relative overflow-hidden group">
-                                    {/* Decorative Background */}
-                                    <div className="absolute top-0 right-0 -mt-8 -mr-8 w-64 h-64 bg-emerald-50/50 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
-
-                                    <div className="relative z-10">
-                                        <div className="flex items-center gap-3 mb-8">
-                                            <span className="w-1 h-8 bg-gold-500 rounded-full" />
-                                            <h2 className="text-2xl font-bold text-emerald-950 tracking-tight">
-                                                Tentang Program
-                                            </h2>
-                                        </div>
-
-                                        <div className="prose prose-lg prose-emerald max-w-none">
-                                            <p className="text-slate-600 leading-[2] font-light whitespace-pre-line">
-                                                {program.description}
-                                            </p>
-                                        </div>
-
-
-                                    </div>
-                                </div>
-                            </FadeIn>
-
-                            {/* Gallery Section */}
-                            {program.images && program.images.length > 0 && (
-                                <FadeIn delay={0.15}>
-                                    <div className="bg-white rounded-2xl shadow-lg border border-slate-100 p-6 lg:p-8">
-                                        <h2 className="text-xl font-bold text-emerald-950 mb-6 flex items-center gap-2">
-                                            <span className="w-8 h-1 bg-gold-500 rounded-full"></span>
-                                            Dokumentasi & Perencanaan
-                                        </h2>
-                                        <InfaqGallery
-                                            images={program.images.map(img => ({
-                                                id: img.id,
-                                                imageUrl: img.imageUrl,
-                                                caption: img.caption
-                                            }))}
-                                            title={program.title}
-                                        />
-                                    </div>
-                                </FadeIn>
-                            )}
-
-                            {/* Share Section */}
+                        {/* Gallery Section */}
+                        {program.images.length > 0 && (
                             <FadeIn delay={0.2}>
-                                <div className="bg-gradient-to-r from-emerald-50 to-gold-50 rounded-2xl p-6 lg:p-8 border border-emerald-100">
-                                    <h3 className="font-bold text-emerald-950 mb-3 flex items-center gap-2">
-                                        <Share2 className="w-5 h-5 text-emerald-600" />
-                                        Sebarkan Kebaikan
+                                <div className="border-t border-slate-200 pt-12">
+                                    <h3 className="text-2xl font-bold text-emerald-950 mb-8 flex items-center gap-3">
+                                        <div className="w-8 h-1 bg-gold-500 rounded-full" />
+                                        Dokumentasi Program
                                     </h3>
-                                    <p className="text-slate-600 text-sm mb-4">
-                                        Bagikan program ini kepada keluarga dan teman-teman Anda. Setiap share adalah pahala yang mengalir.
-                                    </p>
-                                    <ShareButton
+                                    <InfaqGallery
+                                        images={program.images}
                                         title={program.title}
-                                        description={program.description.slice(0, 100)}
                                     />
                                 </div>
                             </FadeIn>
-                        </div>
+                        )}
 
-                        {/* Right Column - Donation Info */}
-                        <div className="lg:col-span-1">
-                            <FadeIn delay={0.15}>
-                                <div className="sticky top-24 space-y-6">
-                                    {/* Bank Info Card */}
-                                    {/* Bank Info Card - Minimalist */}
-                                    <div className="bg-white rounded-[2rem] border border-slate-100 p-8">
-                                        <h3 className="font-bold text-emerald-950 mb-6 flex items-center gap-2">
-                                            <Landmark className="w-5 h-5 text-emerald-600" />
-                                            Informasi Rekening
-                                        </h3>
+                        {/* Share Section */}
+                        <FadeIn delay={0.3}>
+                            <div className="bg-gradient-to-r from-emerald-50 to-gold-50 rounded-2xl p-6 lg:p-8 border border-emerald-100 flex flex-col md:flex-row items-center justify-between gap-6">
+                                <div>
+                                    <h3 className="font-bold text-emerald-950 mb-2 flex items-center gap-2 text-lg">
+                                        <Share2 className="w-5 h-5 text-emerald-600" />
+                                        Sebarkan Kebaikan
+                                    </h3>
+                                    <p className="text-slate-600 text-sm max-w-md leading-relaxed">
+                                        Bagikan link program ini kepada keluarga dan teman-teman Anda. Setiap share adalah pahala yang mengalir.
+                                    </p>
+                                </div>
+                                <ShareButton title={program.title} description={program.description.slice(0, 100)} />
+                            </div>
+                        </FadeIn>
+                    </div>
 
-                                        <div className="bg-slate-50 rounded-2xl p-6 mb-6 group hover:bg-emerald-50/50 transition-colors border border-transparent hover:border-emerald-100">
-                                            <p className="text-xs uppercase tracking-widest text-slate-500 mb-4 font-semibold">
-                                                {program.bankName}
-                                            </p>
-                                            <div className="flex items-center justify-between gap-3 mb-2">
-                                                <p className="font-mono text-2xl lg:text-3xl font-bold text-emerald-950 tracking-tighter">
-                                                    {program.accountNumber}
+                    {/* Right Column: Donation Action (Sticky) */}
+                    <div className="lg:col-span-4">
+                        <div className="sticky top-24 space-y-6">
+                            <FadeIn delay={0.3} className="bg-white rounded-[2rem] p-6 md:p-8 shadow-xl shadow-slate-200/50 border border-slate-100 relative overflow-hidden">
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-gold-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+
+                                {/* Progress Section */}
+                                {!hideProgress && (
+                                    <div className="mb-8">
+                                        {target > 0 ? (
+                                            <>
+                                                <div className="flex justify-between items-end mb-2">
+                                                    <div>
+                                                        <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold mb-1">Terkumpul</p>
+                                                        <p className="text-2xl font-bold text-emerald-950">{formatCurrency(current)}</p>
+                                                    </div>
+                                                    <div className="text-right">
+                                                        <span className="inline-block px-2 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-lg">
+                                                            {percentage.toFixed(0)}%
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div className="h-2.5 bg-slate-100 rounded-full overflow-hidden mb-2">
+                                                    <div
+                                                        className="h-full bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full transition-all duration-1000"
+                                                        style={{ width: `${percentage}%` }}
+                                                    />
+                                                </div>
+                                                <p className="text-xs text-slate-400 text-right">
+                                                    Target: {formatCurrency(target)}
                                                 </p>
-                                                <CopyButton textToCopy={program.accountNumber} />
+                                            </>
+                                        ) : (
+                                            <div className="text-center py-2 bg-emerald-50/50 rounded-xl border border-emerald-100/50">
+                                                <p className="text-sm font-medium text-emerald-800">✨ Infaq Operasional & Rutin</p>
                                             </div>
-                                            {program.accountName && (
-                                                <p className="text-sm text-slate-500 font-medium">
-                                                    a.n. {program.accountName}
-                                                </p>
-                                            )}
+                                        )}
+                                    </div>
+                                )}
+
+                                {/* Bank Account */}
+                                <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100 mb-6 group transition-colors hover:bg-slate-50/80">
+                                    <div className="flex items-center gap-3 mb-4">
+                                        <div className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-emerald-600">
+                                            <Landmark className="w-5 h-5" />
                                         </div>
-
-                                        {/* WhatsApp Confirmation */}
-                                        <a
-                                            href={`https://wa.me/6282228682623?text=Assalamualaikum%2C%20saya%20ingin%20konfirmasi%20donasi%20untuk%20program%20${encodeURIComponent(program.title)}`}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="flex items-center justify-center gap-2 w-full bg-emerald-950 hover:bg-emerald-900 text-white py-4 px-6 rounded-xl font-bold transition-all shadow-lg shadow-emerald-900/10 hover:shadow-emerald-900/20 group"
-                                        >
-                                            <MessageCircle className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                                            Konfirmasi Donasi
-                                        </a>
+                                        <div>
+                                            <p className="text-xs text-slate-500 uppercase font-medium">Transfer ke Bank</p>
+                                            <p className="font-bold text-slate-900">{program.bankName}</p>
+                                        </div>
                                     </div>
 
-                                    {/* Quick Guide - Minimalist */}
-                                    <div className="bg-white rounded-[2rem] border border-slate-100 p-8">
-                                        <h4 className="font-bold text-emerald-950 mb-6 text-sm uppercase tracking-wider">
-                                            Cara Berdonasi
-                                        </h4>
-                                        <ol className="space-y-4 text-sm">
-                                            {[
-                                                "Salin nomor rekening di atas",
-                                                "Transfer via ATM / E-Banking",
-                                                "Klik tombol Konfirmasi Donasi",
-                                                "Kirimkan bukti transfer",
-                                            ].map((step, idx) => (
-                                                <li key={idx} className="flex gap-4 items-start group">
-                                                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-slate-50 border border-slate-100 text-slate-400 font-bold text-xs flex items-center justify-center group-hover:bg-emerald-50 group-hover:text-emerald-600 group-hover:border-emerald-100 transition-colors">
-                                                        {idx + 1}
-                                                    </span>
-                                                    <span className="text-slate-600 font-medium pt-0.5">{step}</span>
-                                                </li>
-                                            ))}
-                                        </ol>
+                                    <div className="flex items-center justify-between gap-2 bg-white p-3 rounded-xl border border-slate-100 mb-2">
+                                        <code className="font-mono text-xl font-bold text-emerald-950 tracking-tight">
+                                            {program.accountNumber}
+                                        </code>
+                                        <CopyButton textToCopy={program.accountNumber} />
                                     </div>
+                                    {program.accountName && (
+                                        <p className="text-xs text-slate-500 text-center">a.n. {program.accountName}</p>
+                                    )}
+                                </div>
+
+                                {/* Call to Action */}
+                                <div className="space-y-3">
+                                    <a
+                                        href={`https://wa.me/6282228682623?text=Assalamualaikum%2C%20saya%20ingin%20konfirmasi%20donasi%20untuk%20program%20${encodeURIComponent(program.title)}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="flex items-center justify-center gap-2 w-full bg-emerald-950 hover:bg-emerald-900 text-white py-4 px-6 rounded-xl font-bold transition-all shadow-lg shadow-emerald-900/20 group"
+                                    >
+                                        Konfirmasi Donasi
+                                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                    </a>
+                                    <p className="text-xs text-center text-slate-400 leading-relaxed px-4">
+                                        Mohon konfirmasi setelah melakukan transfer agar donasi Anda tercatat.
+                                    </p>
                                 </div>
                             </FadeIn>
                         </div>
                     </div>
                 </div>
-            </section>
+            </div>
         </main>
     );
 }

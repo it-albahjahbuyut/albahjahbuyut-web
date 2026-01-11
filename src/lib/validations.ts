@@ -157,7 +157,7 @@ export const donationSchema = z.object({
         .optional(),
     targetAmount: z
         .number()
-        .positive("Target harus lebih dari 0")
+        .min(0, "Target tidak boleh negatif")
         .max(999999999999, "Target terlalu besar"),
     currentAmount: z
         .number()
@@ -184,6 +184,8 @@ export const donationSchema = z.object({
         .optional(),
     isActive: z.boolean().default(true),
     isFeatured: z.boolean().default(false),
+    hideProgress: z.boolean().default(false), // Sembunyikan progres donasi di halaman publik
+    categoryLabel: z.string().max(50, "Label kategori terlalu panjang").optional(),
     endDate: z.date().optional(),
     galleryImages: z
         .array(z.string().url("URL gambar tidak valid"))

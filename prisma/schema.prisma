@@ -164,6 +164,8 @@ model DonationProgram {
   accountName   String?  // Nama pemilik rekening
   isActive      Boolean  @default(true)
   isFeatured    Boolean  @default(false)
+  hideProgress  Boolean  @default(false)
+  categoryLabel String?  // Label kustom jika progress disembunyikan (misal: "Infaq Operasional")
   startDate     DateTime @default(now())
   endDate       DateTime?
   createdAt     DateTime @default(now())

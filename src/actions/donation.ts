@@ -65,6 +65,7 @@ export async function createDonation(data: DonationInput) {
         const donation = await db.donationProgram.create({
             data: {
                 ...donationData,
+                categoryLabel: donationData.categoryLabel,
                 targetAmount: donationData.targetAmount,
                 currentAmount: donationData.currentAmount || 0,
                 // Create gallery images if provided
@@ -110,6 +111,7 @@ export async function updateDonation(id: string, data: DonationInput) {
                 where: { id },
                 data: {
                     ...donationData,
+                    categoryLabel: donationData.categoryLabel,
                     targetAmount: donationData.targetAmount,
                     currentAmount: donationData.currentAmount || 0,
                     updatedAt: new Date(),

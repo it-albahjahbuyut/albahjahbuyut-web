@@ -18,6 +18,7 @@ interface DonationCardProps {
         bankName: string;
         accountNumber: string;
         accountName: string | null;
+        categoryLabel?: string | null;
     };
     index?: number;
     featured?: boolean;
@@ -87,28 +88,37 @@ export function DonationCard({ program, index = 0, featured = false }: DonationC
                 </p>
 
                 {/* Progress Bar */}
-                <div className="mb-4">
-                    <div className="mb-2 flex justify-between text-sm">
-                        <span className="font-semibold text-emerald-700">
-                            {formatCurrency(current)}
-                        </span>
-                        <span className="text-slate-500">
-                            dari {formatCurrency(target)}
+                {/* Progress Bar */}
+                {target > 0 ? (
+                    <div className="mb-4">
+                        <div className="mb-2 flex justify-between text-sm">
+                            <span className="font-semibold text-emerald-700">
+                                {formatCurrency(current)}
+                            </span>
+                            <span className="text-slate-500">
+                                dari {formatCurrency(target)}
+                            </span>
+                        </div>
+                        <div className="h-3 overflow-hidden rounded-full bg-slate-200">
+                            <motion.div
+                                initial={{ width: 0 }}
+                                whileInView={{ width: `${percentage}%` }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 1, delay: 0.3 }}
+                                className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-gold-500"
+                            />
+                        </div>
+                        <p className="mt-1 text-right text-xs text-slate-500">
+                            {percentage.toFixed(1)}% tercapai
+                        </p>
+                    </div>
+                ) : (
+                    <div className="mb-4 pt-2 pb-1">
+                        <span className="inline-block px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-full">
+                            {program.categoryLabel || "✨ Infaq Operasional"}
                         </span>
                     </div>
-                    <div className="h-3 overflow-hidden rounded-full bg-slate-200">
-                        <motion.div
-                            initial={{ width: 0 }}
-                            whileInView={{ width: `${percentage}%` }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 1, delay: 0.3 }}
-                            className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-gold-500"
-                        />
-                    </div>
-                    <p className="mt-1 text-right text-xs text-slate-500">
-                        {percentage.toFixed(1)}% tercapai
-                    </p>
-                </div>
+                )}
 
                 {/* Bank Info */}
                 <div className="rounded-xl bg-slate-50 p-4">

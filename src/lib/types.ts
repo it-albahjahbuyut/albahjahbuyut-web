@@ -16,6 +16,8 @@ export interface SerializedDonation {
     accountName: string | null;
     isActive: boolean;
     isFeatured: boolean;
+    hideProgress: boolean;
+    categoryLabel?: string | null;
     startDate: Date;
     endDate: Date | null;
     createdAt: Date;

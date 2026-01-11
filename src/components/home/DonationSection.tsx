@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Heart, ArrowRight } from "lucide-react";
 import { FadeIn } from "@/components/animations/FadeIn";
+import { Button } from "@/components/ui/button";
 
 interface DonationProgram {
     id: string;
@@ -9,12 +10,10 @@ interface DonationProgram {
     description: string | null;
     image: string | null;
     slug: string;
-    // Prisma Decimal type, will be converted to number
     targetAmount: { toNumber(): number } | number;
     currentAmount: { toNumber(): number } | number;
 }
 
-// Format currency to Indonesian Rupiah
 function formatCurrency(amount: number): string {
     return new Intl.NumberFormat("id-ID", {
         style: "currency",
@@ -27,14 +26,9 @@ function formatCurrency(amount: number): string {
 export function DonationSection({ program }: { program: DonationProgram | null }) {
     if (!program) {
         return (
-            <section className="py-24 bg-white relative">
+            <section className="py-12 md:py-24 bg-slate-50 relative">
                 <div className="container mx-auto px-4 lg:px-8">
-                    <div className="bg-slate-50 rounded-3xl p-12 md:p-16 text-center flex flex-col items-center justify-center border border-slate-100 relative overflow-hidden group">
-                        {/* Decorative Pattern Background */}
-                        <div className="absolute inset-0 opacity-[0.03]"
-                            style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")" }}
-                        />
-
+                    <div className="bg-white rounded-3xl p-8 md:p-16 text-center flex flex-col items-center justify-center border border-slate-100 shadow-sm relative overflow-hidden">
                         <div className="relative z-10 max-w-lg">
                             <h3 className="text-2xl md:text-3xl font-bold text-slate-900 mb-4 tracking-tight">
                                 Belum ada program infaq aktif
@@ -42,13 +36,11 @@ export function DonationSection({ program }: { program: DonationProgram | null }
                             <p className="text-slate-600 mb-8 leading-relaxed font-light text-lg">
                                 Saat ini kami sedang mempersiapkan program kebaikan selanjutnya. Mari bersama-sama menebar manfaat untuk umat.
                             </p>
-                            <Link
-                                href="/infaq"
-                                className="inline-flex items-center gap-2 px-8 py-3 bg-white text-slate-900 border border-slate-200 rounded-full font-semibold hover:bg-slate-900 hover:text-white hover:border-slate-900 transition-all duration-300 shadow-sm hover:shadow-lg"
-                            >
-                                <span>Lihat Program</span>
-                                <ArrowRight className="w-4 h-4" />
-                            </Link>
+                            <Button asChild className="rounded-full bg-emerald-950 text-white hover:bg-emerald-900">
+                                <Link href="/infaq">
+                                    Lihat Program Lain <ArrowRight className="ml-2 w-4 h-4" />
+                                </Link>
+                            </Button>
                         </div>
                     </div>
                 </div>
@@ -56,99 +48,106 @@ export function DonationSection({ program }: { program: DonationProgram | null }
         );
     }
 
-    return (
-        <section className="py-24 bg-white relative">
-            <div className="container mx-auto px-4 lg:px-8">
-                <div className="bg-emerald-950 text-white overflow-hidden relative rounded-3xl">
-                    <div className="absolute inset-0 opacity-10 bg-[url('/grid-pattern.svg')] pointer-events-none" />
+    const current = typeof program.currentAmount === 'number'
+        ? program.currentAmount
+        : program.currentAmount.toNumber();
+    const target = typeof program.targetAmount === 'number'
+        ? program.targetAmount
+        : program.targetAmount.toNumber();
+    const percentage = target > 0 ? Math.min((current / target) * 100, 100) : 0;
 
-                    <div className="relative z-10 grid lg:grid-cols-2 gap-8 lg:gap-16 p-6 md:p-10 lg:p-20 items-center">
-                        <div className="max-w-xl">
+    return (
+        <section className="py-12 md:py-20 bg-slate-50 relative">
+            <div className="container mx-auto px-4 lg:px-8">
+                {/* Main Card Container - Changed to White */}
+                <div className="bg-white rounded-3xl overflow-hidden shadow-xl shadow-slate-200/40 border border-slate-100">
+                    <div className="grid lg:grid-cols-2 lg:h-[500px]">
+
+                        {/* Left Column: Content */}
+                        <div className="p-6 md:p-10 lg:p-14 order-2 lg:order-1 flex flex-col justify-center">
                             <FadeIn>
-                                <div className="inline-flex items-center gap-2 text-emerald-400 text-xs font-bold uppercase tracking-widest mb-6">
-                                    <Heart className="w-4 h-4" />
+                                <div className="inline-flex items-center gap-2 text-emerald-600 text-xs font-bold uppercase tracking-widest mb-4 bg-emerald-50 px-3 py-1 rounded-full w-fit">
                                     Program Infaq
                                 </div>
 
-                                <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 tracking-tight leading-none text-white">
-                                    Mari Berbagi Kebaikan
+                                <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 text-slate-900 leading-tight">
+                                    {program.title}
                                 </h2>
-                                <p className="text-emerald-100/80 text-lg leading-relaxed mb-8 md:mb-10 font-light">
+
+                                <p className="text-slate-600 text-base md:text-lg leading-relaxed mb-8 font-light line-clamp-4">
                                     {program.description || "Sisihkan sebagian harta Anda untuk membantu pembangunan dan operasional pesantren. Insya Allah menjadi amal jariyah yang tak terputus."}
                                 </p>
-                                <div className="flex flex-col sm:flex-row gap-4">
-                                    <Link
-                                        href={`/infaq/${program.slug}`}
-                                        className="inline-flex items-center justify-center px-8 py-3.5 bg-white text-emerald-950 text-sm font-bold tracking-widest hover:bg-emerald-100 transition-all w-full sm:w-auto rounded-lg"
+
+                                {/* Action Buttons */}
+                                <div className="flex flex-col sm:flex-row gap-3">
+                                    <Button
+                                        asChild
+                                        size="lg"
+                                        className="rounded-full bg-emerald-600 hover:bg-emerald-700 text-white h-12 px-8 text-base shadow-lg shadow-emerald-600/20"
                                     >
-                                        Infaq Sekarang
-                                        <ArrowRight className="ml-2 w-4 h-4" />
-                                    </Link>
-                                    <Link
-                                        href="/infaq"
-                                        className="inline-flex items-center justify-center px-8 py-3.5 bg-transparent border border-emerald-700 text-emerald-100 text-sm font-bold tracking-widest hover:bg-emerald-900 transition-all w-full sm:w-auto rounded-lg"
+                                        <Link href={`/infaq/${program.slug}`}>
+                                            Infaq Sekarang
+                                        </Link>
+                                    </Button>
+                                    <Button
+                                        asChild
+                                        variant="outline"
+                                        size="lg"
+                                        className="rounded-full border-slate-200 text-slate-600 hover:bg-slate-50 h-12 px-8 text-base"
                                     >
-                                        Program Lain
-                                    </Link>
+                                        <Link href="/infaq">
+                                            Program Lain
+                                        </Link>
+                                    </Button>
                                 </div>
                             </FadeIn>
                         </div>
 
-                        <div className="flex items-center justify-center">
-                            <FadeIn delay={0.3} className="w-full max-w-sm">
-                                <Link
-                                    href={`/infaq/${program.slug}`}
-                                    className="block aspect-[4/3] bg-emerald-900 relative shadow-2xl border-4 border-emerald-900 mb-6 rounded-xl overflow-hidden group"
-                                >
-                                    {program.image ? (
-                                        <Image
-                                            src={program.image}
-                                            alt={program.title}
-                                            fill
-                                            className="object-cover transition-transform duration-500 group-hover:scale-105"
-                                        />
-                                    ) : (
-                                        <div className="absolute inset-0 flex items-center justify-center text-emerald-700">
-                                            <Heart className="w-16 h-16" />
-                                        </div>
-                                    )}
-                                    {/* Hover Overlay */}
-                                    <div className="absolute inset-0 bg-emerald-950/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                        <span className="text-white font-bold text-sm uppercase tracking-wider">Lihat Detail</span>
-                                    </div>
-                                </Link>
-                                <h3 className="text-xl font-bold mb-2 uppercase tracking-wide truncate text-center lg:text-left">{program.title}</h3>
-                                {(() => {
-                                    const current = typeof program.currentAmount === 'number'
-                                        ? program.currentAmount
-                                        : program.currentAmount.toNumber();
-                                    const target = typeof program.targetAmount === 'number'
-                                        ? program.targetAmount
-                                        : program.targetAmount.toNumber();
-                                    const percentage = target > 0 ? Math.min((current / target) * 100, 100) : 0;
+                        {/* Right Column: Image & Stats */}
+                        <div className="relative h-[300px] lg:h-full bg-slate-100 order-1 lg:order-2">
+                            {program.image ? (
+                                <Image
+                                    src={program.image}
+                                    alt={program.title}
+                                    fill
+                                    className="object-cover"
+                                    priority
+                                />
+                            ) : (
+                                <div className="absolute inset-0 flex items-center justify-center text-slate-300">
+                                    <Heart className="w-20 h-20" />
+                                </div>
+                            )}
 
-                                    return (
-                                        <>
-                                            <div className="h-2 w-full bg-emerald-900/50 mb-4 rounded-full overflow-hidden">
-                                                <div
-                                                    className="h-full bg-gradient-to-r from-emerald-400 to-emerald-500 transition-all duration-500"
-                                                    style={{ width: `${percentage}%` }}
-                                                />
-                                            </div>
-                                            <div className="flex justify-between items-center text-xs font-bold uppercase tracking-wider">
-                                                <div className="flex flex-col">
-                                                    <span className="text-emerald-400">Terkumpul</span>
-                                                    <span className="text-white text-sm normal-case">{formatCurrency(current)}</span>
-                                                </div>
-                                                <div className="flex flex-col text-right">
-                                                    <span className="text-emerald-400">{percentage.toFixed(0)}%</span>
-                                                    <span className="text-white/70 text-[10px] normal-case">dari {formatCurrency(target)}</span>
-                                                </div>
-                                            </div>
-                                        </>
-                                    );
-                                })()}
-                            </FadeIn>
+                            {/* Floating Stats Card */}
+                            <div className="absolute bottom-0 left-0 right-0 p-4 lg:p-6 bg-gradient-to-t from-black/60 to-transparent">
+                                <FadeIn delay={0.2} className="bg-white rounded-xl p-5 shadow-lg shadow-black/5 border border-slate-100 w-full relative z-20">
+                                    <div className="flex justify-between items-center mb-3">
+                                        <div className="space-y-1">
+                                            <p className="text-[10px] uppercase text-slate-500 font-bold tracking-wider">Terkumpul</p>
+                                            <p className="font-bold text-slate-900 text-lg md:text-xl leading-none">
+                                                {formatCurrency(current)}
+                                            </p>
+                                        </div>
+                                        <div className="flex flex-col items-end pl-4">
+                                            <span className="inline-flex items-center justify-center bg-emerald-100 text-emerald-700 text-xs font-bold px-3 py-1 rounded-full min-w-[3.5rem]">
+                                                {percentage.toFixed(0)}%
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div className="h-3 w-full bg-slate-200 rounded-full overflow-hidden mb-2">
+                                        <div
+                                            className="h-full bg-emerald-500 rounded-full transition-all duration-1000 ease-out relative"
+                                            style={{ width: `${Math.max(percentage, 2)}%` }}
+                                        />
+                                    </div>
+                                    <div className="flex justify-between items-center text-[10px] text-slate-400 font-medium">
+                                        <span>Progres Donasi</span>
+                                        <span>Target: {formatCurrency(target)}</span>
+                                    </div>
+                                </FadeIn>
+                            </div>
                         </div>
                     </div>
                 </div>

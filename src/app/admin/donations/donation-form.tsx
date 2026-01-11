@@ -64,6 +64,8 @@ export function DonationForm({ donation }: DonationFormProps) {
             accountName: donation?.accountName || "",
             isActive: donation?.isActive ?? true,
             isFeatured: donation?.isFeatured ?? false,
+            hideProgress: donation?.hideProgress ?? false,
+            categoryLabel: donation?.categoryLabel || "",
             endDate: donation?.endDate || undefined,
             galleryImages: donation?.images?.map((img: { imageUrl: string }) => img.imageUrl) || [],
         },
@@ -298,12 +300,21 @@ export function DonationForm({ donation }: DonationFormProps) {
                                         <FormLabel>Target Donasi (Rp)</FormLabel>
                                         <FormControl>
                                             <Input
-                                                type="number"
-                                                {...field}
-                                                onChange={(e) => field.onChange(Number(e.target.value))}
-                                                placeholder="10000000"
+                                                type="text"
+                                                inputMode="numeric"
+                                                value={field.value === 0 ? "" : field.value.toString()}
+                                                onChange={(e) => {
+                                                    const val = e.target.value.replace(/[^0-9]/g, "");
+                                                    field.onChange(val === "" ? 0 : Number(val));
+                                                }}
+                                                placeholder="Contoh: 10000000"
                                             />
                                         </FormControl>
+                                        <FormDescription>
+                                            {field.value > 0
+                                                ? `Rp ${field.value.toLocaleString("id-ID")}`
+                                                : "Isi 0 atau kosongkan jika tidak ada target spesifik"}
+                                        </FormDescription>
                                         <FormMessage />
                                     </FormItem>
                                 )}
@@ -317,14 +328,73 @@ export function DonationForm({ donation }: DonationFormProps) {
                                         <FormLabel>Jumlah Terkumpul (Rp)</FormLabel>
                                         <FormControl>
                                             <Input
-                                                type="number"
-                                                {...field}
-                                                onChange={(e) => field.onChange(Number(e.target.value))}
-                                                placeholder="0"
+                                                type="text"
+                                                inputMode="numeric"
+                                                value={field.value === 0 ? "" : field.value.toString()}
+                                                onChange={(e) => {
+                                                    const val = e.target.value.replace(/[^0-9]/g, "");
+                                                    field.onChange(val === "" ? 0 : Number(val));
+                                                }}
+                                                placeholder="Kosongkan jika belum ada"
                                             />
                                         </FormControl>
                                         <FormDescription>
-                                            Update manual jumlah yang sudah terkumpul
+                                            {field.value > 0 ? `Rp ${field.value.toLocaleString("id-ID")}` : "Belum ada donasi terkumpul"}
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+
+                        <div className="grid gap-4 md:grid-cols-2">
+                            <FormField
+                                control={form.control}
+                                name="isActive"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Status</FormLabel>
+                                        <Select
+                                            onValueChange={(value) => field.onChange(value === "true")}
+                                            defaultValue={field.value ? "true" : "false"}
+                                        >
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Pilih status" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                <SelectItem value="true">Aktif</SelectItem>
+                                                <SelectItem value="false">Nonaktif</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={form.control}
+                                name="isFeatured"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Highlight di Beranda</FormLabel>
+                                        <Select
+                                            onValueChange={(value) => field.onChange(value === "true")}
+                                            defaultValue={field.value ? "true" : "false"}
+                                        >
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Pilih status" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                <SelectItem value="true">Ya</SelectItem>
+                                                <SelectItem value="false">Tidak</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                        <FormDescription>
+                                            Tampilkan program ini di halaman depan website
                                         </FormDescription>
                                         <FormMessage />
                                     </FormItem>
@@ -334,24 +404,27 @@ export function DonationForm({ donation }: DonationFormProps) {
 
                         <FormField
                             control={form.control}
-                            name="isActive"
+                            name="hideProgress"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Status</FormLabel>
+                                    <FormLabel>Tampilkan Progress Donasi</FormLabel>
                                     <Select
                                         onValueChange={(value) => field.onChange(value === "true")}
                                         defaultValue={field.value ? "true" : "false"}
                                     >
                                         <FormControl>
                                             <SelectTrigger>
-                                                <SelectValue placeholder="Pilih status" />
+                                                <SelectValue placeholder="Pilih opsi" />
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                            <SelectItem value="true">Aktif</SelectItem>
-                                            <SelectItem value="false">Nonaktif</SelectItem>
+                                            <SelectItem value="false">Tampilkan progress dan nominal</SelectItem>
+                                            <SelectItem value="true">Sembunyikan progress</SelectItem>
                                         </SelectContent>
                                     </Select>
+                                    <FormDescription>
+                                        Jika disembunyikan, pengunjung tidak akan melihat jumlah terkumpul dan progress bar
+                                    </FormDescription>
                                     <FormMessage />
                                 </FormItem>
                             )}
@@ -359,26 +432,15 @@ export function DonationForm({ donation }: DonationFormProps) {
 
                         <FormField
                             control={form.control}
-                            name="isFeatured"
+                            name="categoryLabel"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Highlight di Beranda</FormLabel>
-                                    <Select
-                                        onValueChange={(value) => field.onChange(value === "true")}
-                                        defaultValue={field.value ? "true" : "false"}
-                                    >
-                                        <FormControl>
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Pilih status" />
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            <SelectItem value="true">Ya</SelectItem>
-                                            <SelectItem value="false">Tidak</SelectItem>
-                                        </SelectContent>
-                                    </Select>
+                                    <FormLabel>Label Kategori (Opsional)</FormLabel>
+                                    <FormControl>
+                                        <Input {...field} placeholder="Contoh: Infaq Operasional, Sedekah Jumat" />
+                                    </FormControl>
                                     <FormDescription>
-                                        Tampilkan program ini di halaman depan website
+                                        Label khusus yang akan muncul jika progress disembunyikan atau target donasi 0.
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>

@@ -78,6 +78,7 @@ export default async function DonationPage() {
                                             bankName: program.bankName,
                                             accountNumber: program.accountNumber,
                                             accountName: program.accountName,
+                                            categoryLabel: program.categoryLabel,
                                         }}
                                         index={index}
                                     />
