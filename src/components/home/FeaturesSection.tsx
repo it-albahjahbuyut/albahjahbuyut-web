@@ -10,7 +10,7 @@ export function FeaturesSection() {
                 <div
                     className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-fixed opacity-40"
                     style={{
-                        backgroundImage: `url('https://images.unsplash.com/photo-1541829070764-84a7d30dd3f3?q=80&w=1974&auto=format&fit=crop')`
+                        backgroundImage: `url('https://res.cloudinary.com/dand8rpbb/image/upload/v1768123892/WhatsApp_Image_2026-01-08_at_11.07.43_PM_vpzgeu.jpg')`
                     }}
                 />
 

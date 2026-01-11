@@ -80,8 +80,8 @@ export function YouTubeLiveSection() {
                                     </div>
                                 )}
 
-                                {/* Simple Live Overlay on Thumbnail */}
-                                <div className="absolute top-2 left-2 flex items-center gap-1.5 bg-red-600/90 text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow-sm backdrop-blur-sm">
+                                {/* Simple Live Overlay on Thumbnail - Optimized: No Blur */}
+                                <div className="absolute top-2 left-2 flex items-center gap-1.5 bg-red-600 text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow-sm">
                                     <span className="w-1 h-1 bg-white rounded-full animate-pulse" />
                                     LIVE
                                 </div>

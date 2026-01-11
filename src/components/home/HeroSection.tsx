@@ -5,13 +5,22 @@ import { motion } from "framer-motion";
 export function HeroSection() {
     return (
         <section className="relative h-screen flex items-center justify-center overflow-hidden bg-emerald-950">
-            {/* Background Video - optimized for all devices */}
+            {/* Background Image - Shown only on mobile for performance */}
+            <div className="absolute inset-0 block md:hidden">
+                <img
+                    src="https://res.cloudinary.com/dand8rpbb/video/upload/so_0,q_auto,f_jpg/v1768020274/Untitled_Video_-_Made_With_Clipchamp_2_gvcww2.jpg"
+                    alt="Background"
+                    className="h-full w-full object-cover opacity-30"
+                />
+            </div>
+
+            {/* Background Video - Hidden on mobile, shown only on desktop */}
             <video
                 autoPlay
                 loop
                 muted
                 playsInline
-                className="absolute inset-0 h-full w-full object-cover opacity-30"
+                className="hidden md:block absolute inset-0 h-full w-full object-cover opacity-30"
                 poster="https://res.cloudinary.com/dand8rpbb/video/upload/so_0,q_auto,f_jpg/v1768020274/Untitled_Video_-_Made_With_Clipchamp_2_gvcww2.jpg"
             >
                 {/* Video with auto quality for better viewing experience */}
