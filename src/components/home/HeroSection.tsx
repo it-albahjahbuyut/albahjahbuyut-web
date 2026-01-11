@@ -1,33 +1,31 @@
 "use client";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 
 export function HeroSection() {
+    const [videoSrc, setVideoSrc] = useState<string>("");
+
+    useEffect(() => {
+        const videos = [
+            "https://res.cloudinary.com/dand8rpbb/video/upload/q_auto/v1768020274/Untitled_Video_-_Made_With_Clipchamp_2_gvcww2.mp4",
+            "https://res.cloudinary.com/dand8rpbb/video/upload/v1767984439/Untitled_Video_-_Made_With_Clipchamp_rpbfw1.mp4"
+        ];
+        setVideoSrc(videos[Math.floor(Math.random() * videos.length)]);
+    }, []);
+
     return (
         <section className="relative h-screen flex items-center justify-center overflow-hidden bg-emerald-950">
-            {/* Background Image - Shown only on mobile for performance */}
-            <div className="absolute inset-0 block md:hidden">
-                <img
-                    src="https://res.cloudinary.com/dand8rpbb/video/upload/so_0,q_auto,f_jpg/v1768020274/Untitled_Video_-_Made_With_Clipchamp_2_gvcww2.jpg"
-                    alt="Background"
-                    className="h-full w-full object-cover opacity-30"
-                />
-            </div>
-
-            {/* Background Video - Hidden on mobile, shown only on desktop */}
+            {/* Background Video - optimized for all devices */}
             <video
                 autoPlay
                 loop
                 muted
                 playsInline
-                className="hidden md:block absolute inset-0 h-full w-full object-cover opacity-30"
+                className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ${videoSrc ? 'opacity-30' : 'opacity-0'}`}
                 poster="https://res.cloudinary.com/dand8rpbb/video/upload/so_0,q_auto,f_jpg/v1768020274/Untitled_Video_-_Made_With_Clipchamp_2_gvcww2.jpg"
             >
-                {/* Video with auto quality for better viewing experience */}
-                <source
-                    src="https://res.cloudinary.com/dand8rpbb/video/upload/q_auto/v1768020274/Untitled_Video_-_Made_With_Clipchamp_2_gvcww2.mp4"
-                    type="video/mp4"
-                />
+                {videoSrc && <source src={videoSrc} type="video/mp4" />}
             </video>
 
             {/* Darker Overlay for better text readability */}

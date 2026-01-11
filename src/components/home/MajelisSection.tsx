@@ -1,4 +1,4 @@
-import { Calendar, Clock } from "lucide-react";
+import { Calendar, Clock, MapPin } from "lucide-react";
 import { db } from "@/lib/db";
 
 interface MajelisData {
@@ -27,7 +27,6 @@ async function getMajelisList(): Promise<MajelisData[]> {
         return majelisList;
     } catch (error) {
         console.error("Failed to fetch majelis:", error);
-        // Return default data if database fails
         return [
             {
                 id: "1",
@@ -65,56 +64,78 @@ export async function MajelisSection() {
     }
 
     return (
-        <section className="py-24 bg-white border-t border-slate-100">
-            <div className="container mx-auto px-6 md:px-12 lg:px-24">
-                <div className="text-center max-w-3xl mx-auto mb-16">
-                    <span className="text-emerald-600 font-bold tracking-wider text-xs uppercase mb-3 block">
+        <section className="relative py-20 lg:py-32 bg-slate-50 overflow-hidden">
+            {/* Minimalist Pattern Background */}
+            <div className="absolute inset-0 opacity-[0.03]"
+                style={{
+                    backgroundImage: `linear-gradient(#064e3b 1px, transparent 1px), linear-gradient(to right, #064e3b 1px, transparent 1px)`,
+                    backgroundSize: '40px 40px'
+                }}
+            />
+
+            <div className="container mx-auto px-6 md:px-12 lg:px-24 relative z-10">
+                {/* Header - Left Aligned to match other sections */}
+                <div className="max-w-xl mb-16 lg:mb-20">
+                    <span className="text-gold-600 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">
                         Jadwal Kegiatan
                     </span>
-                    <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-6">
-                        Majelis Rutin Mingguan
+                    <h2 className="text-3xl md:text-5xl font-bold text-emerald-950 mb-6 tracking-tight leading-tight">
+                        Majelis Rutin <br />
+                        <span className="text-emerald-800/60 font-light">Mingguan</span>
                     </h2>
-                    <p className="text-slate-600 text-lg leading-relaxed font-light">
-                        Mari istiqomah menghadiri majelis ilmu dan dzikir untuk menutrisi hati dan mendekatkan diri kepada Allah SWT.
+                    <p className="text-slate-600 text-lg font-light leading-relaxed">
+                        Mari istiqomah menghadiri taman-taman surga di dunia melalui majelis ilmu dan dzikir untuk menutrisi hati.
                     </p>
                 </div>
 
                 <div className="grid gap-6 lg:gap-8 md:grid-cols-3">
                     {activities.map((activity) => (
-                        <div
-                            key={activity.id}
-                            className="group bg-slate-50 hover:bg-white rounded-2xl p-8 border border-slate-100 hover:border-emerald-100 hover:shadow-xl hover:shadow-emerald-900/5 transition-all duration-300"
-                        >
-                            <div className="flex flex-col h-full">
+                        <div key={activity.id} className="group relative h-full">
+                            {/* Card Content - Clean & Minimalist */}
+                            <div className="relative h-full bg-white border border-slate-200 rounded-2xl p-6 lg:p-8 flex flex-col transition-all duration-300 hover:shadow-xl hover:shadow-emerald-900/5 hover:-translate-y-1 hover:border-emerald-100">
+
+                                {/* Top Badge - Date */}
                                 <div className="mb-6">
-                                    <h3 className="text-xl font-bold text-slate-900 mb-2 group-hover:text-emerald-700 transition-colors">
+                                    <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-50 text-emerald-700 rounded-lg text-xs font-bold uppercase tracking-wider group-hover:bg-emerald-600 group-hover:text-white transition-colors">
+                                        <Calendar className="w-3.5 h-3.5" />
+                                        {activity.schedule}
+                                    </div>
+                                </div>
+
+                                {/* Title Area */}
+                                <div className="mb-8">
+                                    <h3 className="text-2xl font-bold text-slate-800 mb-2 group-hover:text-emerald-800 transition-colors">
                                         {activity.title}
                                     </h3>
                                     {activity.subtitle && (
-                                        <p className="text-slate-500 text-sm font-medium">
+                                        <p className="text-slate-500 font-medium leading-relaxed">
                                             {activity.subtitle}
                                         </p>
                                     )}
                                 </div>
 
-                                <div className="mt-auto space-y-4 pt-6 border-t border-slate-200/60 group-hover:border-emerald-100 transition-colors">
-                                    <div className="flex items-start gap-3">
-                                        <div className="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center shrink-0 group-hover:border-emerald-200 group-hover:bg-emerald-50 transition-colors">
-                                            <Calendar className="w-4 h-4 text-emerald-600" />
+                                {/* Divider */}
+                                <div className="h-px w-full bg-slate-100 my-auto mb-6"></div>
+
+                                {/* Details Grid */}
+                                <div className="space-y-4">
+                                    <div className="flex items-start gap-4">
+                                        <div className="w-5 h-5 flex items-center justify-center shrink-0 text-gold-500 mt-0.5">
+                                            <Clock className="w-4 h-4" />
                                         </div>
                                         <div>
-                                            <p className="text-xs text-slate-400 font-bold uppercase tracking-wider mb-0.5">Waktu</p>
-                                            <p className="text-slate-700 font-medium">{activity.schedule}</p>
+                                            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-0.5">Waktu</p>
+                                            <p className="text-slate-700 font-medium text-sm">{activity.time}</p>
                                         </div>
                                     </div>
 
-                                    <div className="flex items-start gap-3">
-                                        <div className="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center shrink-0 group-hover:border-emerald-200 group-hover:bg-emerald-50 transition-colors">
-                                            <Clock className="w-4 h-4 text-emerald-600" />
+                                    <div className="flex items-start gap-4">
+                                        <div className="w-5 h-5 flex items-center justify-center shrink-0 text-gold-500 mt-0.5">
+                                            <MapPin className="w-4 h-4" />
                                         </div>
                                         <div>
-                                            <p className="text-xs text-slate-400 font-bold uppercase tracking-wider mb-0.5">Jam</p>
-                                            <p className="text-slate-700 font-medium">{activity.time}</p>
+                                            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-0.5">Lokasi</p>
+                                            <p className="text-slate-700 font-medium text-sm">{activity.location || "Masjid Al-Bahjah Buyut"}</p>
                                         </div>
                                     </div>
                                 </div>

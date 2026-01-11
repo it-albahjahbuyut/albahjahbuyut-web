@@ -50,7 +50,7 @@ export function ProgramsSection({ units }: { units: Unit[] }) {
                             </span>
                         </FadeIn>
                         <FadeIn delay={0.2}>
-                            <h2 className="text-5xl md:text-6xl font-bold text-emerald-950 mb-6 tracking-tight leading-none">
+                            <h2 className="text-4xl lg:text-5xl font-bold text-emerald-950 mb-6 tracking-tight leading-[1.1]">
                                 Program <br /> <span className="text-gold-500">Unggulan.</span>
                             </h2>
                         </FadeIn>
@@ -101,12 +101,12 @@ export function ProgramsSection({ units }: { units: Unit[] }) {
                                     </div>
 
                                     {/* Content */}
-                                    <div className="relative z-10 flex h-full flex-col p-8">
-                                        <h3 className="mb-3 text-2xl font-bold text-white group-hover:text-gold-400 transition-colors pt-4">
+                                    <div className="relative z-10 flex h-full flex-col p-8 md:p-10">
+                                        <h3 className="mb-4 text-3xl font-bold text-white group-hover:text-gold-400 transition-colors pt-4">
                                             {program.name}
                                         </h3>
 
-                                        <p className="mb-6 line-clamp-2 text-emerald-100/80 leading-relaxed font-light">
+                                        <p className="mb-6 line-clamp-2 text-emerald-100/90 text-lg leading-relaxed font-light">
                                             {program.desc}
                                         </p>
 

@@ -36,12 +36,11 @@ export async function LatestVideosSection() {
                 <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
                     <div className="max-w-2xl">
                         <div className="flex items-center gap-3 mb-4">
-                            <div className="w-1 h-6 bg-red-600 rounded-full"></div>
-                            <span className="text-red-600 font-bold tracking-wider text-xs uppercase">
+                            <span className="text-red-600 font-bold tracking-[0.2em] text-xs uppercase block">
                                 Kanal Youtube
                             </span>
                         </div>
-                        <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
+                        <h2 className="text-4xl lg:text-5xl font-bold text-slate-900 mb-6 tracking-tight leading-none">
                             Kajian & Dokumentasi <span className="text-red-600">Terbaru</span>
                         </h2>
                         <p className="text-slate-600 text-lg font-light leading-relaxed">
