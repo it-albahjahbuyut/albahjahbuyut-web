@@ -1,19 +1,38 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Share2, Check, Link, MessageCircle } from "lucide-react";
 
 interface ShareButtonProps {
     title: string;
     description: string;
+    slug: string;
+    basePath: string; // e.g., "/infaq" or "/berita"
+    shareMessage?: string;
+    buttonText?: string;
 }
 
-export function ShareButton({ title, description }: ShareButtonProps) {
+export function ShareButton({
+    title,
+    description,
+    slug,
+    basePath,
+    shareMessage = "Lihat selengkapnya di:",
+    buttonText = "Bagikan"
+}: ShareButtonProps) {
     const [showOptions, setShowOptions] = useState(false);
     const [copied, setCopied] = useState(false);
+    const [origin, setOrigin] = useState("");
 
-    const shareUrl = typeof window !== "undefined" ? window.location.href : "";
-    const shareText = `${title}\n\n${description}...\n\nAyo berdonasi di:`;
+    // Initialize origin strictly on client side to avoid hydration mismatch
+    // But don't set it immediately to empty string if window exists, 
+    // actually useEffect is best for this.
+    useEffect(() => {
+        setOrigin(window.location.origin);
+    }, []);
+
+    const shareUrl = origin ? `${origin}${basePath}/${slug}` : "";
+    const shareText = `${title}\n\n${description}...\n\n${shareMessage}`;
 
     const handleShare = async () => {
         if (navigator.share) {
@@ -58,7 +77,7 @@ export function ShareButton({ title, description }: ShareButtonProps) {
                 className="inline-flex items-center gap-2 bg-white border border-emerald-200 hover:bg-emerald-50 text-emerald-700 px-4 py-2.5 rounded-xl font-medium transition-all"
             >
                 <Share2 className="w-4 h-4" />
-                Bagikan Program
+                {buttonText}
             </button>
 
             {showOptions && (

@@ -29,7 +29,7 @@ export function ProfileSection() {
 
                             <h2 className="text-4xl lg:text-5xl font-bold text-emerald-950 mb-8 tracking-tight leading-[1.1]">
                                 Ahlan Wa Sahlan <br />
-                                <span className="text-emerald-800/60 font-light">di Al-Bahjah Buyut</span>
+                                <span className="text-emerald-600 font-light">di Al-Bahjah Buyut</span>
                             </h2>
 
                             <div className="relative mb-8">

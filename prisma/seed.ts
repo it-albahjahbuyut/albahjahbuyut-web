@@ -215,6 +215,56 @@ async function main() {
     }
     console.log("✅ Created sample galleries");
 
+    // Create sample Majelis
+    const majelisList = [
+        {
+            title: "Kajian Akhlak",
+            subtitle: "Kajian Kitab Akhlaqul Banin",
+            teacher: "Abah Sayf Abu Hanifah",
+            schedule: "Rabu Pagi",
+            time: "05.30 WIB - Selesai",
+            location: "LPD Al Bahjah Buyut",
+            order: 1,
+        },
+        {
+            title: "Kajian Kitab Al-Hikam",
+            subtitle: "Kitab Al-Hikam",
+            teacher: "Abah Sayf Abu Hanifah",
+            schedule: "Setiap Ahad Sore",
+            time: "16.00 WIB - Selesai",
+            location: "LPD Al-Bahjah Buyut",
+            order: 2,
+        },
+        {
+            title: "Majelis Keliling",
+            subtitle: "Majelis Keliling di Cirebon",
+            teacher: "Abah Sayf Abu Hanifah",
+            schedule: "Setiap Sabtu Malam Ahad",
+            time: "20.00 WIB (Ba'da Isha)",
+            location: "Masjid di Cirebon",
+            order: 3,
+        }
+    ];
+
+    for (const majelis of majelisList) {
+        await prisma.majelis.upsert({
+            where: { id: `seed-majelis-${majelis.order}` }, // Assuming we can use ID or find a unique way. Wait, ID is cuid.
+            // Upsert by title is safer for seeding if title is unique enough, but better to use findFirst or just create if blank.
+            // Since we don't have a unique slug, let's just use createMany or check existence.
+            // For simplicity in this seed file which seems destructive/idempotent:
+            // We'll use a specific ID for seed items if possible, or search by title.
+            update: {
+                ...majelis
+            },
+            create: {
+                // We can manually specify ID to ensure idempotency
+                id: `seed-majelis-${majelis.order}`,
+                ...majelis
+            }
+        });
+    }
+    console.log("✅ Created sample majelis");
+
     console.log("🎉 Seeding complete!");
 }
 

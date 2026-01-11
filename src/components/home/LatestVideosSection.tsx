@@ -37,11 +37,11 @@ export async function LatestVideosSection() {
                     <div className="max-w-2xl">
                         <div className="flex items-center gap-3 mb-4">
                             <span className="text-red-600 font-bold tracking-[0.2em] text-xs uppercase block">
-                                Kanal Youtube
+                                Youtube Kami
                             </span>
                         </div>
                         <h2 className="text-4xl lg:text-5xl font-bold text-slate-900 mb-6 tracking-tight leading-none">
-                            Kajian & Dokumentasi <span className="text-red-600">Terbaru</span>
+                            Kajian & Dokumentasi <span className="text-red-600 font-light block">Al-Bahjah Buyut</span>
                         </h2>
                         <p className="text-slate-600 text-lg font-light leading-relaxed">
                             Simak tayangan kajian, dokumentasi kegiatan, dan informasi terbaru dari channel resmi kami.

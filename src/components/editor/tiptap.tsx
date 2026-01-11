@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect } from "react";
+
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
@@ -62,13 +64,24 @@ export function TiptapEditor({
         editorProps: {
             attributes: {
                 class:
-                    "prose prose-sm sm:prose max-w-none focus:outline-none min-h-[200px] px-4 py-3",
+                    "prose prose-sm sm:prose max-w-none focus:outline-none min-h-[200px] px-4 py-3 prose-ul:list-disc prose-ol:list-decimal prose-li:marker:text-emerald-500",
             },
         },
         onUpdate: ({ editor }) => {
             onChange(editor.getHTML());
         },
     });
+
+    // Validasi dan update content editor jika berubah dari luar (misal dari AI Generate)
+    // Tiptap useEditor tidak otomatis update jika props content berubah setelah inisialisasi
+    useEffect(() => {
+        if (editor && content) {
+            // Cek jika konten berbeda untuk menghindari infinite loop atau reset cursor
+            if (editor.getHTML() !== content) {
+                editor.commands.setContent(content);
+            }
+        }
+    }, [content, editor]);
 
     if (!editor) {
         return null;

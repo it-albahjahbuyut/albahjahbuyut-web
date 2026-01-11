@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import { db } from "@/lib/db";
 import { formatCurrency } from "@/lib/utils";
 import { notFound } from "next/navigation";
@@ -5,7 +6,7 @@ import Image from "next/image";
 import { Landmark, ArrowRight, Share2, Target, Calendar, Clock, Copy, Check } from "lucide-react";
 import { FadeIn, FadeInStagger } from "@/components/animations/FadeIn";
 import { CopyButton } from "./copy-button";
-import { ShareButton } from "./share-button";
+import { ShareButton } from "@/components/ui/share-button";
 import { InfaqGallery } from "./infaq-gallery";
 import Link from "next/link";
 
@@ -13,23 +14,46 @@ interface PageProps {
     params: Promise<{ slug: string }>;
 }
 
-export async function generateMetadata({ params }: PageProps) {
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
     const { slug } = await params;
     const program = await db.donationProgram.findUnique({
         where: { slug },
     });
 
     if (!program || !program.isActive) {
-        return null;
+        return {
+            title: "Program Tidak Ditemukan | Infaq Al-Bahjah Buyut",
+        };
     }
+
+    const description = (program.description || "").slice(0, 160);
+    const imageUrl = program.image || ""; // Fallback image could be added here if desired
 
     return {
         title: `${program.title} | Infaq Al-Bahjah Buyut`,
-        description: program.description.slice(0, 160),
+        description: description,
         openGraph: {
             title: program.title,
-            description: program.description.slice(0, 160),
-            images: program.image ? [program.image] : undefined,
+            description: description,
+            url: `/infaq/${slug}`,
+            siteName: "Al-Bahjah Buyut",
+            locale: "id_ID",
+            type: "website",
+            images: imageUrl ? [
+                {
+                    url: imageUrl,
+                    width: 1200,
+                    height: 630,
+                    alt: program.title,
+                }
+            ] : [],
+        },
+        twitter: {
+            card: "summary_large_image",
+            title: program.title,
+            description: description,
+            images: imageUrl ? [imageUrl] : [],
         },
     };
 }
@@ -149,7 +173,14 @@ export default async function DonationDetailPage({ params }: PageProps) {
                                         Bagikan link program ini kepada keluarga dan teman-teman Anda. Setiap share adalah pahala yang mengalir.
                                     </p>
                                 </div>
-                                <ShareButton title={program.title} description={program.description.slice(0, 100)} />
+                                <ShareButton
+                                    title={program.title}
+                                    description={program.description.slice(0, 100)}
+                                    slug={program.slug}
+                                    basePath="/infaq"
+                                    shareMessage="Ayo berdonasi di:"
+                                    buttonText="Bagikan Program"
+                                />
                             </div>
                         </FadeIn>
                     </div>

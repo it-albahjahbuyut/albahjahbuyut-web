@@ -429,41 +429,40 @@ export default async function PSBPage() {
             <FAQSection />
 
             {/* Catatan Penting */}
-            <section className="py-24 bg-white relative overflow-hidden">
-                <div className="absolute inset-0 bg-gold-50/30" />
-                <div className="container mx-auto px-4 lg:px-8 max-w-4xl text-center relative z-10">
+            <section className="py-20 bg-white">
+                <div className="container mx-auto px-4 lg:px-8 max-w-3xl">
                     <FadeIn>
-                        <div className="bg-white rounded-[2rem] p-10 lg:p-14 shadow-xl shadow-gold-900/5 border border-gold-100">
-                            <div className="w-16 h-16 rounded-2xl bg-gold-100 mx-auto flex items-center justify-center text-gold-600 mb-8 rotate-3">
-                                <FileText className="w-8 h-8" />
+                        <div className="bg-slate-50 rounded-2xl p-8 border border-slate-200">
+                            <div className="flex items-center gap-3 mb-6">
+                                <div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-600">
+                                    <FileText className="w-5 h-5" />
+                                </div>
+                                <h3 className="text-xl font-bold text-emerald-950">Catatan Penting</h3>
                             </div>
-                            <h3 className="text-2xl font-bold text-emerald-950 mb-8 font-serif">Catatan Penting</h3>
 
-                            <div className="grid gap-4 text-left max-w-2xl mx-auto">
+                            <div className="space-y-4 mb-8">
                                 {[
                                     "Biaya pendaftaran tidak dapat dikembalikan (non-refundable)",
                                     "Pembayaran dapat dilakukan secara bertahap sesuai kesepakatan",
                                     "Calon santri yang diterima wajib melunasi seluruh biaya sebelum masuk asrama",
                                     "Simpan bukti transfer untuk diupload saat pendaftaran"
                                 ].map((note, i) => (
-                                    <div key={i} className="flex gap-4 p-4 rounded-xl hover:bg-gold-50/50 transition-colors">
-                                        <div className="w-6 h-6 rounded-full bg-gold-200 flex items-center justify-center shrink-0 mt-0.5 text-gold-700 text-xs font-bold font-mono">
-                                            {i + 1}
-                                        </div>
-                                        <span className="text-slate-600 font-medium">{note}</span>
+                                    <div key={i} className="flex gap-3 items-start text-sm text-slate-700">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-2 shrink-0" />
+                                        <span className="leading-relaxed">{note}</span>
                                     </div>
                                 ))}
                             </div>
 
-                            <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-6">
-                                <div className="text-right hidden sm:block">
-                                    <p className="text-slate-500 text-sm">Butuh bantuan pendaftaran?</p>
-                                    <p className="text-emerald-950 font-bold">Hubungi Panitia PSB</p>
-                                </div>
-                                <div className="h-10 w-px bg-slate-200 hidden sm:block" />
-                                <Link href="https://wa.me/6289676539390" target="_blank" className="flex items-center gap-3 px-6 py-3 bg-emerald-600 text-white rounded-full font-bold hover:bg-emerald-700 transition-colors shadow-lg shadow-emerald-600/20">
-                                    <Phone className="w-5 h-5" />
-                                    0896 7653 9390
+                            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-slate-200">
+                                <p className="text-sm text-slate-500 font-medium">Butuh bantuan pendaftaran?</p>
+                                <Link
+                                    href="https://wa.me/6289676539390"
+                                    target="_blank"
+                                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-600 text-white text-sm font-bold rounded-lg hover:bg-emerald-700 transition-colors shadow-sm"
+                                >
+                                    <Phone className="w-4 h-4" />
+                                    Hubungi Panitia
                                 </Link>
                             </div>
                         </div>

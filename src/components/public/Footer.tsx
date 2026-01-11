@@ -19,11 +19,10 @@ export function Footer() {
     const quickLinks = [
         { href: "/", label: "Beranda" },
         { href: "/profil", label: "Profil Pesantren" },
-        { href: "/pendidikan/smpiqu", label: "SMPIQu" },
-        { href: "/pendidikan/smaiqu", label: "SMAIQu" },
+        { href: "/pendidikan", label: "Pendidikan" },
         { href: "/berita", label: "Berita" },
         { href: "/infaq", label: "Infaq" },
-        { href: "/psb", label: "Pendaftaran" },
+        { href: "/psb", label: "Pendaftaran Santri Baru" },
     ];
 
     return (

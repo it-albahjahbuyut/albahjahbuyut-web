@@ -252,7 +252,7 @@ export default async function ProfilePage() {
                                 <FadeIn key={unit.id}>
                                     <Link
                                         href={`/pendidikan/${unit.slug}`}
-                                        className="group relative flex flex-col h-[320px] w-full overflow-hidden rounded-2xl border border-emerald-100 bg-emerald-950 transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl"
+                                        className="group relative flex flex-col h-[320px] w-full overflow-hidden border border-emerald-100 bg-emerald-950 transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl"
                                     >
                                         {/* Background Image with Gradient */}
                                         <div className="absolute inset-0 bg-emerald-950">

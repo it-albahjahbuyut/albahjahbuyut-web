@@ -51,7 +51,7 @@ export function ProgramsSection({ units }: { units: Unit[] }) {
                         </FadeIn>
                         <FadeIn delay={0.2}>
                             <h2 className="text-4xl lg:text-5xl font-bold text-emerald-950 mb-6 tracking-tight leading-[1.1]">
-                                Program <br /> <span className="text-gold-500">Unggulan.</span>
+                                Program Pendidikan <br /> <span className="text-gold-500 font-light">Al-Bahjah Buyut</span>
                             </h2>
                         </FadeIn>
                         <FadeIn delay={0.4}>
@@ -66,7 +66,7 @@ export function ProgramsSection({ units }: { units: Unit[] }) {
                             href="/pendidikan"
                             className="group hidden md:inline-flex items-center gap-4 text-emerald-950 font-bold tracking-widest text-sm uppercase hover:text-gold-600 transition-colors"
                         >
-                            Lihat Semua Program
+                            Lihat Semua Pendidikan
                             <span className="w-12 h-[1px] bg-emerald-950 group-hover:w-20 transition-all duration-300" />
                         </Link>
                     </FadeIn>
@@ -86,7 +86,7 @@ export function ProgramsSection({ units }: { units: Unit[] }) {
                             >
                                 <Link
                                     href={`/pendidikan/${program.slug}`}
-                                    className="group relative flex flex-col h-[320px] w-full overflow-hidden rounded-2xl border border-emerald-800 bg-emerald-950 transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl"
+                                    className="group relative flex flex-col h-[320px] w-full overflow-hidden rounded-1xs border border-emerald-800 bg-emerald-950 transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl"
                                 >
                                     {/* Background Image with Gradient */}
                                     <div className="absolute inset-0">

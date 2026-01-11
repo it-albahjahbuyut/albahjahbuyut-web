@@ -202,10 +202,18 @@
   line-height: 1.4;
 }
 
-.prose ul, .prose ol {
+.prose ul {
   margin-top: 1em;
   margin-bottom: 1em;
   padding-left: 1.5em;
+  list-style-type: disc;
+}
+
+.prose ol {
+  margin-top: 1em;
+  margin-bottom: 1em;
+  padding-left: 1.5em;
+  list-style-type: decimal;
 }
 
 .prose li {

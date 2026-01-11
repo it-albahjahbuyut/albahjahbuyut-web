@@ -1,18 +1,24 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Share2, Check, Link, MessageCircle } from "lucide-react";
 
 interface ShareButtonProps {
     title: string;
     description: string;
+    slug: string;
 }
 
-export function ShareButton({ title, description }: ShareButtonProps) {
+export function ShareButton({ title, description, slug }: ShareButtonProps) {
     const [showOptions, setShowOptions] = useState(false);
     const [copied, setCopied] = useState(false);
+    const [origin, setOrigin] = useState("");
 
-    const shareUrl = typeof window !== "undefined" ? window.location.href : "";
+    useEffect(() => {
+        setOrigin(window.location.origin);
+    }, []);
+
+    const shareUrl = origin ? `${origin}/infaq/${slug}` : "";
     const shareText = `${title}\n\n${description}...\n\nAyo berdonasi di:`;
 
     const handleShare = async () => {

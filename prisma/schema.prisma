@@ -239,6 +239,7 @@ model Majelis {
   id          String   @id @default(cuid())
   title       String   // Nama kegiatan, misal "Jalsah Itsnain"
   subtitle    String?  // Deskripsi singkat, misal "Majelis Rasulullah SAW"
+  teacher     String?  // Pengajar, misal "Abah Sayf Abu Hanifah"
   schedule    String   // Jadwal, misal "Senin Malam Selasa"
   time        String   // Waktu, misal "18.30 WIB (Ba'da Maghrib)"
   location    String?  // Lokasi, misal "Masjid Al-Bahjah Buyut"

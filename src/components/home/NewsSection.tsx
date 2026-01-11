@@ -29,7 +29,7 @@ export function NewsSection({ posts }: { posts: Post[] }) {
                             </div>
                         </FadeIn>
                         <FadeIn delay={0.2}>
-                            <h2 className="text-4xl lg:text-5xl font-bold text-emerald-950 mb-4 tracking-tight"><span className="text-emerald-600">Berita</span> Terbaru.</h2>
+                            <h2 className="text-4xl lg:text-5xl font-bold text-emerald-950 mb-4 tracking-tight">Berita Terbaru. <br /> <span className="text-gold-500 font-light">Al-Bahjah Buyut</span></h2>
                         </FadeIn>
                         <FadeIn delay={0.4}>
                             <p className="text-emerald-900/60 text-lg font-light leading-relaxed">
@@ -40,10 +40,10 @@ export function NewsSection({ posts }: { posts: Post[] }) {
                     <FadeIn delay={0.6}>
                         <Link
                             href="/berita"
-                            className="inline-flex items-center justify-center px-6 py-3 bg-white border border-emerald-200 text-emerald-950 font-bold hover:bg-emerald-950 hover:text-white hover:border-emerald-950 transition-all tracking-widest text-xs"
+                            className="group hidden md:inline-flex items-center gap-4 text-emerald-950 font-bold tracking-widest text-sm uppercase hover:text-gold-600 transition-colors"
                         >
-                            Lihat Semua
-                            <ArrowRight className="ml-2 w-4 h-4" />
+                            Lihat Semua Berita
+                            <span className="w-12 h-[1px] bg-emerald-950 group-hover:w-20 transition-all duration-300" />
                         </Link>
                     </FadeIn>
                 </div>
@@ -59,7 +59,7 @@ export function NewsSection({ posts }: { posts: Post[] }) {
                                                 src={post.image}
                                                 alt={post.title}
                                                 fill
-                                                className="object-cover transition-all duration-500 ease-in-out group-hover:scale-105 filter grayscale group-hover:grayscale-0"
+                                                className="object-cover transition-all duration-500 ease-in-out group-hover:scale-105"
                                             />
                                         ) : (
                                             <div className="absolute inset-0 flex items-center justify-center text-emerald-900/20">
@@ -115,6 +115,15 @@ export function NewsSection({ posts }: { posts: Post[] }) {
                         </div>
                     )}
                 </FadeInStagger>
+
+                <div className="mt-12 text-center md:hidden">
+                    <Link
+                        href="/berita"
+                        className="inline-flex items-center justify-center px-8 py-4 bg-emerald-950 text-white font-bold rounded-full text-sm tracking-widest hover:bg-emerald-900 transition-all shadow-lg shadow-emerald-900/20"
+                    >
+                        Lihat Semua
+                    </Link>
+                </div>
             </div>
         </section>
     );

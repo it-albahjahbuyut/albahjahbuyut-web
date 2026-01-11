@@ -1,11 +1,13 @@
+import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { db } from "@/lib/db";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
-import { Calendar, User, ArrowLeft } from "lucide-react";
+import { Calendar, User, ArrowLeft, Share2 } from "lucide-react";
 import { NewsGallery } from "./news-gallery";
+import { ShareButton } from "@/components/ui/share-button";
 
 /**
  * Format content to ensure proper HTML paragraph structure
@@ -39,7 +41,7 @@ interface NewsDetailPageProps {
     params: Promise<{ slug: string }>;
 }
 
-export async function generateMetadata({ params }: NewsDetailPageProps) {
+export async function generateMetadata({ params }: NewsDetailPageProps): Promise<Metadata> {
     const { slug } = await params;
     const post = await db.post.findUnique({
         where: { slug },
@@ -51,9 +53,34 @@ export async function generateMetadata({ params }: NewsDetailPageProps) {
         };
     }
 
+    const description = (post.excerpt || post.content.substring(0, 160) || "").slice(0, 160);
+    const imageUrl = post.image || "";
+
     return {
         title: `${post.title} | Al-Bahjah Buyut`,
-        description: post.excerpt || post.content.substring(0, 160),
+        description: description,
+        openGraph: {
+            title: post.title,
+            description: description,
+            url: `/berita/${slug}`,
+            siteName: "Al-Bahjah Buyut",
+            locale: "id_ID",
+            type: "article",
+            images: imageUrl ? [
+                {
+                    url: imageUrl,
+                    width: 1200,
+                    height: 630,
+                    alt: post.title,
+                }
+            ] : [],
+        },
+        twitter: {
+            card: "summary_large_image",
+            title: post.title,
+            description: description,
+            images: imageUrl ? [imageUrl] : [],
+        },
     };
 }
 
@@ -150,12 +177,38 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
                             prose-a:text-emerald-600 prose-a:no-underline hover:prose-a:underline
                             prose-img:rounded-xl prose-img:shadow-lg
                             prose-strong:text-emerald-900
+                            prose-ul:list-disc prose-ul:ml-4
+                            prose-ol:list-decimal prose-ol:ml-4
+                            prose-li:marker:text-emerald-500
                             prose-h2:text-xl prose-h2:mt-8 prose-h2:mb-4 prose-h2:border-b-2 prose-h2:border-emerald-500 prose-h2:pb-2
                             prose-h3:text-lg prose-h3:mt-6 prose-h3:mb-3"
                             dangerouslySetInnerHTML={{
                                 __html: formatContent(post.content)
                             }}
                         />
+
+                        {/* Share Section */}
+                        <div className="mt-12 pt-8 border-t border-slate-100">
+                            <div className="bg-slate-50 rounded-2xl p-6 lg:p-8 border border-slate-100 flex flex-col md:flex-row items-center justify-between gap-6">
+                                <div>
+                                    <h3 className="font-bold text-emerald-950 mb-2 flex items-center gap-2 text-lg">
+                                        <Share2 className="w-5 h-5 text-emerald-600" />
+                                        Bagikan Berita
+                                    </h3>
+                                    <p className="text-slate-600 text-sm max-w-md leading-relaxed">
+                                        Bagikan informasi ini kepada teman dan keluarga Anda untuk menebar manfaat.
+                                    </p>
+                                </div>
+                                <ShareButton
+                                    title={post.title}
+                                    description={post.excerpt || post.content.substring(0, 100)}
+                                    slug={post.slug}
+                                    basePath="/berita"
+                                    shareMessage="Simak beritanya di:"
+                                    buttonText="Bagikan Berita"
+                                />
+                            </div>
+                        </div>
 
                         {/* Activity Gallery */}
                         {post.images && post.images.length > 0 && (

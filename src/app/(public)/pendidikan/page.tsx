@@ -93,35 +93,38 @@ export default async function PendidikanPage() {
             </section>
 
             {/* Non-Formal / Pesantren Section */}
+            {/* Non-Formal / Pesantren Section */}
             {nonFormalUnits.length > 0 && (
-                <section className="px-4 md:px-8 pb-32 container mx-auto max-w-7xl">
+                <section className="px-4 md:px-8 pb-32 container mx-auto max-w-6xl">
                     <FadeIn delay={0.2}>
-                        <div className="flex items-center gap-3 mb-12">
+                        <div className="flex items-center gap-3 mb-10">
                             <div className="w-2 h-2 bg-gold-500 rounded-full" />
                             <span className="text-xs font-bold tracking-[0.2em] uppercase text-emerald-900/50">Program Pesantren</span>
                         </div>
                     </FadeIn>
 
-                    <div className="grid md:grid-cols-2 gap-4">
+                    <div className="grid md:grid-cols-2 gap-6 lg:gap-8">
                         {nonFormalUnits.map((unit, index) => (
                             <FadeIn key={unit.id} delay={index * 0.1}>
                                 <Link href={`/pendidikan/${unit.slug}`} className="group block h-full">
-                                    <div className="bg-emerald-900 h-full p-10 md:p-14 rounded-[2.5rem] relative overflow-hidden flex flex-col justify-between hover:bg-emerald-800 transition-colors duration-500">
-                                        {/* Minimalist Abstract Shape */}
-                                        <div className="absolute -top-20 -right-20 w-80 h-80 bg-emerald-800/30 rounded-full blur-[80px] group-hover:bg-emerald-700/40 transition-all duration-700" />
+                                    <div className="h-full p-8 md:p-10 rounded-3xl border border-slate-200 bg-white hover:border-gold-300 hover:shadow-xl transition-all duration-300 flex flex-col justify-between relative overflow-hidden">
 
-                                        <div className="relative z-10 mb-12">
-                                            <h3 className="text-3xl font-bold text-white mb-6 leading-tight">{unit.name}</h3>
-                                            <div className="text-emerald-100/70 leading-relaxed font-light line-clamp-3">
+                                        <div className="relative z-10">
+                                            <h3 className="text-2xl font-bold text-emerald-950 mb-4">{unit.name}</h3>
+                                            <div className="text-slate-500 leading-relaxed font-light line-clamp-3 mb-8">
                                                 {unit.description ? stripHtml(unit.description) : ""}
                                             </div>
                                         </div>
 
-                                        <div className="relative z-10">
-                                            <div className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center text-white group-hover:bg-gold-500 group-hover:border-gold-500 group-hover:text-emerald-950 transition-all duration-300">
-                                                <ArrowUpRight className="w-5 h-5" />
+                                        <div className="relative z-10 flex items-center justify-between mt-auto">
+                                            <span className="text-sm font-bold text-gold-600 uppercase tracking-wider group-hover:text-gold-700 transition-colors">Lihat Program</span>
+                                            <div className="w-10 h-10 rounded-full bg-slate-50 text-slate-400 flex items-center justify-center group-hover:bg-gold-500 group-hover:text-white transition-all duration-300">
+                                                <ArrowUpRight className="w-4 h-4" />
                                             </div>
                                         </div>
+
+                                        {/* Subtle Hover Decor */}
+                                        <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-gold-50/50 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                                     </div>
                                 </Link>
                             </FadeIn>
