@@ -46,105 +46,83 @@ export function YouTubeLiveSection() {
     }
 
     return (
-        <section className="py-8 bg-white relative z-20">
+        <section className="py-12 lg:py-24 bg-white relative z-20">
             <div className="container mx-auto px-4 lg:px-8">
-                {/* Floating Card Design */}
                 <div className="relative max-w-5xl mx-auto">
-                    {/* Glowing effect behind the card to highlight LIVE status */}
-                    <div className="absolute -inset-1 bg-gradient-to-r from-red-500 to-rose-500 rounded-2xl blur opacity-20 animate-pulse"></div>
-
-                    <div className="relative bg-white border border-red-100 rounded-xl shadow-xl shadow-red-500/5 overflow-hidden">
+                    <div className="relative bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden group">
                         {/* Close button */}
                         <button
                             onClick={() => setIsDismissed(true)}
-                            className="absolute top-2 right-2 z-20 p-1.5 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
+                            className="absolute top-2 right-2 z-20 p-1 rounded-full text-slate-300 hover:text-slate-500 hover:bg-slate-50 transition-colors"
                             aria-label="Tutup"
                         >
                             <X className="w-4 h-4" />
                         </button>
 
-                        <div className="flex flex-col md:flex-row items-stretch">
-                            {/* Thumbnail Section - Full width on mobile, fixed width on desktop */}
+                        <div className="flex flex-col sm:flex-row items-center">
+                            {/* Thumbnail - Compact */}
                             <a
                                 href={`https://www.youtube.com/watch?v=${liveData.videoId}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="relative md:w-72 shrink-0 group block overflow-hidden bg-slate-100"
+                                className="relative w-full sm:w-72 md:w-96 shrink-0 aspect-video bg-slate-100 overflow-hidden"
                             >
-                                <div className="aspect-video relative">
-                                    {liveData.thumbnail ? (
-                                        <Image
-                                            src={liveData.thumbnail}
-                                            alt={liveData.title || "Live Stream"}
-                                            fill
-                                            className="object-cover group-hover:scale-105 transition-transform duration-500"
-                                        />
-                                    ) : (
-                                        <div className="w-full h-full bg-slate-200 flex items-center justify-center">
-                                            <Radio className="w-8 h-8 text-slate-400" />
-                                        </div>
-                                    )}
-
-                                    {/* Overlay Gradient */}
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-60"></div>
-
-                                    {/* Live Badge on Thumbnail */}
-                                    <div className="absolute bottom-3 left-3 flex items-center gap-2">
-                                        <div className="flex items-center gap-1.5 bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded shadow-sm">
-                                            <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
-                                            LIVE
-                                        </div>
-                                        {liveData.viewerCount && (
-                                            <div className="flex items-center gap-1 text-white/90 text-[10px] font-medium bg-black/40 backdrop-blur-sm px-2 py-0.5 rounded border border-white/10">
-                                                <Users className="w-3 h-3" />
-                                                <span>{parseInt(liveData.viewerCount).toLocaleString("id-ID")}</span>
-                                            </div>
-                                        )}
+                                {liveData.thumbnail ? (
+                                    <Image
+                                        src={liveData.thumbnail}
+                                        alt={liveData.title || "Live Stream"}
+                                        fill
+                                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                                    />
+                                ) : (
+                                    <div className="w-full h-full flex items-center justify-center">
+                                        <Radio className="w-6 h-6 text-slate-300" />
                                     </div>
+                                )}
 
-                                    {/* Play Button Overlay */}
-                                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                        <div className="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform">
-                                            <svg className="w-5 h-5 text-white fill-current ml-0.5" viewBox="0 0 24 24">
-                                                <path d="M8 5v14l11-7z" />
-                                            </svg>
-                                        </div>
-                                    </div>
+                                {/* Simple Live Overlay on Thumbnail */}
+                                <div className="absolute top-2 left-2 flex items-center gap-1.5 bg-red-600/90 text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow-sm backdrop-blur-sm">
+                                    <span className="w-1 h-1 bg-white rounded-full animate-pulse" />
+                                    LIVE
                                 </div>
                             </a>
 
-                            {/* Content Section */}
-                            <div className="flex-1 p-5 md:p-6 flex flex-col justify-center">
-                                <div className="flex items-center gap-2 mb-2">
-                                    <span className="flex h-2 w-2 relative">
-                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                                        <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
-                                    </span>
-                                    <p className="text-red-600 text-xs font-bold uppercase tracking-wider">
-                                        {liveData.channelTitle || "ASAH TV"} Sedang Live
+                            {/* Content Section - Compact */}
+                            <div className="flex-1 p-6 md:p-8 flex flex-col justify-center min-w-0">
+                                <div className="flex items-center gap-2 mb-1.5 align-baseline">
+                                    <p className="text-red-600 text-[10px] font-bold uppercase tracking-widest">
+                                        Sedang Berlangsung
                                     </p>
+                                    {liveData.viewerCount && (
+                                        <>
+                                            <span className="text-slate-300 text-[10px]">•</span>
+                                            <span className="text-slate-500 text-[10px] font-medium flex items-center gap-1">
+                                                <Users className="w-3 h-3" />
+                                                {parseInt(liveData.viewerCount).toLocaleString("id-ID")} Menonton
+                                            </span>
+                                        </>
+                                    )}
                                 </div>
 
-                                <h3 className="text-slate-900 text-lg md:text-xl font-bold leading-tight line-clamp-2 hover:text-red-700 transition-colors mb-4 md:mb-0">
+                                <h3 className="text-slate-900 text-lg md:text-xl font-bold leading-tight line-clamp-2 mb-4 group-hover:text-red-700 transition-colors">
                                     <a
                                         href={`https://www.youtube.com/watch?v=${liveData.videoId}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                     >
-                                        {liveData.title || "Kajian Langsung dari Al-Bahjah Buyut"}
+                                        {liveData.title || "Kajian Langsung"}
                                     </a>
                                 </h3>
 
-                                {/* Action Button - Desktop: Right aligned, Mobile: Full width */}
-                                <div className="mt-4 md:mt-auto pt-4 md:pt-0 flex items-center justify-between border-t border-slate-100 md:border-0 md:justify-start">
+                                <div className="flex items-center justify-between sm:justify-start gap-4">
                                     <a
                                         href={`https://www.youtube.com/watch?v=${liveData.videoId}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="inline-flex items-center gap-2 text-sm font-semibold text-slate-700 hover:text-red-600 transition-colors group"
+                                        className="text-xs font-medium text-slate-500 hover:text-red-600 transition-colors flex items-center gap-1"
                                     >
-                                        Tonton di YouTube
-                                        <ExternalLink className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                                        Tonton Sekarang
+                                        <ExternalLink className="w-3 h-3" />
                                     </a>
                                 </div>
                             </div>

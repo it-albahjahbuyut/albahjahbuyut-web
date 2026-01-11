@@ -79,7 +79,7 @@ export function ProfileSection() {
                                         <p className="text-emerald-100/90 text-[10px] font-bold tracking-widest uppercase">Pengasuh LPD Al-Bahjah</p>
                                     </div>
                                 </div>
-                                <div className="absolute -top-3 -left-3 w-12 h-12 border-2 border-gold-400/30 rounded-full -z-10" />
+
                             </motion.div>
 
                             {/* Abah Sayf */}
