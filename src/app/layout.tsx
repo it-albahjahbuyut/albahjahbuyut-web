@@ -10,7 +10,7 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://albahjahbuyut.com'),
+  metadataBase: new URL('https://albahjahbuyut-web.vercel.app'),
   title: {
     default: "Lembaga Pengembangan Dakwah Al-Bahjah Buyut Cirebon",
     template: "%s | Lembaga Pengembangan Dakwah Al-Bahjah Buyut Cirebon",
