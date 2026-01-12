@@ -114,7 +114,8 @@ export function DonationForm({ donation }: DonationFormProps) {
             }
 
             // Update form fields with AI-generated content
-            if (result.data.slug && !form.getValues("slug")) {
+            // Always use AI-generated slug (better than auto-generated from title)
+            if (result.data.slug) {
                 form.setValue("slug", result.data.slug);
             }
             if (result.data.summary || result.data.content) {
@@ -139,6 +140,16 @@ export function DonationForm({ donation }: DonationFormProps) {
     const onSubmit = async (data: DonationInput) => {
         try {
             setIsLoading(true);
+
+            // Auto-fix slug if empty or too short
+            if (!data.slug || data.slug.length < 3) {
+                data.slug = generateSlug(data.title);
+                if (data.slug.length < 3) {
+                    // Append timestamp if still too short
+                    data.slug = `infaq-${Date.now().toString(36)}`;
+                }
+                toast.info(`Slug otomatis: ${data.slug}`);
+            }
 
             const result = isEditing
                 ? await updateDonation(donation.id, data)

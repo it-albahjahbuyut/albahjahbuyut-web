@@ -42,7 +42,7 @@ export const unitSchema = z.object({
         .trim(),
     slug: z
         .string()
-        .min(1, "Slug diperlukan")
+        .min(3, "Slug minimal 3 karakter")
         .max(100, "Slug terlalu panjang")
         .toLowerCase()
         .trim()
@@ -91,7 +91,7 @@ export const postSchema = z.object({
         ),
     slug: z
         .string()
-        .min(1, "Slug diperlukan")
+        .min(3, "Slug minimal 3 karakter")
         .max(100, "Slug terlalu panjang")
         .toLowerCase()
         .trim()
@@ -139,7 +139,7 @@ export const donationSchema = z.object({
         ),
     slug: z
         .string()
-        .min(1, "Slug diperlukan")
+        .min(3, "Slug minimal 3 karakter")
         .max(100, "Slug terlalu panjang")
         .toLowerCase()
         .trim()

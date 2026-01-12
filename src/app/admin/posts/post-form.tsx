@@ -118,7 +118,8 @@ export function PostForm({ post, units }: PostFormProps) {
             }
 
             // Update form fields with AI-generated content
-            if (result.data.slug && !form.getValues("slug")) {
+            // Always use AI-generated slug (better than auto-generated from title)
+            if (result.data.slug) {
                 form.setValue("slug", result.data.slug);
             }
             if (result.data.summary) {
@@ -144,6 +145,16 @@ export function PostForm({ post, units }: PostFormProps) {
     const onSubmit = async (data: PostInput) => {
         try {
             setIsLoading(true);
+
+            // Auto-fix slug if empty or too short
+            if (!data.slug || data.slug.length < 3) {
+                data.slug = generateSlug(data.title);
+                if (data.slug.length < 3) {
+                    // Append timestamp if still too short
+                    data.slug = `artikel-${Date.now().toString(36)}`;
+                }
+                toast.info(`Slug otomatis: ${data.slug}`);
+            }
 
             const result = isEditing
                 ? await updatePost(post.id, data)
