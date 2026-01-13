@@ -28,17 +28,32 @@ if (connectionString.startsWith('NEXT_PUBLIC')) {
     throw new Error('[SECURITY] DATABASE_URL should not have NEXT_PUBLIC prefix!');
 }
 
-// Create connection pool with limited connections for serverless
-// This prevents "Max client connections reached" error on Vercel
+// ============================================
+// SUPABASE SUPAVISOR CONNECTION POOLING
+// ============================================
+// Supabase uses Supavisor (similar to PgBouncer) for connection pooling.
+// 
+// IMPORTANT: Use the TRANSACTION POOLER connection string from Supabase:
+// - Transaction Pooler (PORT 6543): Use this for DATABASE_URL
+//   postgres://postgres.[project-ref]:[password]@aws-0-[region].pooler.supabase.com:6543/postgres?pgbouncer=true
+// 
+// - Session Pooler (PORT 5432) or Direct: Use for DIRECT_URL (migrations only)
+//   postgres://postgres.[project-ref]:[password]@aws-0-[region].pooler.supabase.com:5432/postgres
+//
+// The ?pgbouncer=true parameter is REQUIRED for Prisma to work with Supavisor!
+//
+// Since Supabase handles pooling externally, we keep a minimal pool on our side
+// to avoid "MaxClientsInSessionMode: max clients reached" error
+//
 const pool = globalForPrisma.pool ?? new Pool({
     connectionString,
-    max: 5, // Maximum 5 connections in pool (reduced for serverless)
-    idleTimeoutMillis: 30000, // Close idle connections after 30 seconds
+    max: 1, // Single connection - Supavisor handles pooling externally
+    idleTimeoutMillis: 20000, // Close idle connections after 20 seconds
     connectionTimeoutMillis: 10000, // Timeout after 10 seconds if can't connect
 });
 
-// Cache pool globally in production
-if (process.env.NODE_ENV === "production") {
+// Cache pool globally
+if (process.env.NODE_ENV !== "development") {
     globalForPrisma.pool = pool;
 }
 
@@ -51,8 +66,7 @@ export const db = globalForPrisma.prisma ?? new PrismaClient({
 });
 
 // Cache PrismaClient globally - important for both dev and production in serverless
-if (process.env.NODE_ENV === "production") {
-    globalForPrisma.prisma = db;
-} else {
+// This prevents creating multiple Prisma instances in serverless functions
+if (process.env.NODE_ENV !== "development") {
     globalForPrisma.prisma = db;
 }

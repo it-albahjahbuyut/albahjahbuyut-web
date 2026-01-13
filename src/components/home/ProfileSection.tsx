@@ -70,6 +70,7 @@ export function ProfileSection() {
                                         src="https://upload.wikimedia.org/wikipedia/commons/a/aa/Buya_Yahya.jpg"
                                         alt="Buya Yahya"
                                         fill
+                                        sizes="(max-width: 1024px) 50vw, 25vw"
                                         className="object-cover hover:scale-105 transition-transform duration-700"
                                     />
                                     <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/90 via-transparent to-transparent opacity-80" />
@@ -96,6 +97,7 @@ export function ProfileSection() {
                                             src="https://res.cloudinary.com/dand8rpbb/image/upload/v1767976355/DSC00058_ioql27.jpg"
                                             alt="Abah Sayf Abu Hanifah"
                                             fill
+                                            sizes="(max-width: 1024px) 50vw, 25vw"
                                             className="object-cover hover:scale-105 transition-transform duration-700"
                                         />
                                     </div>

@@ -53,7 +53,7 @@ export function FeaturesSection() {
             {/* Stats Bar - Minimalist */}
             <div className="lg:absolute bottom-0 left-0 right-0 border-t border-white/10 bg-black/20 backdrop-blur-sm">
                 <div className="container mx-auto px-4">
-                    <FadeInStagger className="grid grid-cols-2 lg:grid-cols-4 divide-x divide-white/10">
+                    <FadeInStagger className="grid grid-cols-2 lg:grid-cols-4 [&>*]:border-white/10 [&>*:nth-child(even)]:border-l lg:[&>*:nth-child(3)]:border-l">
                         {[
                             { number: "55", label: "Pengajar" },
                             { number: "550+", label: "Alumni" },
