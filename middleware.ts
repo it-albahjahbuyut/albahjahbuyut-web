@@ -264,6 +264,7 @@ export default auth(async (req) => {
     const isAdminRoute = nextUrl.pathname.startsWith("/admin");
     const isLoginPage = nextUrl.pathname === "/login";
     const isApiAuthRoute = nextUrl.pathname.startsWith("/api/auth");
+    const isCredentialsCallback = nextUrl.pathname === "/api/auth/callback/credentials";
     const isPublicApiRoute = nextUrl.pathname.startsWith("/api/public");
     const isStaticAsset = nextUrl.pathname.startsWith("/_next") ||
         nextUrl.pathname.startsWith("/favicon") ||
@@ -313,7 +314,32 @@ export default auth(async (req) => {
         }
     }
 
-    // Apply general rate limiting for API routes
+    // ============================================
+    // CRITICAL: Rate limit credentials callback API
+    // This prevents brute force attacks via Postman/curl
+    // ============================================
+    if (isCredentialsCallback && req.method === 'POST') {
+        const { allowed, resetIn } = await checkRateLimit(clientIP, true);
+        if (!allowed) {
+            console.warn(`[SECURITY] Credentials API rate limit exceeded for IP: ${clientIP}`);
+            const response = new NextResponse(
+                JSON.stringify({
+                    error: 'Terlalu banyak percobaan login. Silakan coba lagi nanti.',
+                    retryAfter: Math.ceil(resetIn / 1000)
+                }),
+                {
+                    status: 429,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Retry-After': Math.ceil(resetIn / 1000).toString()
+                    }
+                }
+            );
+            return addSecurityHeaders(response);
+        }
+    }
+
+    // Apply general rate limiting for API routes (except auth routes which have their own handling)
     if (nextUrl.pathname.startsWith("/api") && !isApiAuthRoute) {
         const { allowed, resetIn } = await checkRateLimit(clientIP);
         if (!allowed) {
@@ -332,7 +358,7 @@ export default auth(async (req) => {
         }
     }
 
-    // Allow API auth routes
+    // Allow API auth routes (after rate limiting check for credentials)
     if (isApiAuthRoute) {
         return addSecurityHeaders(NextResponse.next());
     }
