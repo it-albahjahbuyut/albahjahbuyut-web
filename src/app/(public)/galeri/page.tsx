@@ -3,16 +3,29 @@ import { Image as ImageIcon } from "lucide-react";
 import { FadeIn } from "@/components/animations/FadeIn";
 import { GalleryGrid } from "./gallery-grid";
 
+// Revalidate every 60 seconds to reduce database load
+export const revalidate = 60;
+
 export const metadata = {
     title: "Galeri | Pondok Pesantren Al-Bahjah Buyut",
     description: "Galeri kegiatan dan dokumentasi Pondok Pesantren Al-Bahjah Buyut.",
 };
 
+async function getGalleries() {
+    try {
+        const galleries = await db.gallery.findMany({
+            where: { isActive: true },
+            orderBy: { order: "asc" },
+        });
+        return galleries;
+    } catch (error) {
+        console.error("Failed to fetch galleries:", error);
+        return [];
+    }
+}
+
 export default async function GalleryPage() {
-    const galleries = await db.gallery.findMany({
-        where: { isActive: true },
-        orderBy: { order: "asc" },
-    });
+    const galleries = await getGalleries();
 
     return (
         <main>

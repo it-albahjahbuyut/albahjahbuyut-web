@@ -85,8 +85,121 @@ export default async function ProfilePage() {
                 </FadeIn>
             </section>
 
+            {/* Buya Yahya Biography Section */}
+            <section className="py-24 bg-white">
+                <div className="container mx-auto px-4 lg:px-8 max-w-5xl">
+                    <FadeIn>
+                        <div className="mb-10 text-center md:text-left">
+                            <h2 className="text-sm font-bold text-gold-600 uppercase tracking-[0.2em] mb-3">Biografi Guru Mulia</h2>
+                            <h3 className="text-3xl md:text-4xl font-bold text-emerald-950">
+                                Buya Yahya
+                            </h3>
+                            <p className="text-lg text-emerald-900/80 font-medium mt-2">
+                                (Yahya Zainul Ma'arif)
+                            </p>
+                        </div>
+
+                        <div className="prose prose-lg prose-slate text-slate-600 leading-relaxed text-justify block">
+                            {/* Floated Image - Right for Buya to alternate */}
+                            <div className="float-right w-full md:w-72 lg:w-80 ml-8 mb-4 md:mb-2 relative">
+                                <div className="aspect-[3/4] relative rounded-2xl overflow-hidden shadow-xl ring-1 ring-slate-200">
+                                    <Image
+                                        src="https://upload.wikimedia.org/wikipedia/commons/a/aa/Buya_Yahya.jpg"
+                                        alt="Buya Yahya"
+                                        fill
+                                        className="object-cover"
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/80 via-transparent to-transparent opacity-80" />
+                                    <div className="absolute bottom-4 left-4 right-4 text-white bg-emerald-950/30 backdrop-blur-sm p-3 rounded-lg border border-white/10">
+                                        <p className="font-serif italic text-sm opacity-90 !mb-0 leading-none">Pengasuh</p>
+                                        <h4 className="text-lg font-bold !mt-0 leading-tight">LPD Al-Bahjah (Pusat)</h4>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <p>
+                                <strong>Yahya Zainul Ma'arif</strong>, yang lebih akrab disapa <strong>Buya Yahya</strong>, adalah sosok ulama karismatik kelahiran Blitar, Jawa Timur, pada 10 Agustus 1973. Beliau adalah pengasuh Lembaga Pengembangan Dakwah (LPD) Al-Bahjah yang berpusat di Cirebon, yang kini telah memiliki cabang di berbagai penjuru nusantara, termasuk Al-Bahjah Buyut.
+                            </p>
+                            <p>
+                                Perjalanan keilmuan beliau dimulai di tanah kelahirannya, menempuh pendidikan dasar dan agama di Madrasah Diniyah Al-Falah di bawah asuhan KH. Imron Mahbub. Dahaga akan ilmu agama membawa beliau melanjutkan pendidikan di Pondok Pesantren Darullughah Wadda'wah di Bangil, Pasuruan (1988-1993), di mana beliau juga sempat mengabdi hingga tahun 1996.
+                            </p>
+                            <p>
+                                Tak berhenti di situ, Buya Yahya melanjutkan rihlah ilmiahnya ke jenjang internasional dengan menempuh pendidikan di Universitas Al-Ahgaff, Yaman. Di negeri para wali tersebut, beliau menghabiskan waktu selama 9 tahun (1996-2005) untuk memperdalam berbagai disiplin ilmu agama langsung dari para ulama terkemuka.
+                            </p>
+                            <p>
+                                Sekembalinya ke Indonesia pada tahun 2005, Buya Yahya memulai dakwahnya di Cirebon dari mushola-mushola kecil. Dengan keikhlasan dan metode dakwah yang santun serta menyejukkan, dakwah beliau mendapat sambutan hangat dari masyarakat. Hal ini kemudian berkembang menjadi majelis taklim dan akhirnya berdirilah LPD Al-Bahjah.
+                            </p>
+                            <p>
+                                Selain mengasuh pesantren, Buya Yahya juga memprakarsai berdirinya Sekolah Tinggi Agama Islam (STAI) Al-Bahjah, sebagai wujud kepedulian beliau terhadap lahirnya intelektual muslim yang berakhlak mulia. Kini, dakwah beliau tidak hanya terbatas di Cirebon atau Indonesia, namun telah menjangkau umat di berbagai belahan dunia melalui berbagai media dakwah.
+                            </p>
+                        </div>
+                    </FadeIn>
+                </div>
+            </section>
+
+            {/* Biography Section (Abah Sayf) */}
+            <section className="py-24 bg-slate-50">
+                <div className="container mx-auto px-4 lg:px-8 max-w-5xl">
+                    <FadeIn>
+                        <div className="mb-10 text-center md:text-left">
+                            <h2 className="text-sm font-bold text-gold-600 uppercase tracking-[0.2em] mb-3">Biografi Pengasuh</h2>
+                            <h3 className="text-3xl md:text-4xl font-bold text-emerald-950">
+                                Abah Sayf Abu Hanifah
+                            </h3>
+                        </div>
+
+                        <div className="prose prose-lg prose-slate text-slate-600 leading-relaxed text-justify block">
+                            {/* Floated Image */}
+                            <div className="float-left w-full md:w-72 lg:w-80 mr-8 mb-4 md:mb-2 relative">
+                                <div className="aspect-[3/4] relative rounded-2xl overflow-hidden shadow-xl ring-1 ring-slate-200">
+                                    <Image
+                                        src="https://res.cloudinary.com/dand8rpbb/image/upload/v1767976355/DSC00058_ioql27.jpg"
+                                        alt="Abah Sayf Abu Hanifah"
+                                        fill
+                                        className="object-cover"
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/80 via-transparent to-transparent opacity-80" />
+                                    <div className="absolute bottom-4 left-4 right-4 text-white bg-emerald-950/30 backdrop-blur-sm p-3 rounded-lg border border-white/10">
+                                        <p className="font-serif italic text-sm opacity-90 !mb-0 leading-none">Pengasuh</p>
+                                        <h4 className="text-lg font-bold !mt-0 leading-tight">LPD Al-Bahjah Buyut</h4>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <p>
+                                Abah Sayf Abu Hanifah dilahirkan di desa Lawang Kabupaten Malang pada hari Jum'at 07 Syawwal 1404 H / 06 Juli 1984 dari pasangan ayahanda Abu Hanifah dan ibunda Marliah. Ditangan kedua orang tua beliau, Abah Sayf banyak mendapatkan pendidikan yang sangat berkesan ialah mulai dari kecil Abah Sayf oleh orang tua beliau sering diajak ziaroh-ziarah ke para ulama dan menghadiri majelis-majelis ulama di Jawa Timur.
+                            </p>
+                            <p>
+                                Sebelum Abah Sayf mondok di Darul Istiqomah beliau juga sempat belajar Al-Qur'an dan ilmu tajwid di Pondok Sirojul Huda Jl. Raya Surabaya Malang tepatnya didesa Purwosari Pasuruan dibawah asuhan KH Hasan Bashori (Allah yarham).
+                            </p>
+                            <p>
+                                Pada saat beliau menginjak kelas 2 SD Abah Sayf belajar di Pondok Pesantren Darul Istiqomah dibawah asuhan KH Misbahul Munir Masyhuri (Allah yarham), di situlah Abah Sayf belajar beberapa Ilmu khususnya ilmu Agama (Shorof, Nahwu, Bahasa Arab, Ilmu Hadits, Ilmu Al-Qur'an, Tajwid, Faro'id, Balaghah, Fiqh dan lain-lainnya), dan di Pondok Pesantren tersebut Abah Sayf juga mengenyam Pendidikan Madrasah Ibtidaiyyah, Madrasah Tsanawiyyah dan Madrasah Aliyyah hingga lulus pada tahun 2003/2004, kemudian beliau mengabdi (Khidmat) kepada pondok. Disela-sela beliau berkhidmat, beliau menyempatkan belajar disalah satu ponpes Mis Rembang Sarang di bawah naungan kiai-kiai sepuh Mbah Umar (Allah yarham), Mbah Faqih (Allah yarham), dan Mbah Rohib.
+                            </p>
+                            <p>
+                                Abah Sayf Abu Hanifah mulai Masuk ke Cirebon pada tahun 2005 karna diajak oleh seorang guru yang bernama Ustadz Ali Badri bin KH Badri Masyhuri, Abah Sayf sempat belajar kepada beliau selama 7 bulan di pondok beliau yang bernama Haiatul Furqon yakni belajar Ilmu Hadits, Tafsir dan beberapa ilmu lainnya.
+                            </p>
+                            <p>
+                                Hingga diakhir 2006 Abah Sayf dipertemukan oleh Ustadz Ali kepada orang yang sangat berpengaruh di dalam perjalanan pendidikan Abah Sayf yaitu Buya Yahya, dan Abah Sayf pun diberi izin untuk menimba ilmu kepada Buya Yahya, dan dari situlah banyak ilmu yang didapat dari guru Mulia Buya Yahya (Ilmu Tasawwuf, Ilmu Dakwah, Ilmu Fiqh, Ilmu tentang hati {'{'} Ketawadhu'an, Menghilangkan gengsi sombong, hidup ala kadarnya dan ilmu-ilmu hati yang lainnya {'}'} ) hingga sampai sekarang masih belajar dengan guru Mulia Buya Yahya di LPD AL-BAHJAH Cirebon.
+                            </p>
+                            <p>
+                                Begitu juga Abah Sayf disarankan oleh Buya Yahya untuk kuliah, maka Abah Sayf kuliah di STAISA ( Sekolah Tinggi Agama Islam Shalahudin Al-Ayyubi ) jurusan PAI (lulus kuliah pada tahun 2010/2011) di Cirebon, tepatnya di Pesantren Ulumuddin Susukan dibawah naungan KH. Ali Murtadho.
+                            </p>
+                            <p>
+                                Disela-sela belajar dengan guru mulia Buya Yahya, Abah Sayf diberi amanah untuk memimpin cabang kedua LPD AL-BAHJAH, yakni LPD Al Bahjah Buyut. Kegiatan belajar mengajar di LPD AL-BAHJAH Buyut dimulai pada tahun 2013.
+                            </p>
+                            <p>
+                                Abah Sayf juga sering mewakili Buya Yahya di beberapa majelis-majelis Buya Yahya atas perintah beliau, dan saat inipun Abah Sayf masih mempunyai majelis rutin di wilayah Bekasi & Tangerang.
+                            </p>
+                            <p className="italic font-medium text-emerald-900 border-l-4 border-gold-400 pl-4">
+                                Inilah seklumit tentang perjalanan pendidikan Abah Sayf Abu Hanifah, mudah-mudahan Beliau dibimbing Oleh Allah SWT untuk menjadi orang yang soleh, mendapat ridho orang tua, ridho para Guru dan keberkahan Para Ulama', dan menjadi orang yg selamat di dunia dan akherat, menjadi orang yang ikhlas di dalam Berdakwah.
+                            </p>
+                        </div>
+                    </FadeIn>
+                </div>
+            </section>
+
             {/* Visi Misi Section - Modern Centered Layout */}
-            <section className="py-24 bg-slate-50 relative overflow-hidden">
+            <section className="py-24 bg-white relative overflow-hidden">
                 {/* Background Blobs */}
                 <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-100/40 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
                 <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gold-100/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 pointer-events-none" />

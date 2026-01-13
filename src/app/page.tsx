@@ -12,10 +12,45 @@ import { MajelisSection } from "@/components/home/MajelisSection";
 import { YouTubeLiveSection } from "@/components/home/YouTubeLiveSection";
 import { LatestVideosSection } from "@/components/home/LatestVideosSection";
 
+// Revalidate every 60 seconds to reduce database load
+export const revalidate = 60;
+
+async function getHomePageData() {
+  try {
+    const [units, featuredDonation, latestNews, navUnits] = await Promise.all([
+      db.unit.findMany({
+        where: { isActive: true },
+        orderBy: { order: "asc" },
+      }),
+      db.donationProgram.findFirst({
+        where: { isActive: true },
+        orderBy: [
+          { isFeatured: "desc" },
+          { createdAt: "desc" }
+        ],
+      }),
+      db.post.findMany({
+        where: { status: "PUBLISHED" },
+        orderBy: { publishedAt: "desc" },
+        take: 3,
+      }),
+      db.unit.findMany({
+        where: { isActive: true },
+        select: { id: true, name: true, slug: true },
+        orderBy: { order: "asc" },
+      })
+    ]);
+    return { units, featuredDonation, latestNews, navUnits };
+  } catch (error) {
+    console.error("Failed to fetch homepage data:", error);
+    return { units: [], featuredDonation: null, latestNews: [], navUnits: [] };
+  }
+}
+
 export default async function HomePage() {
   // Check maintenance mode first
   let isMaintenanceMode = false;
-  
+
   try {
     const maintenanceSetting = await db.siteSetting.findUnique({
       where: { key: "maintenance_mode" },
@@ -34,29 +69,7 @@ export default async function HomePage() {
     redirect("/maintenance");
   }
 
-  const [units, featuredDonation, latestNews, navUnits] = await Promise.all([
-    db.unit.findMany({
-      where: { isActive: true },
-      orderBy: { order: "asc" },
-    }),
-    db.donationProgram.findFirst({
-      where: { isActive: true },
-      orderBy: [
-        { isFeatured: "desc" },
-        { createdAt: "desc" }
-      ],
-    }),
-    db.post.findMany({
-      where: { status: "PUBLISHED" },
-      orderBy: { publishedAt: "desc" },
-      take: 3,
-    }),
-    db.unit.findMany({
-      where: { isActive: true },
-      select: { id: true, name: true, slug: true },
-      orderBy: { order: "asc" },
-    })
-  ]);
+  const { units, featuredDonation, latestNews, navUnits } = await getHomePageData();
 
   return (
     <div className="flex min-h-screen flex-col font-sans text-slate-900 bg-white">

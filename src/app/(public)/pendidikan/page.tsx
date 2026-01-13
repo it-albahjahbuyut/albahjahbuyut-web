@@ -3,16 +3,29 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { FadeIn, FadeInStagger } from "@/components/animations/FadeIn";
 
+// Revalidate every 60 seconds to reduce database load
+export const revalidate = 60;
+
 export const metadata = {
     title: "Pendidikan | Pondok Pesantren Al-Bahjah Buyut",
     description: "Program pendidikan unggulan di Al-Bahjah Buyut yang memadukan kurikulum nasional dan kepesantrenan.",
 };
 
+async function getUnits() {
+    try {
+        const units = await db.unit.findMany({
+            where: { isActive: true },
+            orderBy: { order: "asc" },
+        });
+        return units;
+    } catch (error) {
+        console.error("Failed to fetch units:", error);
+        return [];
+    }
+}
+
 export default async function PendidikanPage() {
-    const units = await db.unit.findMany({
-        where: { isActive: true },
-        orderBy: { order: "asc" },
-    });
+    const units = await getUnits();
 
     const stripHtml = (html: string) => {
         return html.replace(/<[^>]*>?/gm, '');

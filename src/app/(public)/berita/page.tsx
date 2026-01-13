@@ -6,6 +6,9 @@ import { id } from "date-fns/locale";
 import { Calendar, ArrowRight, Newspaper } from "lucide-react";
 import { FadeIn, FadeInStagger } from "@/components/animations/FadeIn";
 
+// Revalidate every 60 seconds to reduce database load
+export const revalidate = 60;
+
 export const metadata = {
     title: "Berita & Kegiatan | Pondok Pesantren Al-Bahjah Buyut",
     description: "Informasi terbaru seputar kegiatan, prestasi, dan kajian di Pondok Pesantren Al-Bahjah Buyut.",

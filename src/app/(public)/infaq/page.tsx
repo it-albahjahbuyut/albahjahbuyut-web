@@ -1,8 +1,11 @@
 import { db } from "@/lib/db";
 import { DonationCard } from "@/components/public/DonationCard";
-import { Heart, Landmark, ArrowRight } from "lucide-react";
+import { Heart, ArrowRight } from "lucide-react";
 import { FadeIn, FadeInStagger } from "@/components/animations/FadeIn";
 import type { Metadata } from "next";
+
+// Revalidate every 60 seconds to reduce database load
+export const revalidate = 60;
 
 export const metadata: Metadata = {
     title: "Program Infaq & Donasi | Pondok Pesantren Al-Bahjah Buyut",
@@ -10,11 +13,21 @@ export const metadata: Metadata = {
         "Salurkan infaq dan sedekah Anda untuk pengembangan Pondok Pesantren Al-Bahjah Buyut. Setiap kontribusi Anda akan menjadi amal jariyah.",
 };
 
+async function getDonationPrograms() {
+    try {
+        const programs = await db.donationProgram.findMany({
+            where: { isActive: true },
+            orderBy: { createdAt: "desc" },
+        });
+        return programs;
+    } catch (error) {
+        console.error("Failed to fetch donation programs:", error);
+        return [];
+    }
+}
+
 export default async function DonationPage() {
-    const programs = await db.donationProgram.findMany({
-        where: { isActive: true },
-        orderBy: { createdAt: "desc" },
-    });
+    const programs = await getDonationPrograms();
 
     return (
         <main className="bg-slate-50 min-h-screen">

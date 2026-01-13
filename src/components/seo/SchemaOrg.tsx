@@ -17,31 +17,38 @@ export function SchemaOrg({ type = 'EducationalOrganization', data }: SchemaOrgP
     ...baseSchema,
     '@type': ['EducationalOrganization', 'LocalBusiness'],
     name: 'Pondok Pesantren Al-Bahjah Buyut',
-    alternateName: ['Al-Bahjah Buyut', 'Pesantren Al-Bahjah Cirebon', 'PP Al-Bahjah Buyut'],
-    description: 'Pondok Pesantren terbaik di Cirebon dengan program Tahfidz Al-Quran, SMPIQu, SMAIQu, dan Tafaqquh. Pesantren modern yang memadukan pendidikan Islam dan formal dengan bimbingan Buya Yahya.',
+    alternateName: ['Al-Bahjah Buyut', 'Pesantren Al-Bahjah Cirebon', 'PP Al-Bahjah Buyut', 'LPD Al-Bahjah Buyut'],
+    description: 'Lembaga Pengembangan Dakwah (LPD) Al-Bahjah Buyut dibawah asuhan Buya Yahya & Abah Sayf Abu Hanifah. Mencetak generasi Qur\'ani yang berakhlak mulia, cerdas, dan mandiri melalui program Tahfidz Al-Quran, SMPIQu, SMAIQu, SDIQu, dan Tafaqquh.',
     url: 'https://albahjahbuyut.com',
     logo: 'https://albahjahbuyut.com/logo-buyut.png',
     image: 'https://albahjahbuyut.com/og-image.jpg',
-    telephone: '+62-XXX-XXXX-XXXX', // Ganti dengan nomor telepon asli
-    email: 'info@albahjahbuyut.com', // Ganti dengan email asli
-    foundingDate: '2010', // Ganti dengan tahun pendirian asli
-    founder: {
-      '@type': 'Person',
-      name: 'Buya Yahya',
-      jobTitle: 'Pengasuh Pesantren',
-    },
+    telephone: '+62-823-1861-1707',
+    email: 'info@albahjahbuyut.com',
+    foundingDate: '2015',
+    founder: [
+      {
+        '@type': 'Person',
+        name: 'Buya Yahya',
+        jobTitle: 'Pengasuh LPD Al-Bahjah',
+      },
+      {
+        '@type': 'Person',
+        name: 'Abah Sayf Abu Hanifah',
+        jobTitle: 'Pengasuh LPD Al-Bahjah Buyut',
+      },
+    ],
     address: {
       '@type': 'PostalAddress',
-      streetAddress: 'Jl. Pesantren Al-Bahjah', // Ganti dengan alamat lengkap
-      addressLocality: 'Cirebon',
-      addressRegion: 'Jawa Barat',
-      postalCode: '45100', // Ganti dengan kode pos asli
+      streetAddress: 'Jl. Revolusi No.45, Buyut',
+      addressLocality: 'Gunungjati',
+      addressRegion: 'Kabupaten Cirebon, Jawa Barat',
+      postalCode: '45151',
       addressCountry: 'ID',
     },
     geo: {
       '@type': 'GeoCoordinates',
-      latitude: -6.7063, // Ganti dengan koordinat asli
-      longitude: 108.5570, // Ganti dengan koordinat asli
+      latitude: -6.650511,
+      longitude: 108.508084,
     },
     areaServed: [
       { '@type': 'City', name: 'Cirebon' },
@@ -49,26 +56,35 @@ export function SchemaOrg({ type = 'EducationalOrganization', data }: SchemaOrgP
       { '@type': 'Country', name: 'Indonesia' },
     ],
     sameAs: [
-      'https://www.facebook.com/albahjahbuyut', // Ganti dengan link sosmed asli
-      'https://www.instagram.com/albahjahbuyut',
-      'https://www.youtube.com/@albahjahbuyut',
+      'https://www.facebook.com/ponpesalbahjah2',
+      'https://www.instagram.com/abahsayfabuhanifah',
+      'https://www.youtube.com/@ASAHTVOFFICIAL',
+      'https://www.tiktok.com/@abahsayfabuhanifah',
     ],
     priceRange: '$$',
-    openingHoursSpecification: {
-      '@type': 'OpeningHoursSpecification',
-      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-      opens: '00:00',
-      closes: '23:59',
-    },
+    openingHoursSpecification: [
+      {
+        '@type': 'OpeningHoursSpecification',
+        dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+        opens: '07:00',
+        closes: '16:00',
+      },
+      {
+        '@type': 'OpeningHoursSpecification',
+        dayOfWeek: ['Saturday', 'Sunday'],
+        opens: '07:00',
+        closes: '12:00',
+      },
+    ],
     hasOfferCatalog: {
       '@type': 'OfferCatalog',
       name: 'Program Pendidikan',
       itemListElement: [
         {
           '@type': 'EducationalOccupationalProgram',
-          name: 'Program Tahfidz Al-Quran',
-          description: 'Program menghafal Al-Quran 30 Juz dengan metode terbaik',
-          educationalCredentialAwarded: 'Hafidz Al-Quran',
+          name: 'SDIQu (SD Islam Qur\'ani)',
+          description: 'Pendidikan dasar berbasis Islam dan Al-Quran',
+          educationalProgramMode: 'Full-time',
         },
         {
           '@type': 'EducationalOccupationalProgram',
@@ -81,6 +97,12 @@ export function SchemaOrg({ type = 'EducationalOrganization', data }: SchemaOrgP
           name: 'SMAIQu (SMA Islam Qur\'ani)',
           description: 'Pendidikan menengah atas berbasis Islam dan Al-Quran',
           educationalProgramMode: 'Full-time',
+        },
+        {
+          '@type': 'EducationalOccupationalProgram',
+          name: 'Program Tahfidz Al-Quran',
+          description: 'Program menghafal Al-Quran 30 Juz dengan metode terbaik',
+          educationalCredentialAwarded: 'Hafidz Al-Quran',
         },
         {
           '@type': 'EducationalOccupationalProgram',
