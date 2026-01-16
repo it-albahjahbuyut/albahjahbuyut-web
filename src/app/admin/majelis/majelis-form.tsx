@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Save, Calendar, Clock, MapPin } from "lucide-react";
+import { ArrowLeft, Save, Calendar, Clock, MapPin, User } from "lucide-react";
 import { createMajelis, updateMajelis } from "@/actions/majelis";
 import { toast } from "sonner";
 import Link from "next/link";
@@ -27,6 +27,7 @@ export function MajelisForm({ majelis, isNew = false }: MajelisFormProps) {
     const [formData, setFormData] = useState({
         title: majelis?.title || "",
         subtitle: majelis?.subtitle || "",
+        teacher: majelis?.teacher || "",
         schedule: majelis?.schedule || "",
         time: majelis?.time || "",
         location: majelis?.location || "",
@@ -58,6 +59,7 @@ export function MajelisForm({ majelis, isNew = false }: MajelisFormProps) {
             const data = {
                 title: formData.title.trim(),
                 subtitle: formData.subtitle.trim() || null,
+                teacher: formData.teacher.trim() || null,
                 schedule: formData.schedule.trim(),
                 time: formData.time.trim(),
                 location: formData.location.trim() || null,
@@ -131,6 +133,21 @@ export function MajelisForm({ majelis, isNew = false }: MajelisFormProps) {
                                     className="mt-1"
                                     rows={2}
                                 />
+                            </div>
+
+                            <div>
+                                <Label htmlFor="teacher" className="flex items-center gap-2">
+                                    <User className="h-4 w-4" />
+                                    Pengajar / Pengisi Majelis
+                                </Label>
+                                <Input
+                                    id="teacher"
+                                    value={formData.teacher}
+                                    onChange={(e) => setFormData({ ...formData, teacher: e.target.value })}
+                                    placeholder="Contoh: Abah Sayf Abu Hanifah"
+                                    className="mt-1"
+                                />
+                                <p className="text-xs text-gray-500 mt-1">Nama ustadz/ustadzah yang mengisi majelis</p>
                             </div>
                         </CardContent>
                     </Card>

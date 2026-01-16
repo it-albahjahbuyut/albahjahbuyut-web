@@ -8,6 +8,7 @@ import { z } from "zod";
 const majelisSchema = z.object({
     title: z.string().min(1, "Judul wajib diisi"),
     subtitle: z.string().optional().nullable(),
+    teacher: z.string().optional().nullable(),
     schedule: z.string().min(1, "Jadwal wajib diisi"),
     time: z.string().min(1, "Waktu wajib diisi"),
     location: z.string().optional().nullable(),

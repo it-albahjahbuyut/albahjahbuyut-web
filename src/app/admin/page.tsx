@@ -57,72 +57,89 @@ const MiniChart = ({ data }: { data: { label: string; value: number; color: stri
 };
 
 async function getStats() {
-    const [
-        unitCount,
-        postCount,
-        donationCount,
-        galleryCount,
-        psbCount,
-        recentRegistrations,
-        recentDonations,
-        unitsWithCount
-    ] = await Promise.all([
-        db.unit.count(),
-        db.post.count(),
-        db.donationProgram.count(),
-        db.gallery.count(),
-        db.pSBRegistration.count(),
-        db.pSBRegistration.findMany({
-            take: 5,
-            orderBy: { createdAt: 'desc' },
-            select: {
-                id: true,
-                registrationNumber: true,
-                namaLengkap: true,
-                status: true,
-                createdAt: true,
-                unit: {
-                    select: {
-                        name: true
+    try {
+        const [
+            unitCount,
+            postCount,
+            donationCount,
+            galleryCount,
+            psbCount,
+            recentRegistrations,
+            recentDonations,
+            unitsWithCount
+        ] = await Promise.all([
+            db.unit.count(),
+            db.post.count(),
+            db.donationProgram.count(),
+            db.gallery.count(),
+            db.pSBRegistration.count(),
+            db.pSBRegistration.findMany({
+                take: 5,
+                orderBy: { createdAt: 'desc' },
+                select: {
+                    id: true,
+                    registrationNumber: true,
+                    namaLengkap: true,
+                    status: true,
+                    createdAt: true,
+                    unit: {
+                        select: {
+                            name: true
+                        }
                     }
                 }
-            }
-        }),
-        db.donationProgram.findMany({
-            take: 3,
-            orderBy: { currentAmount: 'desc' }, // Program dengan donasi terbanyak
-            select: { title: true, currentAmount: true, targetAmount: true }
-        }),
-        db.unit.findMany({
-            select: {
-                name: true,
-                _count: {
-                    select: { psbRegistrations: true }
+            }),
+            db.donationProgram.findMany({
+                take: 3,
+                orderBy: { currentAmount: 'desc' }, // Program dengan donasi terbanyak
+                select: { title: true, currentAmount: true, targetAmount: true }
+            }),
+            db.unit.findMany({
+                select: {
+                    name: true,
+                    _count: {
+                        select: { psbRegistrations: true }
+                    }
                 }
-            }
-        })
-    ]);
+            })
+        ]);
 
-    // Format data for chart
-    const chartData = unitsWithCount.map((item, index) => {
-        const colors = ["bg-emerald-500", "bg-blue-500", "bg-yellow-500", "bg-purple-500", "bg-rose-500"];
+        // Format data for chart
+        const chartData = unitsWithCount.map((item, index) => {
+            const colors = ["bg-emerald-500", "bg-blue-500", "bg-yellow-500", "bg-purple-500", "bg-rose-500"];
+            return {
+                label: item.name.split(' ')[0], // Take first word
+                value: item._count.psbRegistrations,
+                color: colors[index % colors.length]
+            };
+        }).sort((a, b) => b.value - a.value); // Sort by highest registration first
+
         return {
-            label: item.name.split(' ')[0], // Take first word
-            value: item._count.psbRegistrations,
-            color: colors[index % colors.length]
+            unitCount,
+            postCount,
+            donationCount,
+            galleryCount,
+            psbCount,
+            recentRegistrations,
+            recentDonations,
+            chartData,
+            error: null
         };
-    }).sort((a, b) => b.value - a.value); // Sort by highest registration first
-
-    return {
-        unitCount,
-        postCount,
-        donationCount,
-        galleryCount,
-        psbCount,
-        recentRegistrations,
-        recentDonations,
-        chartData
-    };
+    } catch (error) {
+        console.error('[Admin Dashboard] Database connection error:', error);
+        // Return default values on error so the page still renders
+        return {
+            unitCount: 0,
+            postCount: 0,
+            donationCount: 0,
+            galleryCount: 0,
+            psbCount: 0,
+            recentRegistrations: [],
+            recentDonations: [],
+            chartData: [],
+            error: error instanceof Error ? error.message : 'Database connection failed'
+        };
+    }
 }
 
 export default async function AdminDashboard() {
@@ -140,6 +157,20 @@ export default async function AdminDashboard() {
             />
 
             <div className="px-6">
+                {/* Database Error Banner */}
+                {stats.error && (
+                    <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+                        <div className="flex items-center gap-2 text-amber-700">
+                            <Activity className="w-5 h-5" />
+                            <span className="font-medium">Koneksi Database Bermasalah</span>
+                        </div>
+                        <p className="text-sm text-amber-600 mt-1">
+                            Terjadi masalah saat mengambil data. Data yang ditampilkan mungkin tidak akurat.
+                            Silakan muat ulang halaman atau coba beberapa saat lagi.
+                        </p>
+                    </div>
+                )}
+
                 {/* 1. Main Stats Grid */}
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
                     <Card className="border-none shadow-sm bg-gradient-to-br from-white to-gray-50/50">

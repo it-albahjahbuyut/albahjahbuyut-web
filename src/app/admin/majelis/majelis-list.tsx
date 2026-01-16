@@ -29,7 +29,7 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { MoreHorizontal, Pencil, Trash, Eye, EyeOff, Calendar, Clock } from "lucide-react";
+import { MoreHorizontal, Pencil, Trash, Eye, EyeOff, Calendar, Clock, User } from "lucide-react";
 import { deleteMajelis, updateMajelis } from "@/actions/majelis";
 import { toast } from "sonner";
 
@@ -71,6 +71,7 @@ export function MajelisList({ majelisList }: MajelisListProps) {
             const result = await updateMajelis(majelis.id, {
                 title: majelis.title,
                 subtitle: majelis.subtitle,
+                teacher: majelis.teacher,
                 schedule: majelis.schedule,
                 time: majelis.time,
                 location: majelis.location,
@@ -122,6 +123,12 @@ export function MajelisList({ majelisList }: MajelisListProps) {
                                         <p className="font-medium">{majelis.title}</p>
                                         {majelis.subtitle && (
                                             <p className="text-sm text-gray-500">{majelis.subtitle}</p>
+                                        )}
+                                        {majelis.teacher && (
+                                            <p className="text-xs text-emerald-600 flex items-center gap-1 mt-1">
+                                                <User className="h-3 w-3" />
+                                                {majelis.teacher}
+                                            </p>
                                         )}
                                     </div>
                                 </TableCell>

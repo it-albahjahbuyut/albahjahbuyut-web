@@ -47,9 +47,10 @@ if (connectionString.startsWith('NEXT_PUBLIC')) {
 //
 const pool = globalForPrisma.pool ?? new Pool({
     connectionString,
-    max: 1, // Single connection - Supavisor handles pooling externally
-    idleTimeoutMillis: 20000, // Close idle connections after 20 seconds
-    connectionTimeoutMillis: 10000, // Timeout after 10 seconds if can't connect
+    max: 2, // Allow 2 connections for concurrent requests
+    idleTimeoutMillis: 30000, // Close idle connections after 30 seconds
+    connectionTimeoutMillis: 30000, // Timeout after 30 seconds if can't connect (for cold starts)
+    allowExitOnIdle: true, // Allow process to exit when pool is idle
 });
 
 // Cache pool globally
