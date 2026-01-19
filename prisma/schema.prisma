@@ -358,3 +358,48 @@ model SiteSetting {
 
   @@map("site_settings")
 }
+
+// ============================================
+// UNIT USAHA (AB Travel, AB Mart, AB Fashion)
+// ============================================
+
+model BusinessUnit {
+  id          String   @id @default(cuid())
+  name        String   // AB Travel, AB Mart, AB Fashion
+  slug        String   @unique // ab-travel, ab-mart, ab-fashion
+  description String?  @db.Text // Deskripsi unit usaha
+  services    String?  @db.Text // Layanan yang tersedia (rich text)
+  address     String?  @db.Text // Alamat unit usaha
+  phone       String?  // Nomor telepon
+  whatsapp    String?  // Nomor WhatsApp
+  email       String?  // Email
+  website     String?  // Website
+  mapUrl      String?  // URL Google Maps embed
+  image       String?  // Gambar utama
+  logo        String?  // Logo unit usaha
+  isActive    Boolean  @default(true)
+  order       Int      @default(0) // Urutan tampilan
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Gallery images
+  images      BusinessUnitImage[]
+
+  @@map("business_units")
+}
+
+// Galeri Foto untuk Unit Usaha
+model BusinessUnitImage {
+  id          String   @id @default(cuid())
+  imageUrl    String   // URL gambar dari Cloudinary
+  caption     String?  // Caption untuk gambar
+  order       Int      @default(0) // Urutan tampilan
+  createdAt   DateTime @default(now())
+
+  // Relation to BusinessUnit
+  businessUnitId String
+  businessUnit   BusinessUnit @relation(fields: [businessUnitId], references: [id], onDelete: Cascade)
+
+  @@index([businessUnitId])
+  @@map("business_unit_images")
+}

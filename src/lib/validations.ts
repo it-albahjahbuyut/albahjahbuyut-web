@@ -224,6 +224,85 @@ export const gallerySchema = z.object({
 
 export type GalleryInput = z.infer<typeof gallerySchema>;
 
+// Business Unit Schemas (Unit Usaha: AB Travel, AB Mart, AB Fashion)
+export const businessUnitSchema = z.object({
+    name: z
+        .string()
+        .min(1, "Nama unit usaha diperlukan")
+        .max(MAX_TITLE_LENGTH, "Nama terlalu panjang")
+        .trim(),
+    slug: z
+        .string()
+        .min(3, "Slug minimal 3 karakter")
+        .max(100, "Slug terlalu panjang")
+        .toLowerCase()
+        .trim()
+        .refine(
+            (val) => SAFE_SLUG_REGEX.test(val),
+            "Slug hanya boleh berisi huruf kecil, angka, dan tanda hubung"
+        ),
+    description: z
+        .string()
+        .max(MAX_CONTENT_LENGTH, "Deskripsi terlalu panjang")
+        .optional(),
+    services: z
+        .string()
+        .max(MAX_CONTENT_LENGTH, "Layanan terlalu panjang")
+        .optional(),
+    address: z
+        .string()
+        .max(MAX_STRING_LENGTH, "Alamat terlalu panjang")
+        .optional(),
+    phone: z
+        .string()
+        .max(20, "Nomor telepon terlalu panjang")
+        .optional()
+        .refine(
+            (val) => !val || /^[0-9+\-\s()]+$/.test(val),
+            "Nomor telepon hanya boleh berisi angka dan simbol telepon"
+        ),
+    whatsapp: z
+        .string()
+        .max(20, "Nomor WhatsApp terlalu panjang")
+        .optional()
+        .refine(
+            (val) => !val || /^[0-9+\-\s]+$/.test(val),
+            "Nomor WhatsApp hanya boleh berisi angka"
+        ),
+    email: z
+        .string()
+        .email("Email tidak valid")
+        .max(254, "Email terlalu panjang")
+        .optional()
+        .or(z.literal("")),
+    website: z
+        .string()
+        .url("URL website tidak valid")
+        .max(MAX_URL_LENGTH, "URL terlalu panjang")
+        .optional()
+        .or(z.literal("")),
+    mapUrl: z
+        .string()
+        .max(MAX_URL_LENGTH, "URL peta terlalu panjang")
+        .optional(),
+    image: z
+        .string()
+        .max(MAX_URL_LENGTH, "URL gambar terlalu panjang")
+        .optional(),
+    logo: z
+        .string()
+        .max(MAX_URL_LENGTH, "URL logo terlalu panjang")
+        .optional(),
+    isActive: z.boolean().default(true),
+    order: z.number().int().min(0).max(1000).default(0),
+    galleryImages: z
+        .array(z.string().url("URL gambar tidak valid"))
+        .optional()
+        .default([]),
+});
+
+export type BusinessUnitInput = z.infer<typeof businessUnitSchema>;
+
 // Setting Schemas
 export const settingSchema = z.object({
     key: z

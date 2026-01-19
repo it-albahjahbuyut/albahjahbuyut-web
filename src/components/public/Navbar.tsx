@@ -1,4 +1,6 @@
 "use client";
+// Force rebuild for chunk error
+
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
@@ -13,6 +15,7 @@ import {
     Heart,
     Users,
     Image as ImageIcon,
+    Store,
 } from "lucide-react";
 
 interface NavbarProps {
@@ -43,6 +46,7 @@ export function Navbar({ units }: NavbarProps) {
         { href: "/galeri", label: "Galeri", icon: ImageIcon },
         { href: "/berita", label: "Berita", icon: Newspaper },
         { href: "/infaq", label: "Infaq", icon: Heart },
+        { href: "/unit-usaha", label: "Unit Usaha", icon: Store },
     ];
 
     const headerBackground = isScrolled || isOpen
@@ -133,6 +137,12 @@ export function Navbar({ units }: NavbarProps) {
                         className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${navTextColor}`}
                     >
                         Infaq
+                    </Link>
+                    <Link
+                        href="/unit-usaha"
+                        className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${navTextColor}`}
+                    >
+                        Unit Usaha
                     </Link>
                 </div>
 

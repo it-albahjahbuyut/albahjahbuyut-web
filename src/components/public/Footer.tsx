@@ -22,6 +22,7 @@ export function Footer() {
         { href: "/pendidikan", label: "Pendidikan" },
         { href: "/berita", label: "Berita" },
         { href: "/infaq", label: "Infaq" },
+        { href: "/unit-usaha", label: "Unit Usaha" },
         { href: "/psb", label: "Pendaftaran Santri Baru" },
     ];
 

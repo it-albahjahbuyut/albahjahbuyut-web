@@ -15,6 +15,7 @@ import {
     X,
     UserPlus,
     CalendarDays,
+    Store,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { useState } from "react";
@@ -50,6 +51,11 @@ const navItems = [
         title: "Majelis Rutin",
         href: "/admin/majelis",
         icon: CalendarDays,
+    },
+    {
+        title: "Unit Usaha",
+        href: "/admin/business-units",
+        icon: Store,
     },
     {
         title: "Pendaftaran PSB",
