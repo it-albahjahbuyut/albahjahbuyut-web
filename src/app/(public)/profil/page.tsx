@@ -31,12 +31,12 @@ export default async function ProfilePage() {
         {
             name: "Kepala Sekolah SMPIQu",
             role: "Kepala Sekolah SMPIQu Al-Bahjah",
-            image: null, // No image yet
+            image: "https://res.cloudinary.com/dand8rpbb/image/upload/v1768892833/WhatsApp_Image_2026-01-20_at_1.35.36_PM_qzt6ov.jpg",
         },
         {
             name: "Kepala Sekolah SMAIQu",
             role: "Kepala Sekolah SMAIQu Al-Bahjah",
-            image: null, // No image yet
+            image: "https://res.cloudinary.com/dand8rpbb/image/upload/v1768892833/WhatsApp_Image_2026-01-20_at_1.35.37_PM_rjneif.jpg",
         }
     ];
 
