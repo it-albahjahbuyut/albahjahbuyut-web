@@ -1,8 +1,24 @@
 import Link from "next/link";
 import Image from "next/image";
-import { PlayCircle, ExternalLink, Youtube } from "lucide-react";
+import { ExternalLink, Youtube } from "lucide-react";
 
-async function getLatestVideos() {
+interface YouTubeVideo {
+    id: {
+        videoId: string;
+    };
+    snippet: {
+        title: string;
+        description: string;
+        publishedAt: string;
+        thumbnails: {
+            high: {
+                url: string;
+            };
+        };
+    };
+}
+
+async function getLatestVideos(): Promise<YouTubeVideo[]> {
     const apiKey = process.env.YOUTUBE_API_KEY;
     const channelId = process.env.YOUTUBE_CHANNEL_ID;
 
@@ -59,8 +75,8 @@ export async function LatestVideosSection() {
                     </Link>
                 </div>
 
-                <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-                    {videos.map((video: any) => (
+                <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                    {videos.map((video: YouTubeVideo) => (
                         <Link
                             key={video.id.videoId}
                             href={`https://www.youtube.com/watch?v=${video.id.videoId}`}
