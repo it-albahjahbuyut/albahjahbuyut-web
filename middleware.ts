@@ -247,17 +247,32 @@ export default auth(async (req) => {
     if (isPSBSubdomain) {
         const pathname = nextUrl.pathname;
 
-        // Skip if already on /psb path, static assets, or API routes
-        const shouldRewrite = !pathname.startsWith('/psb') &&
-            !pathname.startsWith('/_next') &&
-            !pathname.startsWith('/api') &&
-            !pathname.startsWith('/favicon') &&
-            !pathname.match(/\.(ico|png|jpg|jpeg|gif|svg|css|js|woff|woff2)$/);
+        // Skip static assets and API routes
+        const isStaticOrApi = pathname.startsWith('/_next') ||
+            pathname.startsWith('/api') ||
+            pathname.startsWith('/favicon') ||
+            pathname.match(/\.(ico|png|jpg|jpeg|gif|svg|css|js|woff|woff2)$/);
 
-        if (shouldRewrite) {
-            // Rewrite to /psb path
-            const newUrl = new URL(`/psb${pathname === '/' ? '' : pathname}`, nextUrl);
-            return addSecurityHeaders(NextResponse.rewrite(newUrl));
+        if (!isStaticOrApi) {
+            // Allow only PSB-related paths
+            const isPSBPath = pathname === '/' || 
+                pathname.startsWith('/psb') ||
+                pathname.startsWith('/daftar') ||
+                pathname.startsWith('/status');
+
+            if (isPSBPath) {
+                // Rewrite to /psb path if not already there
+                if (!pathname.startsWith('/psb')) {
+                    const newUrl = new URL(`/psb${pathname === '/' ? '' : pathname}`, nextUrl);
+                    return addSecurityHeaders(NextResponse.rewrite(newUrl));
+                }
+            } else {
+                // Redirect non-PSB paths to main domain
+                const mainDomain = 'https://albahjahbuyut.com';
+                const redirectUrl = new URL(pathname, mainDomain);
+                redirectUrl.search = nextUrl.search;
+                return NextResponse.redirect(redirectUrl);
+            }
         }
     }
 

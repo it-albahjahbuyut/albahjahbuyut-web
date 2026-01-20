@@ -425,6 +425,146 @@ export default async function PSBPage() {
                 </div>
             </section>
 
+            {/* Program Spesial Grade */}
+            <section className="py-24 bg-gradient-to-b from-emerald-50 to-white">
+                <div className="container mx-auto px-4 lg:px-8 max-w-6xl">
+                    <FadeIn className="text-center mb-16">
+                        <span className="text-gold-600 font-bold tracking-widest text-xs uppercase mb-2 bg-gold-50 px-4 py-1.5 rounded-full inline-block">Penawaran Spesial</span>
+                        <h2 className="text-3xl lg:text-4xl font-bold text-emerald-950 mt-4">Program Spesial Santri</h2>
+                        <p className="text-slate-500 mt-3 text-lg max-w-2xl mx-auto">Kesempatan hemat dengan program pembayaran cepat dalam 1 bulan</p>
+                    </FadeIn>
+
+                    <div className="grid lg:grid-cols-2 gap-8">
+                        {/* Grade A */}
+                        <FadeIn>
+                            <div className="bg-white rounded-3xl border-2 border-gold-400 shadow-xl shadow-gold-500/10 overflow-hidden relative">
+                                <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-gold-400 to-gold-500" />
+                                <div className="bg-gradient-to-br from-gold-50 to-white p-6 border-b border-gold-100">
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <span className="text-xs font-bold text-gold-600 uppercase tracking-widest">Program</span>
+                                            <h3 className="text-2xl font-bold text-emerald-950 mt-1">Santri Grade A</h3>
+                                        </div>
+                                        <div className="w-14 h-14 rounded-full bg-gold-100 flex items-center justify-center text-gold-600">
+                                            <GraduationCap className="w-7 h-7" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="p-6 space-y-6">
+                                    {/* Santri Umum */}
+                                    <div className="p-5 bg-slate-50 rounded-2xl border border-slate-100">
+                                        <div className="flex items-center gap-2 mb-3">
+                                            <Users className="w-4 h-4 text-emerald-600" />
+                                            <span className="font-bold text-emerald-950">Santri Umum</span>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <div className="flex justify-between items-center">
+                                                <span className="text-slate-500 text-sm">Biaya Normal</span>
+                                                <span className="text-slate-400 line-through font-mono">Rp 23.000.000</span>
+                                            </div>
+                                            <div className="flex justify-between items-center">
+                                                <span className="text-emerald-600 text-sm font-medium">Promo Pembayaran 1 Bulan</span>
+                                                <span className="text-emerald-700 font-bold font-mono text-lg">Rp 20.000.000</span>
+                                            </div>
+                                            <div className="flex justify-between items-center pt-2 border-t border-slate-200">
+                                                <span className="text-slate-500 text-sm">SPP per Bulan</span>
+                                                <span className="text-slate-700 font-semibold font-mono">Rp 2.150.000</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {/* Santri Lanjutan */}
+                                    <div className="p-5 bg-emerald-50/50 rounded-2xl border border-emerald-100">
+                                        <div className="flex items-center gap-2 mb-3">
+                                            <ArrowRight className="w-4 h-4 text-gold-500" />
+                                            <span className="font-bold text-emerald-950">Santri Lanjutan</span>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <div className="flex justify-between items-center">
+                                                <span className="text-slate-500 text-sm">Biaya Normal</span>
+                                                <span className="text-slate-400 line-through font-mono">Rp 20.000.000</span>
+                                            </div>
+                                            <div className="flex justify-between items-center">
+                                                <span className="text-emerald-600 text-sm font-medium">Promo Pembayaran 1 Bulan</span>
+                                                <span className="text-emerald-700 font-bold font-mono text-lg">Rp 18.000.000</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </FadeIn>
+
+                        {/* Grade B */}
+                        <FadeIn delay={0.2}>
+                            <div className="bg-white rounded-3xl border-2 border-emerald-200 shadow-xl shadow-emerald-500/10 overflow-hidden relative">
+                                <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-emerald-400 to-emerald-500" />
+                                <div className="bg-gradient-to-br from-emerald-50 to-white p-6 border-b border-emerald-100">
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <span className="text-xs font-bold text-emerald-600 uppercase tracking-widest">Program</span>
+                                            <h3 className="text-2xl font-bold text-emerald-950 mt-1">Santri Grade B</h3>
+                                            <span className="text-xs font-medium text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-full mt-2 inline-block">50% Beasiswa</span>
+                                        </div>
+                                        <div className="w-14 h-14 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
+                                            <GraduationCap className="w-7 h-7" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="p-6 space-y-6">
+                                    {/* Santri Umum */}
+                                    <div className="p-5 bg-slate-50 rounded-2xl border border-slate-100">
+                                        <div className="flex items-center gap-2 mb-3">
+                                            <Users className="w-4 h-4 text-emerald-600" />
+                                            <span className="font-bold text-emerald-950">Santri Umum</span>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <div className="flex justify-between items-center">
+                                                <span className="text-slate-500 text-sm">Biaya Normal</span>
+                                                <span className="text-slate-400 line-through font-mono">Rp 15.000.000</span>
+                                            </div>
+                                            <div className="flex justify-between items-center">
+                                                <span className="text-emerald-600 text-sm font-medium">Promo Pembayaran 1 Bulan</span>
+                                                <span className="text-emerald-700 font-bold font-mono text-lg">Rp 12.500.000</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {/* Santri Lanjutan */}
+                                    <div className="p-5 bg-emerald-50/50 rounded-2xl border border-emerald-100">
+                                        <div className="flex items-center gap-2 mb-3">
+                                            <ArrowRight className="w-4 h-4 text-gold-500" />
+                                            <span className="font-bold text-emerald-950">Santri Lanjutan</span>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <div className="flex justify-between items-center">
+                                                <span className="text-slate-500 text-sm">Biaya Normal</span>
+                                                <span className="text-slate-400 line-through font-mono">Rp 13.000.000</span>
+                                            </div>
+                                            <div className="flex justify-between items-center">
+                                                <span className="text-emerald-600 text-sm font-medium">Promo Pembayaran 1 Bulan</span>
+                                                <span className="text-emerald-700 font-bold font-mono text-lg">Rp 10.000.000</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </FadeIn>
+                    </div>
+
+                    {/* Promo Note */}
+                    <FadeIn delay={0.3} className="mt-10">
+                        <div className="bg-gradient-to-r from-emerald-900 to-emerald-950 rounded-2xl p-6 text-center relative overflow-hidden">
+                            <div className="absolute inset-0 opacity-10">
+                                <div className="absolute top-0 right-0 w-64 h-64 bg-gold-400 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2" />
+                                <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-400 rounded-full blur-3xl -translate-x-1/2 translate-y-1/2" />
+                            </div>
+                            <div className="relative z-10">
+                                <p className="text-gold-400 font-bold text-lg mb-1">Promo Terbatas!</p>
+                                <p className="text-emerald-100/80 text-sm max-w-xl mx-auto">Manfaatkan kesempatan hemat dengan program spesial pembayaran cepat dalam 1 bulan. Segera daftarkan putra/putri Anda sebelum kuota terpenuhi.</p>
+                            </div>
+                        </div>
+                    </FadeIn>
+                </div>
+            </section>
+
             {/* FAQ Section */}
             <FAQSection />
 

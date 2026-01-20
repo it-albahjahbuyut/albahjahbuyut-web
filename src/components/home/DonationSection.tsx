@@ -12,6 +12,7 @@ interface DonationProgram {
     slug: string;
     targetAmount: { toNumber(): number } | number;
     currentAmount: { toNumber(): number } | number;
+    hideProgress?: boolean;
 }
 
 function formatCurrency(amount: number): string {
@@ -55,6 +56,9 @@ export function DonationSection({ program }: { program: DonationProgram | null }
         ? program.targetAmount
         : program.targetAmount.toNumber();
     const percentage = target > 0 ? Math.min((current / target) * 100, 100) : 0;
+
+    // Sembunyikan progress jika hideProgress true atau jika target dan current keduanya 0
+    const showProgress = !program.hideProgress && (target > 0 || current > 0);
 
     return (
         <section className="py-12 md:py-20 bg-slate-50 relative">
@@ -119,35 +123,37 @@ export function DonationSection({ program }: { program: DonationProgram | null }
                                 </div>
                             )}
 
-                            {/* Floating Stats Card */}
-                            <div className="absolute bottom-0 left-0 right-0 p-4 lg:p-6 bg-gradient-to-t from-black/60 to-transparent">
-                                <FadeIn delay={0.2} className="bg-white rounded-xl p-5 shadow-lg shadow-black/5 border border-slate-100 w-full relative z-20">
-                                    <div className="flex justify-between items-center mb-3">
-                                        <div className="space-y-1">
-                                            <p className="text-[10px] uppercase text-slate-500 font-bold tracking-wider">Terkumpul</p>
-                                            <p className="font-bold text-slate-900 text-lg md:text-xl leading-none">
-                                                {formatCurrency(current)}
-                                            </p>
+                            {/* Floating Stats Card - only show if there's progress */}
+                            {showProgress && (
+                                <div className="absolute bottom-0 left-0 right-0 p-4 lg:p-6 bg-gradient-to-t from-black/60 to-transparent">
+                                    <FadeIn delay={0.2} className="bg-white rounded-xl p-5 shadow-lg shadow-black/5 border border-slate-100 w-full relative z-20">
+                                        <div className="flex justify-between items-center mb-3">
+                                            <div className="space-y-1">
+                                                <p className="text-[10px] uppercase text-slate-500 font-bold tracking-wider">Terkumpul</p>
+                                                <p className="font-bold text-slate-900 text-lg md:text-xl leading-none">
+                                                    {formatCurrency(current)}
+                                                </p>
+                                            </div>
+                                            <div className="flex flex-col items-end pl-4">
+                                                <span className="inline-flex items-center justify-center bg-emerald-100 text-emerald-700 text-xs font-bold px-3 py-1 rounded-full min-w-[3.5rem]">
+                                                    {percentage.toFixed(0)}%
+                                                </span>
+                                            </div>
                                         </div>
-                                        <div className="flex flex-col items-end pl-4">
-                                            <span className="inline-flex items-center justify-center bg-emerald-100 text-emerald-700 text-xs font-bold px-3 py-1 rounded-full min-w-[3.5rem]">
-                                                {percentage.toFixed(0)}%
-                                            </span>
-                                        </div>
-                                    </div>
 
-                                    <div className="h-3 w-full bg-slate-200 rounded-full overflow-hidden mb-2">
-                                        <div
-                                            className="h-full bg-emerald-500 rounded-full transition-all duration-1000 ease-out relative"
-                                            style={{ width: `${Math.max(percentage, 2)}%` }}
-                                        />
-                                    </div>
-                                    <div className="flex justify-between items-center text-[10px] text-slate-400 font-medium">
-                                        <span>Progres Donasi</span>
-                                        <span>Target: {formatCurrency(target)}</span>
-                                    </div>
-                                </FadeIn>
-                            </div>
+                                        <div className="h-3 w-full bg-slate-200 rounded-full overflow-hidden mb-2">
+                                            <div
+                                                className="h-full bg-emerald-500 rounded-full transition-all duration-1000 ease-out relative"
+                                                style={{ width: `${Math.max(percentage, 2)}%` }}
+                                            />
+                                        </div>
+                                        <div className="flex justify-between items-center text-[10px] text-slate-400 font-medium">
+                                            <span>Progres Donasi</span>
+                                            <span>Target: {formatCurrency(target)}</span>
+                                        </div>
+                                    </FadeIn>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
