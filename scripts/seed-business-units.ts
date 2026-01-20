@@ -10,32 +10,6 @@ const prisma = new PrismaClient({ adapter });
 
 const businessUnits = [
   {
-    name: "AB Travel",
-    slug: "ab-travel",
-    description: `AB Travel adalah unit usaha Pondok Pesantren Al-Bahjah Buyut yang bergerak di bidang jasa perjalanan wisata dan umrah. Kami menyediakan layanan perjalanan yang nyaman, aman, dan terpercaya dengan harga yang bersaing.
-
-Didirikan untuk memberikan kemudahan bagi jamaah dan masyarakat umum dalam melakukan perjalanan ibadah maupun wisata religi. AB Travel berkomitmen memberikan pelayanan terbaik dengan bimbingan ustadz yang berpengalaman.
-
-Dengan pengalaman bertahun-tahun melayani jamaah, kami memastikan setiap perjalanan menjadi pengalaman spiritual yang berkesan dan penuh keberkahan.`,
-    services: "Paket Umrah Regular & VIP\nPaket Haji Plus\nWisata Religi Dalam Negeri\nZiarah Wali Songo\nTour Muslim Luar Negeri\nTiket Pesawat & Hotel\nVisa & Dokumen Perjalanan",
-    address: "Jl. Raya Cirebon - Bandung KM 12, Buyut, Cirebon, Jawa Barat 45153",
-    phone: "0231-123456",
-    whatsapp: "6281234567890",
-    email: "travel@albahjahbuyut.id",
-    website: "https://travel.albahjahbuyut.id",
-    mapUrl: "https://maps.google.com/?q=-6.7324,108.5523",
-    image: "https://images.unsplash.com/photo-1540541338287-41700207dee6?w=1200&q=80",
-    logo: "https://images.unsplash.com/photo-1488085061387-422e29b40080?w=400&q=80",
-    isActive: true,
-    order: 1,
-    gallery: [
-      "https://images.unsplash.com/photo-1564769625673-cb1ffb5e1d22?w=800&q=80",
-      "https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?w=800&q=80",
-      "https://images.unsplash.com/photo-1565552645632-d725f8bfc19a?w=800&q=80",
-      "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&q=80",
-    ],
-  },
-  {
     name: "AB Mart",
     slug: "ab-mart",
     description: `AB Mart adalah minimarket modern yang dikelola oleh Pondok Pesantren Al-Bahjah Buyut. Kami menyediakan berbagai kebutuhan sehari-hari dengan konsep berbelanja yang halal, berkah, dan nyaman.
@@ -51,13 +25,13 @@ Keuntungan dari AB Mart digunakan untuk mendukung operasional pesantren dan prog
     website: null,
     mapUrl: "https://maps.google.com/?q=-6.7324,108.5523",
     image: "https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=1200&q=80",
-    logo: "https://images.unsplash.com/photo-1534723452862-4c874018d66d?w=400&q=80",
+    logo: "https://images.unsplash.com/photo-1607082349566-187342175e2f?w=400&q=80",
     isActive: true,
-    order: 2,
+    order: 1,
     gallery: [
-      "https://images.unsplash.com/photo-1578916171728-46686eac8d58?w=800&q=80",
-      "https://images.unsplash.com/photo-1588964895597-cfccd6e2dbf9?w=800&q=80",
+      "https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=800&q=80",
       "https://images.unsplash.com/photo-1601599561213-832382fd07ba?w=800&q=80",
+      "https://images.unsplash.com/photo-1534723452862-4c874018d66d?w=800&q=80",
     ],
   },
   {
@@ -75,15 +49,140 @@ Berbelanja di AB Fashion berarti turut berkontribusi dalam pengembangan pendidik
     email: "fashion@albahjahbuyut.id",
     website: "https://fashion.albahjahbuyut.id",
     mapUrl: "https://maps.google.com/?q=-6.7324,108.5523",
-    image: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1200&q=80",
-    logo: "https://images.unsplash.com/photo-1445205170230-053b83016050?w=400&q=80",
+    image: "https://images.unsplash.com/photo-1558171813-4c088753af8f?w=1200&q=80",
+    logo: "https://images.unsplash.com/photo-1558171813-4c088753af8f?w=400&q=80",
     isActive: true,
-    order: 3,
+    order: 2,
     gallery: [
       "https://images.unsplash.com/photo-1558171813-4c088753af8f?w=800&q=80",
-      "https://images.unsplash.com/photo-1562157873-818bc0726f68?w=800&q=80",
       "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=800&q=80",
       "https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=800&q=80",
+      "https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=800&q=80",
+    ],
+  },
+  {
+    name: "Praktik Bersama",
+    slug: "praktik-bersama",
+    description: `Praktik Bersama adalah klinik kesehatan yang dikelola oleh Pondok Pesantren Al-Bahjah Buyut. Kami menyediakan layanan kesehatan umum dan pengobatan untuk santri, warga pesantren, serta masyarakat sekitar.
+
+Didukung oleh tenaga medis profesional yang berpengalaman, Praktik Bersama berkomitmen memberikan pelayanan kesehatan yang berkualitas dengan harga terjangkau.
+
+Selain pengobatan konvensional, kami juga menyediakan layanan pengobatan herbal dan thibbun nabawi sesuai dengan tuntunan Rasulullah SAW.`,
+    services: "Pemeriksaan Umum\nKonsultasi Dokter\nPengobatan Herbal\nThibbun Nabawi\nBekam / Hijamah\nRuqyah Syar'iyyah\nImunisasi & Vaksinasi",
+    address: "Komplek Pondok Pesantren Al-Bahjah Buyut, Cirebon, Jawa Barat 45153",
+    phone: "0231-456789",
+    whatsapp: "6281234567893",
+    email: "klinik@albahjahbuyut.id",
+    website: null,
+    mapUrl: "https://maps.google.com/?q=-6.7324,108.5523",
+    image: "https://unsplash.com/photos/empty-hospital-waiting-room-in-lobby-with-reception-counter-at-medical-facility-used-to-help-patients-with-appointments-and-healthcare-insurance-medical-waiting-area-with-front-desk-msyQNw7AfJ0",
+    logo: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&q=80",
+    isActive: true,
+    order: 4,
+    gallery: [
+      "https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?w=800&q=80",
+      "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=800&q=80",
+      "https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=800&q=80",
+    ],
+  },
+  {
+    name: "AB Cafe",
+    slug: "ab-cafe",
+    description: `AB Cafe adalah tempat bersantai dan berkumpul yang nyaman di lingkungan Pondok Pesantren Al-Bahjah Buyut. Kami menyajikan berbagai menu makanan dan minuman halal dengan suasana yang Islami dan family-friendly.
+
+Dengan konsep modern namun tetap bernuansa pesantren, AB Cafe menjadi tempat favorit bagi santri, wali santri, dan tamu untuk bersantai sambil menikmati hidangan lezat.
+
+Menu kami terdiri dari berbagai pilihan makanan ringan, makanan berat, serta aneka minuman segar yang cocok untuk menemani kebersamaan keluarga.`,
+    services: "Aneka Makanan Ringan\nMakanan Berat\nMinuman Segar\nKopi & Teh\nCatering Acara\nRuang Meeting\nWifi Gratis",
+    address: "Komplek Pondok Pesantren Al-Bahjah Buyut, Cirebon, Jawa Barat 45153",
+    phone: "0231-567890",
+    whatsapp: "6281234567894",
+    email: "cafe@albahjahbuyut.id",
+    website: null,
+    mapUrl: "https://maps.google.com/?q=-6.7324,108.5523",
+    image: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=1200&q=80",
+    logo: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400&q=80",
+    isActive: true,
+    order: 5,
+    gallery: [
+      "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&q=80",
+      "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=800&q=80",
+      "https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=800&q=80",
+    ],
+  },
+  {
+    name: "AB Ice Cream",
+    slug: "ab-ice-cream",
+    description: `AB Ice Cream adalah unit usaha yang menyediakan berbagai varian es krim homemade dengan bahan-bahan berkualitas dan halal. Kami menghadirkan kelezatan es krim dengan berbagai rasa yang disukai semua kalangan.
+
+Es krim kami dibuat dengan resep khusus menggunakan bahan-bahan pilihan tanpa bahan pengawet berbahaya. Setiap sendok es krim AB memberikan kesegaran dan kelezatan yang tiada tara.
+
+Cocok untuk dinikmati bersama keluarga atau sebagai oleh-oleh khas dari Pondok Pesantren Al-Bahjah Buyut.`,
+    services: "Es Krim Homemade\nAneka Rasa Premium\nEs Krim Cone\nEs Krim Cup\nEs Krim Liter\nPaket Acara & Pesta\nDelivery Order",
+    address: "Komplek Pondok Pesantren Al-Bahjah Buyut, Cirebon, Jawa Barat 45153",
+    phone: "0231-678901",
+    whatsapp: "6281234567895",
+    email: "icecream@albahjahbuyut.id",
+    website: null,
+    mapUrl: "https://maps.google.com/?q=-6.7324,108.5523",
+    image: "https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?w=1200&q=80",
+    logo: "https://images.unsplash.com/photo-1560008581-09826d1de69e?w=400&q=80",
+    isActive: true,
+    order: 6,
+    gallery: [
+      "https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?w=800&q=80",
+      "https://images.unsplash.com/photo-1560008581-09826d1de69e?w=800&q=80",
+      "https://images.unsplash.com/photo-1567206563064-6f60f40a2b57?w=800&q=80",
+    ],
+  },
+  {
+    name: "AB Magha",
+    slug: "ab-magha",
+    description: `AB Magha adalah unit usaha yang bergerak di bidang kuliner khas dengan menu andalan berupa masakan tradisional dan modern. Kami menyajikan hidangan lezat dengan cita rasa autentik yang menggugah selera.
+
+Dengan bahan-bahan segar dan bumbu pilihan, setiap hidangan di AB Magha diolah dengan penuh ketelitian untuk menghasilkan kelezatan yang konsisten.
+
+AB Magha juga melayani pesanan untuk acara-acara besar seperti walimahan, aqiqah, dan event pesantren lainnya.`,
+    services: "Masakan Tradisional\nMenu Modern\nCatering Walimahan\nCatering Aqiqah\nCatering Event\nNasi Box\nPrasmanan",
+    address: "Komplek Pondok Pesantren Al-Bahjah Buyut, Cirebon, Jawa Barat 45153",
+    phone: "0231-789012",
+    whatsapp: "6281234567896",
+    email: "magha@albahjahbuyut.id",
+    website: null,
+    mapUrl: "https://maps.google.com/?q=-6.7324,108.5523",
+    image: "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=1200&q=80",
+    logo: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80",
+    isActive: true,
+    order: 7,
+    gallery: [
+      "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=800&q=80",
+      "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800&q=80",
+      "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=800&q=80",
+    ],
+  },
+  {
+    name: "AB Delivery",
+    slug: "ab-delivery",
+    description: `AB Delivery adalah layanan pengiriman dan kurir yang dikelola oleh Pondok Pesantren Al-Bahjah Buyut. Kami menyediakan jasa pengiriman barang dan dokumen dengan cepat, aman, dan amanah.
+
+Layanan ini hadir untuk memudahkan santri, wali santri, dan masyarakat dalam mengirim dan menerima paket. Dengan armada yang memadai dan kurir yang terpercaya, AB Delivery siap melayani kebutuhan pengiriman Anda.
+
+Kami juga melayani pengiriman makanan dari unit-unit usaha Al-Bahjah Buyut ke berbagai lokasi di sekitar Cirebon.`,
+    services: "Pengiriman Paket\nPengiriman Dokumen\nDelivery Makanan\nJemput Paket\nKurir Instan\nCargo Pesantren\nAntar Jemput Bandara",
+    address: "Komplek Pondok Pesantren Al-Bahjah Buyut, Cirebon, Jawa Barat 45153",
+    phone: "0231-890123",
+    whatsapp: "6281234567897",
+    email: "delivery@albahjahbuyut.id",
+    website: null,
+    mapUrl: "https://maps.google.com/?q=-6.7324,108.5523",
+    image: "https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?w=1200&q=80",
+    logo: "https://images.unsplash.com/photo-1586880244406-556ebe35f282?w=400&q=80",
+    isActive: true,
+    order: 8,
+    gallery: [
+      "https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?w=800&q=80",
+      "https://images.unsplash.com/photo-1586880244406-556ebe35f282?w=800&q=80",
+      "https://images.unsplash.com/photo-1601628828688-632f38a5a7d0?w=800&q=80",
     ],
   },
 ];

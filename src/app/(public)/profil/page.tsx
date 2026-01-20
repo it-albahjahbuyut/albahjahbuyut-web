@@ -16,7 +16,7 @@ export default async function ProfilePage() {
         orderBy: { order: "asc" },
     });
 
-    const figures = [
+    const mainFigures = [
         {
             name: "Buya Yahya",
             role: "Pengasuh LPD Al-Bahjah",
@@ -27,16 +27,29 @@ export default async function ProfilePage() {
             name: "Abah Sayf Abu Hanifah",
             role: "Pengasuh Al-Bahjah Buyut",
             image: "https://res.cloudinary.com/dand8rpbb/image/upload/v1767976355/DSC00058_ioql27.jpg",
+        }
+    ];
+
+    const structuralFigures = [
+        {
+            name: "Dr. Fidya Ari Pratama, S.Pd., M.Pd.",
+            role: "Kadiv Pendidikan Al-Bahjah Buyut",
+            image: null,
         },
         {
-            name: "Kepala Sekolah SMPIQu",
-            role: "Kepala Sekolah SMPIQu Al-Bahjah",
+            name: "Isro Muwafiq",
+            role: "Kepala Sekolah SMPIQu Al-Bahjah Buyut",
             image: "https://res.cloudinary.com/dand8rpbb/image/upload/v1768892833/WhatsApp_Image_2026-01-20_at_1.35.36_PM_qzt6ov.jpg",
         },
         {
-            name: "Kepala Sekolah SMAIQu",
-            role: "Kepala Sekolah SMAIQu Al-Bahjah",
+            name: "Ahmad Nana Permana, S.Pd.",
+            role: "Kepala Sekolah SMAIQu Al-Bahjah Buyut",
             image: "https://res.cloudinary.com/dand8rpbb/image/upload/v1768892833/WhatsApp_Image_2026-01-20_at_1.35.37_PM_rjneif.jpg",
+        },
+        {
+            name: "Abdurrosyid, S.Kom.",
+            role: "HRD Al-Bahjah Buyut",
+            image: null,
         }
     ];
 
@@ -291,13 +304,38 @@ export default async function ProfilePage() {
                         <h3 className="text-3xl font-bold text-emerald-950">Tokoh & Pimpinan</h3>
                     </FadeIn>
 
-                    {/* Unified Minimalist Grid Leaders */}
+                    {/* Main Figures Grid (Buya & Abah) */}
+                    <FadeInStagger className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-2xl mx-auto mb-16">
+                        {mainFigures.map((figure, idx) => (
+                            <FadeIn key={idx}>
+                                <div className="group text-center">
+                                    <div className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-slate-100 mb-4 mx-auto w-full max-w-[280px] shadow-lg">
+                                        <Image
+                                            src={figure.image || ""}
+                                            alt={figure.name}
+                                            fill
+                                            className="object-cover group-hover:scale-105 transition-transform duration-700"
+                                        />
+                                        <div className="absolute inset-0 bg-emerald-950/0 group-hover:bg-emerald-950/10 transition-colors duration-300" />
+                                    </div>
+                                    <div>
+                                        <h4 className="text-xl md:text-2xl font-bold text-emerald-950 mb-1 group-hover:text-gold-600 transition-colors">
+                                            {figure.name}
+                                        </h4>
+                                        <p className="text-slate-500 font-medium">{figure.role}</p>
+                                    </div>
+                                </div>
+                            </FadeIn>
+                        ))}
+                    </FadeInStagger>
+
+                    {/* Structural Figures Grid */}
                     <FadeInStagger className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {figures.map((figure, idx) => (
+                        {structuralFigures.map((figure, idx) => (
                             <FadeIn key={idx}>
                                 <div className="group text-center">
                                     {/* Image Container */}
-                                    <div className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-slate-100 mb-4 mx-auto w-full max-w-[280px]">
+                                    <div className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-slate-100 mb-4 mx-auto w-full max-w-[240px]">
                                         {figure.image ? (
                                             <Image
                                                 src={figure.image}
