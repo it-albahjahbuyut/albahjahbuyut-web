@@ -9,9 +9,9 @@ async function getLatestVideos() {
     if (!apiKey || !channelId) return [];
 
     try {
-        // Fetch latest 3 videos using Search API sorted by date
+        // Fetch latest 4 videos using Search API sorted by date
         const response = await fetch(
-            `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=${channelId}&part=snippet,id&order=date&maxResults=3&type=video`,
+            `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=${channelId}&part=snippet,id&order=date&maxResults=4&type=video`,
             { next: { revalidate: 86400 } }
         );
 
@@ -26,7 +26,7 @@ async function getLatestVideos() {
 }
 
 export async function LatestVideosSection() {
-    const videos = await getLatestVideos();
+    const videos = (await getLatestVideos()).slice(0, 3);
 
     if (videos.length === 0) return null;
 
@@ -59,7 +59,7 @@ export async function LatestVideosSection() {
                     </Link>
                 </div>
 
-                <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
                     {videos.map((video: any) => (
                         <Link
                             key={video.id.videoId}
