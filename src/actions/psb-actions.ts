@@ -42,6 +42,9 @@ export interface PSBFormData {
     noWaIbu: string;
     noWaAyah?: string;
     sumberInfo: string;
+    // Program Spesial fields
+    grade?: string;
+    jenisSantri?: string;
     // Legacy fields for backward compatibility
     namaOrangTua?: string;
     noHpOrangTua?: string;
