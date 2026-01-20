@@ -70,6 +70,8 @@ export interface PSBSpreadsheetData {
     noWaIbu?: string;
     noWaAyah?: string;
     sumberInfo?: string;
+    grade?: string;
+    jenisSantri?: string;
     unitName: string;
     driveFolderUrl: string;
     status: string;
@@ -141,6 +143,8 @@ async function ensureSheetHeaders(sheetName: string): Promise<string> {
         'No WA Ibu',
         'No WA Ayah',
         'Sumber Info',
+        'Grade',
+        'Jenis Santri',
         'Unit Pendidikan',
         'Link Drive',
         'Status',
@@ -264,6 +268,8 @@ export async function appendToSpreadsheet(data: PSBSpreadsheetData): Promise<{ s
             data.noWaIbu || '-',
             data.noWaAyah || '-',
             data.sumberInfo || '-',
+            data.grade ? `Grade ${data.grade}` : '-',
+            data.jenisSantri ? `Santri ${data.jenisSantri}` : '-',
             data.unitName,
             data.driveFolderUrl,
             data.status,

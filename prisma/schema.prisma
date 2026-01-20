@@ -293,6 +293,8 @@ model PSBRegistration {
   noWaIbu           String?
   noWaAyah          String?
   sumberInfo        String?   // Tau Al Bahjah Buyut dari mana
+  grade             String?   // Grade A atau Grade B
+  jenisSantri       String?   // Santri Umum atau Santri Lanjutan
   
   // Legacy fields (untuk backward compatibility)
   namaOrangTua      String?   // Deprecated: gunakan namaAyah/namaIbu

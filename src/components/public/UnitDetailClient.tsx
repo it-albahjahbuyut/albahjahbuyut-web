@@ -88,9 +88,19 @@ export function UnitDetailClient({ unit, descriptionHtml, curriculumHtml, facili
 
                     <div className="max-w-4xl">
                         <FadeIn delay={0.2}>
-                            <span className="inline-block px-3 py-1 mb-4 border border-gold-500 text-gold-400 text-xs font-bold uppercase tracking-widest">
-                                Unit Pendidikan
-                            </span>
+                            <div className="flex flex-wrap items-center gap-3 mb-4">
+                                <span className="inline-block px-3 py-1 border border-gold-500 text-gold-400 text-xs font-bold uppercase tracking-widest">
+                                    Unit Pendidikan
+                                </span>
+                                {(unit.slug?.includes('smp') || unit.slug?.includes('sma')) && (
+                                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-500 text-white text-xs font-bold uppercase tracking-widest rounded-full">
+                                        <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                        </svg>
+                                        Akreditasi A
+                                    </span>
+                                )}
+                            </div>
                         </FadeIn>
                         <FadeIn delay={0.3}>
                             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white uppercase tracking-tighter leading-none mb-6">
@@ -126,6 +136,69 @@ export function UnitDetailClient({ unit, descriptionHtml, curriculumHtml, facili
                                     dangerouslySetInnerHTML={{ __html: descriptionHtml }}
                                 />
                             </FadeIn>
+
+                            {/* Visi Misi Tujuan - Only for formal units (SMP, SMA, SD) */}
+                            {(unit.slug?.includes('smp') || unit.slug?.includes('sma') || unit.slug?.includes('sd')) && (
+                                <FadeIn>
+                                    <div className="space-y-12">
+                                        {/* Visi */}
+                                        <div>
+                                            <h2 className="text-3xl font-bold text-emerald-950 tracking-tight mb-6 flex items-center gap-4">
+                                                <span className="w-1.5 h-10 bg-emerald-500 rounded-full block"></span>
+                                                Visi
+                                            </h2>
+                                            <div className="pl-5">
+                                                <p className="text-slate-600 leading-relaxed text-lg">
+                                                    Menjadi lembaga pendidikan profesional yang bisa menghadirkan generasi berkarakter islami, memiliki kecerdasan intelektual, emosi dan spiritual serta mampu mengamalkan Al-Qur&apos;an untuk diri, keluarga dan bangsa.
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        {/* Misi */}
+                                        <div>
+                                            <h2 className="text-3xl font-bold text-emerald-950 tracking-tight mb-6 flex items-center gap-4">
+                                                <span className="w-1.5 h-10 bg-emerald-500 rounded-full block"></span>
+                                                Misi
+                                            </h2>
+                                            <ul className="pl-5 space-y-3">
+                                                {[
+                                                    "Membentuk generasi berkarakter silami yang ber-aqidahkan Ahlussunnah Wal Jama'ah, Al-Asy'ariyah, Sufiyah, dan bermadzhab sehingga mengantarkan peserta didik menjadi generasi kreatif, inofatif, responsif dan kritis serta dinamis yang bertanggung jawab.",
+                                                    "Membekali siswa-siswi dengan akhlak yang mulia.",
+                                                    "Membiasakan siswa-siswi dekat dengan Al-Qur'an."
+                                                ].map((item, i) => (
+                                                    <li key={i} className="flex items-start gap-3">
+                                                        <CheckCircle2 className="w-5 h-5 text-emerald-600 mt-1 shrink-0" />
+                                                        <span className="text-slate-600 leading-relaxed">{item}</span>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+
+                                        {/* Tujuan */}
+                                        <div>
+                                            <h2 className="text-3xl font-bold text-emerald-950 tracking-tight mb-6 flex items-center gap-4">
+                                                <span className="w-1.5 h-10 bg-emerald-500 rounded-full block"></span>
+                                                Tujuan
+                                            </h2>
+                                            <ul className="pl-5 space-y-3">
+                                                {[
+                                                    "Membentuk generasi Qur'ani sehingga menghasilkan lulusan penghafal Al-Qur'an yang berdedikasi di lingkungan masyarakat.",
+                                                    "Menghasilkan lulusan yang mampu mengamalkan ilmu Agama Islam bagi pribadi, keluarga dan lingkungan masyarakat.",
+                                                    "Membentuk lingkungan yang berakhlakul karimah melalui pendidikan karakter di pondok pesantren.",
+                                                    "Menghasilkan lulusan yang menguasai dasar-dasar ilmu pengetahuan sains dan teknologi serta memiliki kemampuan berpikir kritis, cakap berkomunikasi, bekerjasama dan kreatifitas yang tinggi untuk menghadapi persaingan global.",
+                                                    "Meningkatkan kompetensi profesionalisme guru melalui pengembangan profesi yang berkelanjutan.",
+                                                    "Menyiapkan peserta didik yang cakap berbahasa Arab dan Inggris sehingga mampu bersaing secara global."
+                                                ].map((item, i) => (
+                                                    <li key={i} className="flex items-start gap-3">
+                                                        <CheckCircle2 className="w-5 h-5 text-emerald-600 mt-1 shrink-0" />
+                                                        <span className="text-slate-600 leading-relaxed">{item}</span>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </FadeIn>
+                            )}
 
                             {/* Curriculum */}
                             {curriculumHtml && (

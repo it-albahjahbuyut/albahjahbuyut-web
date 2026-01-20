@@ -121,8 +121,35 @@ const SUMBER_INFO_OPTIONS = [
     { value: 'Lainnya', label: 'Lainnya' },
 ];
 
+// Opsi Grade
+const GRADE_OPTIONS = [
+    { value: 'A', label: 'Grade A - Reguler' },
+    { value: 'B', label: 'Grade B - Beasiswa' },
+];
+
+// Opsi Jenis Santri
+const JENIS_SANTRI_OPTIONS = [
+    { value: 'Umum', label: 'Santri Umum (Baru)' },
+    { value: 'Lanjutan', label: 'Santri Lanjutan (Pindahan)' },
+];
+
 // Field formulir standar sesuai FORMULIR PENERIMAAN SANTRI BARU TP. 2026/2027
 export const STANDARD_FORM_FIELDS: FormField[] = [
+    // Program Spesial - Grade & Jenis Santri
+    {
+        name: 'grade',
+        label: 'Pilih Grade',
+        type: 'select',
+        required: true,
+        options: GRADE_OPTIONS,
+    },
+    {
+        name: 'jenisSantri',
+        label: 'Jenis Santri',
+        type: 'select',
+        required: true,
+        options: JENIS_SANTRI_OPTIONS,
+    },
     // Data Santri
     {
         name: 'namaLengkap',

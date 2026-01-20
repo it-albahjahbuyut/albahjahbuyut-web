@@ -111,6 +111,9 @@ export async function submitPSBRegistration(
                 alamatLengkap: formData.alamatLengkap,
                 nisn: formData.nisn || null,
                 asalSekolah: formData.asalSekolah,
+                // Program Spesial - Grade & Jenis Santri
+                grade: formData.grade || null,
+                jenisSantri: formData.jenisSantri || null,
                 // Data Orang Tua (map to existing schema fields)
                 namaOrangTua: formData.namaAyah || formData.namaOrangTua || '',
                 noHpOrangTua: formData.noWaIbu || formData.noHpOrangTua || '',
@@ -120,8 +123,6 @@ export async function submitPSBRegistration(
                 driveFolderId: null,
                 driveFolderUrl: null,
                 unitId: formData.unitId,
-                // Note: New fields (NIK, No KK, data orang tua lengkap) akan disimpan di Google Sheets
-                // Jalankan prisma db push untuk menambahkan field baru ke database
             },
         });
 
@@ -262,6 +263,8 @@ async function processUploadsInBackground(
                 noWaIbu: formData.noWaIbu || '',
                 noWaAyah: formData.noWaAyah || '',
                 sumberInfo: formData.sumberInfo || '',
+                grade: formData.grade || '',
+                jenisSantri: formData.jenisSantri || '',
                 unitName: formData.unitName,
                 driveFolderUrl: folderResult.folderUrl,
                 status: 'PENDING',

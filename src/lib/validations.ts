@@ -486,6 +486,14 @@ export const psbFormSchema = z.object({
         .max(200, "Sumber info terlalu panjang")
         .optional()
         .default(""),
+    
+    // Program Spesial
+    grade: z.enum(["A", "B"], {
+        message: "Pilih Grade A atau Grade B",
+    }),
+    jenisSantri: z.enum(["Umum", "Lanjutan"], {
+        message: "Pilih Jenis Santri",
+    }),
 
     // Legacy fields (optional, for backward compatibility)
     namaOrangTua: z.string().max(100).optional(),
