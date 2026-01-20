@@ -5,7 +5,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://albahjahbuyut.com';
 
   // Fetch dynamic data
-  const [units, posts] = await Promise.all([
+  const [units, posts, businessUnits] = await Promise.all([
     db.unit.findMany({
       where: { isActive: true },
       select: { slug: true, updatedAt: true },
@@ -13,6 +13,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     db.post.findMany({
       where: { status: 'PUBLISHED' },
       select: { slug: true, publishedAt: true },
+    }),
+    db.businessUnit.findMany({
+      where: { isActive: true },
+      select: { slug: true, updatedAt: true },
     }),
   ]);
 
@@ -41,6 +45,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.95, // High priority for PSB
+    },
+    {
+      url: `${baseUrl}/unit-usaha`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.9,
     },
     {
       url: `${baseUrl}/berita`,
@@ -84,6 +94,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.9,
   }));
 
+  // Dynamic business unit pages
+  const businessUnitPages: MetadataRoute.Sitemap = businessUnits.map((unit) => ({
+    url: `${baseUrl}/unit-usaha/${unit.slug}`,
+    lastModified: unit.updatedAt,
+    changeFrequency: 'monthly' as const,
+    priority: 0.85,
+  }));
+
   // Dynamic news/blog pages
   const newsPages: MetadataRoute.Sitemap = posts.map((post) => ({
     url: `${baseUrl}/berita/${post.slug}`,
@@ -92,5 +110,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  return [...staticPages, ...unitPages, ...psbPages, ...newsPages];
+  return [...staticPages, ...unitPages, ...businessUnitPages, ...psbPages, ...newsPages];
 }

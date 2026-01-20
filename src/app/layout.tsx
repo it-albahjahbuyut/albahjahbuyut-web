@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/providers";
+import Script from "next/script";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   variable: "--font-plus-jakarta",
@@ -10,7 +11,7 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://albahjahbuyut-web.vercel.app'),
+  metadataBase: new URL('https://albahjahbuyut.com'),
   title: {
     default: "Lembaga Pengembangan Dakwah Al-Bahjah Buyut Cirebon",
     template: "%s | Lembaga Pengembangan Dakwah Al-Bahjah Buyut Cirebon",
@@ -100,6 +101,21 @@ export default function RootLayout({
   return (
     <html lang="id">
       <body className={`${plusJakartaSans.variable} antialiased font-sans overflow-x-hidden`} suppressHydrationWarning>
+        {/* Google Analytics */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-6JF8M5WB01"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'G-6JF8M5WB01');
+          `}
+        </Script>
+
         <Providers>
           {children}
         </Providers>
