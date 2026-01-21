@@ -106,20 +106,38 @@ export async function submitPSBRegistration(
         const registration = await db.pSBRegistration.create({
             data: {
                 registrationNumber,
-                // Data Santri (existing schema fields)
+                // Data Santri
                 namaLengkap: formData.namaLengkap,
+                nisn: formData.nisn || null,
+                nik: formData.nik || null,
+                noKK: formData.noKK || null,
+                jenisKelamin: formData.jenisKelamin,
                 tempatLahir: formData.tempatLahir,
                 tanggalLahir: new Date(formData.tanggalLahir),
-                jenisKelamin: formData.jenisKelamin,
-                alamatLengkap: formData.alamatLengkap,
-                nisn: formData.nisn || null,
                 asalSekolah: formData.asalSekolah,
-                // Program Spesial - Grade & Jenis Santri
+                alamatSekolahAsal: formData.alamatSekolahAsal || null,
+                // Data Orang Tua
+                namaAyah: formData.namaAyah || null,
+                namaIbu: formData.namaIbu || null,
+                pekerjaanAyah: formData.pekerjaanAyah || null,
+                pekerjaanIbu: formData.pekerjaanIbu || null,
+                penghasilanAyah: formData.penghasilanAyah || null,
+                penghasilanIbu: formData.penghasilanIbu || null,
+                pendidikanAyah: formData.pendidikanAyah || null,
+                pendidikanIbu: formData.pendidikanIbu || null,
+                anakKe: formData.anakKe || null,
+                dariSaudara: formData.dariSaudara || null,
+                jumlahTanggungan: formData.jumlahTanggungan || null,
+                alamatLengkap: formData.alamatLengkap,
+                noWaIbu: formData.noWaIbu || null,
+                noWaAyah: formData.noWaAyah || null,
+                sumberInfo: formData.sumberInfo || null,
+                // Program Spesial
                 grade: formData.grade || null,
                 jenisSantri: formData.jenisSantri || null,
-                // Data Orang Tua (map to existing schema fields)
-                namaOrangTua: formData.namaAyah || formData.namaOrangTua || '',
-                noHpOrangTua: formData.noWaIbu || formData.noHpOrangTua || '',
+                // Legacy fields for backward compatibility
+                namaOrangTua: formData.namaAyah || formData.namaOrangTua || null,
+                noHpOrangTua: formData.noWaIbu || formData.noHpOrangTua || null,
                 emailOrangTua: formData.emailOrangTua || null,
                 // Status & Metadata
                 status: 'PENDING',
@@ -159,14 +177,20 @@ export async function submitPSBRegistration(
         if (error instanceof ZodError) {
             const issues = error.issues || [];
             const validationErrors: Record<string, string> = {};
-            issues.forEach((issue) => {
+
+            // Log detailed validation errors for debugging
+            console.error('=== ZOD VALIDATION ERRORS ===');
+            issues.forEach((issue, index) => {
                 const path = issue.path?.join('.') || 'unknown';
-                validationErrors[path] = issue.message;
+                const message = issue.message;
+                validationErrors[path] = message;
+                console.error(`  ${index + 1}. Field: "${path}" - Error: "${message}"`);
             });
+            console.error('=============================');
 
             return {
                 success: false,
-                message: 'Data pendaftaran tidak valid. Silakan periksa kembali.',
+                message: `Data pendaftaran tidak valid: ${issues[0]?.message || 'Validasi gagal'}. Field: ${issues[0]?.path?.join('.') || 'unknown'}`,
                 error: issues[0]?.message || 'Validasi gagal',
                 validationErrors,
             };

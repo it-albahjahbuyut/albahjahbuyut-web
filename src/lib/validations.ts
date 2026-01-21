@@ -486,14 +486,14 @@ export const psbFormSchema = z.object({
         .max(200, "Sumber info terlalu panjang")
         .optional()
         .default(""),
-    
-    // Program Spesial
+
+    // Program Spesial (optional - not all units require these)
     grade: z.enum(["A", "B"], {
         message: "Pilih Grade A atau Grade B",
-    }),
+    }).optional(),
     jenisSantri: z.enum(["Umum", "Lanjutan"], {
         message: "Pilih Jenis Santri",
-    }),
+    }).optional(),
 
     // Legacy fields (optional, for backward compatibility)
     namaOrangTua: z.string().max(100).optional(),
@@ -509,15 +509,22 @@ export const psbFormSchema = z.object({
 export type PSBFormInput = z.infer<typeof psbFormSchema>;
 
 // Document upload validation
+// Tipe dokumen harus sinkron dengan psb-config.ts
 export const psbDocumentSchema = z.object({
     documentType: z.enum([
+        // Dokumen umum
         "IJAZAH",
         "AKTA_KELAHIRAN",
         "KARTU_KELUARGA",
         "PAS_FOTO",
         "KTP_ORTU",
         "SKHUN",
-        "RAPOR"
+        "RAPOR",
+        // Dokumen spesifik jenjang (dari psb-config.ts)
+        "IJAZAH_SD",
+        "IJAZAH_SMP",
+        "IJAZAH_TK",
+        "BUKTI_PEMBAYARAN"
     ], {
         message: "Tipe dokumen tidak valid",
     }),

@@ -75,7 +75,7 @@ Selain pengobatan konvensional, kami juga menyediakan layanan pengobatan herbal 
     email: "klinik@albahjahbuyut.id",
     website: null,
     mapUrl: "https://maps.google.com/?q=-6.7324,108.5523",
-    image: "https://unsplash.com/photos/empty-hospital-waiting-room-in-lobby-with-reception-counter-at-medical-facility-used-to-help-patients-with-appointments-and-healthcare-insurance-medical-waiting-area-with-front-desk-msyQNw7AfJ0",
+    image: "  ",
     logo: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&q=80",
     isActive: true,
     order: 4,

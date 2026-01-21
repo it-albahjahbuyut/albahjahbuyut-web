@@ -1,6 +1,12 @@
 import { google } from 'googleapis';
 import fs from 'fs/promises';
 import path from 'path';
+import {
+    isSupabaseStorageConfigured,
+    createSupabaseFolder,
+    uploadToSupabase,
+    deleteSupabaseFolder
+} from './supabase-storage';
 
 // Konfigurasi Google Drive API (OAuth 2.0 untuk Personal Gmail)
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '';
@@ -241,16 +247,31 @@ export async function createRegistrationFolder(
             } else {
                 console.warn('Drive upload verification failed (Service Account Quota Exceeded or Permission Issue).');
                 console.warn('NOTE: Service Accounts usually have 0 storage quota. Use a SHARED DRIVE (Team Drive) to enable uploads.');
-                // Proceed to local fallback
+                // Proceed to Supabase fallback
             }
         } catch (error) {
             console.error('Error dealing with Google Drive:', error);
-            // Proceed to local fallback
+            // Proceed to Supabase fallback
         }
     }
 
-    // Fallback to local storage
-    console.log('Using local storage fallback');
+    // Fallback #1: Try Supabase Storage (works on Vercel!)
+    if (isSupabaseStorageConfigured()) {
+        try {
+            console.log('Using Supabase Storage fallback');
+            const supabaseResult = await createSupabaseFolder(unitName, namaSantri, registrationNumber);
+            return {
+                folderId: supabaseResult.folderId,
+                folderUrl: supabaseResult.folderUrl,
+            };
+        } catch (supabaseError) {
+            console.error('Supabase Storage fallback failed:', supabaseError);
+            // Proceed to local fallback (last resort)
+        }
+    }
+
+    // Fallback #2: Local storage (only works in development, NOT on Vercel!)
+    console.warn('⚠️ Using local storage fallback - THIS WILL NOT WORK ON VERCEL!');
     const localPath = path.join(LOCAL_UPLOAD_DIR, unitFolderName, folderName);
     await ensureLocalDir(localPath);
 
@@ -321,15 +342,35 @@ export async function uploadToDrive(
                 fileName: sanitizedFileName,
             };
         } catch (error) {
-            console.error('Google Drive upload failed unexpectedy (Quota/Permission?):', error);
-            // If drive upload fails for existing drive folder, fallback to local
-            // We use the Drive Folder ID as a container name in local storage
-            // This is messy but preserves the file
+            console.error('Google Drive upload failed unexpectedly (Quota/Permission?):', error);
+            // Proceed to Supabase fallback
         }
     }
 
-    // Fallback - save locally with Drive folder ID as path
-    console.log(`Fallback: Saving locally into ${folderId}`);
+    // Fallback #1: Supabase Storage (works on Vercel!)
+    if (folderId.startsWith('supabase_') || isSupabaseStorageConfigured()) {
+        try {
+            // Extract folder path from supabase_ prefixed folderId
+            const folderPath = folderId.startsWith('supabase_')
+                ? folderId.replace('supabase_', '')
+                : folderId;
+
+            console.log(`Uploading to Supabase Storage: ${fileName}`);
+            const supabaseResult = await uploadToSupabase(fileBuffer, fileName, mimeType, folderPath);
+
+            return {
+                fileId: supabaseResult.fileId,
+                fileUrl: supabaseResult.fileUrl,
+                fileName: supabaseResult.fileName,
+            };
+        } catch (supabaseError) {
+            console.error('Supabase Storage upload failed:', supabaseError);
+            // Proceed to local fallback (last resort)
+        }
+    }
+
+    // Fallback #2: Local storage (only works in development, NOT on Vercel!)
+    console.warn(`⚠️ Fallback: Saving locally into ${folderId} - THIS WILL NOT WORK ON VERCEL!`);
     const localDir = path.join(LOCAL_UPLOAD_DIR, folderId);
     await ensureLocalDir(localDir);
 
@@ -403,6 +444,17 @@ export async function deleteFromDrive(fileId: string): Promise<void> {
  * Hapus folder beserta isinya
  */
 export async function deleteDriveFolder(folderId: string): Promise<void> {
+    // Handle Supabase Storage folders
+    if (folderId.startsWith('supabase_')) {
+        try {
+            await deleteSupabaseFolder(folderId);
+        } catch (error) {
+            console.error('Error deleting Supabase folder:', error);
+        }
+        return;
+    }
+
+    // Handle local folders
     if (folderId.startsWith('local_')) {
         try {
             const folderPath = folderId.replace('local_', '');
@@ -414,6 +466,7 @@ export async function deleteDriveFolder(folderId: string): Promise<void> {
         return;
     }
 
+    // Handle Google Drive folders
     if (initGoogleDrive() && drive) {
         try {
             await drive.files.delete({ fileId: folderId });

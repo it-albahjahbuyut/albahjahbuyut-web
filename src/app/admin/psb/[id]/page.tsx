@@ -32,16 +32,40 @@ interface PSBDocument {
 interface PSBRegistration {
     id: string;
     registrationNumber: string;
+    // Data Santri
     namaLengkap: string;
+    nisn: string | null;
+    nik: string | null;
+    noKK: string | null;
+    jenisKelamin: string;
     tempatLahir: string;
     tanggalLahir: Date;
-    jenisKelamin: string;
-    alamatLengkap: string;
-    nisn: string | null;
     asalSekolah: string;
+    alamatSekolahAsal: string | null;
+    // Data Orang Tua
+    namaAyah: string | null;
+    namaIbu: string | null;
+    pekerjaanAyah: string | null;
+    pekerjaanIbu: string | null;
+    penghasilanAyah: string | null;
+    penghasilanIbu: string | null;
+    pendidikanAyah: string | null;
+    pendidikanIbu: string | null;
+    anakKe: string | null;
+    dariSaudara: string | null;
+    jumlahTanggungan: string | null;
+    alamatLengkap: string;
+    noWaIbu: string | null;
+    noWaAyah: string | null;
+    sumberInfo: string | null;
+    // Program Spesial
+    grade: string | null;
+    jenisSantri: string | null;
+    // Legacy
     namaOrangTua: string | null;
     noHpOrangTua: string | null;
     emailOrangTua: string | null;
+    // Status & Metadata
     status: PSBStatus;
     notes: string | null;
     driveFolderId: string | null;
@@ -160,6 +184,18 @@ export default async function AdminPSBDetailPage({ params }: PageProps) {
                                 </p>
                             </div>
                             <div>
+                                <p className="text-xs text-gray-500 uppercase tracking-wide">NISN</p>
+                                <p className="font-medium text-gray-900">{registration.nisn || '-'}</p>
+                            </div>
+                            <div>
+                                <p className="text-xs text-gray-500 uppercase tracking-wide">NIK</p>
+                                <p className="font-medium text-gray-900">{registration.nik || '-'}</p>
+                            </div>
+                            <div>
+                                <p className="text-xs text-gray-500 uppercase tracking-wide">No. KK</p>
+                                <p className="font-medium text-gray-900">{registration.noKK || '-'}</p>
+                            </div>
+                            <div>
                                 <p className="text-xs text-gray-500 uppercase tracking-wide">Tempat Lahir</p>
                                 <p className="font-medium text-gray-900">{registration.tempatLahir}</p>
                             </div>
@@ -174,16 +210,16 @@ export default async function AdminPSBDetailPage({ params }: PageProps) {
                                 </p>
                             </div>
                             <div>
-                                <p className="text-xs text-gray-500 uppercase tracking-wide">NISN</p>
-                                <p className="font-medium text-gray-900">{registration.nisn || '-'}</p>
-                            </div>
-                            <div>
                                 <p className="text-xs text-gray-500 uppercase tracking-wide">Asal Sekolah</p>
                                 <p className="font-medium text-gray-900">{registration.asalSekolah}</p>
                             </div>
                             <div className="sm:col-span-2">
-                                <p className="text-xs text-gray-500 uppercase tracking-wide">Alamat Lengkap</p>
-                                <p className="font-medium text-gray-900">{registration.alamatLengkap}</p>
+                                <p className="text-xs text-gray-500 uppercase tracking-wide">Alamat Sekolah Asal</p>
+                                <p className="font-medium text-gray-900">{registration.alamatSekolahAsal || '-'}</p>
+                            </div>
+                            <div>
+                                <p className="text-xs text-gray-500 uppercase tracking-wide">Sumber Informasi</p>
+                                <p className="font-medium text-gray-900">{registration.sumberInfo || '-'}</p>
                             </div>
                         </div>
                     </div>
@@ -196,23 +232,73 @@ export default async function AdminPSBDetailPage({ params }: PageProps) {
                         </h2>
 
                         <div className="grid sm:grid-cols-2 gap-4">
+                            {/* Data Ayah */}
                             <div>
-                                <p className="text-xs text-gray-500 uppercase tracking-wide">Nama Orang Tua/Wali</p>
-                                <p className="font-medium text-gray-900">{registration.namaOrangTua || '-'}</p>
+                                <p className="text-xs text-gray-500 uppercase tracking-wide">Nama Ayah</p>
+                                <p className="font-medium text-gray-900">{registration.namaAyah || '-'}</p>
                             </div>
                             <div>
-                                <p className="text-xs text-gray-500 uppercase tracking-wide">No. HP</p>
+                                <p className="text-xs text-gray-500 uppercase tracking-wide">Nama Ibu</p>
+                                <p className="font-medium text-gray-900">{registration.namaIbu || '-'}</p>
+                            </div>
+                            <div>
+                                <p className="text-xs text-gray-500 uppercase tracking-wide">Pekerjaan Ayah</p>
+                                <p className="font-medium text-gray-900">{registration.pekerjaanAyah || '-'}</p>
+                            </div>
+                            <div>
+                                <p className="text-xs text-gray-500 uppercase tracking-wide">Pekerjaan Ibu</p>
+                                <p className="font-medium text-gray-900">{registration.pekerjaanIbu || '-'}</p>
+                            </div>
+                            <div>
+                                <p className="text-xs text-gray-500 uppercase tracking-wide">Penghasilan Ayah</p>
+                                <p className="font-medium text-gray-900">{registration.penghasilanAyah || '-'}</p>
+                            </div>
+                            <div>
+                                <p className="text-xs text-gray-500 uppercase tracking-wide">Penghasilan Ibu</p>
+                                <p className="font-medium text-gray-900">{registration.penghasilanIbu || '-'}</p>
+                            </div>
+                            <div>
+                                <p className="text-xs text-gray-500 uppercase tracking-wide">Pendidikan Ayah</p>
+                                <p className="font-medium text-gray-900">{registration.pendidikanAyah || '-'}</p>
+                            </div>
+                            <div>
+                                <p className="text-xs text-gray-500 uppercase tracking-wide">Pendidikan Ibu</p>
+                                <p className="font-medium text-gray-900">{registration.pendidikanIbu || '-'}</p>
+                            </div>
+                            <div>
+                                <p className="text-xs text-gray-500 uppercase tracking-wide">Anak Ke</p>
+                                <p className="font-medium text-gray-900">{registration.anakKe || '-'}</p>
+                            </div>
+                            <div>
+                                <p className="text-xs text-gray-500 uppercase tracking-wide">Dari Bersaudara</p>
+                                <p className="font-medium text-gray-900">{registration.dariSaudara || '-'}</p>
+                            </div>
+                            <div>
+                                <p className="text-xs text-gray-500 uppercase tracking-wide">Jumlah Tanggungan</p>
+                                <p className="font-medium text-gray-900">{registration.jumlahTanggungan || '-'}</p>
+                            </div>
+                            <div>
+                                <p className="text-xs text-gray-500 uppercase tracking-wide">No. WA Ibu</p>
                                 <p className="font-medium text-gray-900">
-                                    {registration.noHpOrangTua ? (
-                                        <a href={`tel:${registration.noHpOrangTua}`} className="text-emerald-600 hover:underline">
-                                            {registration.noHpOrangTua}
+                                    {registration.noWaIbu ? (
+                                        <a href={`https://wa.me/${registration.noWaIbu.replace(/^0/, '62')}`} target="_blank" rel="noopener noreferrer" className="text-emerald-600 hover:underline">
+                                            {registration.noWaIbu}
                                         </a>
                                     ) : '-'}
                                 </p>
                             </div>
-
-                            <div className="sm:col-span-2">
-                                <p className="text-xs text-gray-500 uppercase tracking-wide">Email</p>
+                            <div>
+                                <p className="text-xs text-gray-500 uppercase tracking-wide">No. WA Ayah</p>
+                                <p className="font-medium text-gray-900">
+                                    {registration.noWaAyah ? (
+                                        <a href={`https://wa.me/${registration.noWaAyah.replace(/^0/, '62')}`} target="_blank" rel="noopener noreferrer" className="text-emerald-600 hover:underline">
+                                            {registration.noWaAyah}
+                                        </a>
+                                    ) : '-'}
+                                </p>
+                            </div>
+                            <div>
+                                <p className="text-xs text-gray-500 uppercase tracking-wide">Email Orang Tua</p>
                                 <p className="font-medium text-gray-900">
                                     {registration.emailOrangTua ? (
                                         <a href={`mailto:${registration.emailOrangTua}`} className="text-emerald-600 hover:underline">
@@ -220,6 +306,10 @@ export default async function AdminPSBDetailPage({ params }: PageProps) {
                                         </a>
                                     ) : '-'}
                                 </p>
+                            </div>
+                            <div className="sm:col-span-2">
+                                <p className="text-xs text-gray-500 uppercase tracking-wide">Alamat Rumah Orang Tua</p>
+                                <p className="font-medium text-gray-900">{registration.alamatLengkap}</p>
                             </div>
                         </div>
                     </div>
@@ -240,6 +330,22 @@ export default async function AdminPSBDetailPage({ params }: PageProps) {
                                 <p className="text-gray-500">/{registration.unit.slug}</p>
                             </div>
                         </div>
+
+                        {/* Info Tambahan Unit (Grade & Jenis Santri) */}
+                        <div className="grid grid-cols-2 gap-4 mt-4 pt-4 border-t">
+                            <div>
+                                <p className="text-xs text-gray-500 uppercase tracking-wide">Grade</p>
+                                <p className="font-medium text-gray-900">
+                                    {registration.grade ? `Grade ${registration.grade}` : '-'}
+                                </p>
+                            </div>
+                            <div>
+                                <p className="text-xs text-gray-500 uppercase tracking-wide">Jenis Santri</p>
+                                <p className="font-medium text-gray-900">
+                                    {registration.jenisSantri || '-'}
+                                </p>
+                            </div>
+                        </div>
                     </div>
 
                     {/* Dokumen */}
@@ -249,16 +355,28 @@ export default async function AdminPSBDetailPage({ params }: PageProps) {
                                 <FileText className="w-5 h-5 text-emerald-600" />
                                 Berkas Pendaftaran
                             </h2>
-                            {registration.driveFolderUrl && (
+                            {registration.driveFolderUrl && !registration.driveFolderUrl.startsWith('/') ? (
                                 <a
                                     href={registration.driveFolderUrl}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="inline-flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800"
+                                    className="inline-flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800 hover:underline"
                                 >
                                     <ExternalLink className="w-4 h-4" />
-                                    Buka di Google Drive
+                                    {registration.driveFolderUrl.includes('supabase')
+                                        ? 'Buka di Supabase Storage'
+                                        : 'Buka di Google Drive'}
                                 </a>
+                            ) : registration.driveFolderUrl?.startsWith('/') ? (
+                                <span className="inline-flex items-center gap-2 text-sm text-gray-500">
+                                    <FileText className="w-4 h-4" />
+                                    Disimpan Lokal
+                                </span>
+                            ) : (
+                                <span className="inline-flex items-center gap-2 text-sm text-amber-600">
+                                    <Clock className="w-4 h-4" />
+                                    Menunggu Upload...
+                                </span>
                             )}
                         </div>
 
@@ -277,14 +395,29 @@ export default async function AdminPSBDetailPage({ params }: PageProps) {
                                             <p className="text-sm text-gray-500">{doc.fileName}</p>
                                         </div>
                                     </div>
-                                    <a
-                                        href={doc.driveFileUrl}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="px-3 py-1.5 text-sm font-medium text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors"
-                                    >
-                                        Lihat
-                                    </a>
+                                    {doc.driveFileUrl && !doc.driveFileUrl.startsWith('/') ? (
+                                        <a
+                                            href={doc.driveFileUrl}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="px-3 py-1.5 text-sm font-medium text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors"
+                                        >
+                                            Lihat
+                                        </a>
+                                    ) : doc.driveFileUrl?.startsWith('/') ? (
+                                        <a
+                                            href={doc.driveFileUrl}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="px-3 py-1.5 text-sm font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+                                        >
+                                            Lihat (Lokal)
+                                        </a>
+                                    ) : (
+                                        <span className="px-3 py-1.5 text-sm text-gray-400">
+                                            Belum tersedia
+                                        </span>
+                                    )}
                                 </div>
                             ))}
                         </div>

@@ -130,7 +130,7 @@ const GRADE_OPTIONS = [
 // Opsi Jenis Santri
 const JENIS_SANTRI_OPTIONS = [
     { value: 'Umum', label: 'Santri Umum (Baru)' },
-    { value: 'Lanjutan', label: 'Santri Lanjutan (Pindahan)' },
+    { value: 'Lanjutan', label: 'Santri Lanjutan (Dari Al-Bahjah)' },
 ];
 
 // Field formulir standar sesuai FORMULIR PENERIMAAN SANTRI BARU TP. 2026/2027
@@ -319,6 +319,13 @@ export const STANDARD_FORM_FIELDS: FormField[] = [
         required: false,
     },
     {
+        name: 'emailOrangTua',
+        label: 'Email Orang Tua (Opsional)',
+        type: 'email',
+        placeholder: 'contoh@email.com',
+        required: false,
+    },
+    {
         name: 'sumberInfo',
         label: 'Tau Al Bahjah Buyut dari mana?',
         type: 'select',
@@ -368,15 +375,15 @@ export const SMP_DOCUMENTS: DocumentRequirement[] = [
     {
         type: 'KTP_ORTU',
         label: 'KTP Orang Tua',
-        description: 'Upload scan KTP Orang Tua (Ayah & Ibu)',
+        description: 'Upload scan KTP Orang Tua (Ayah & Ibu) - Opsional',
         acceptedFormats: ['.pdf', '.jpg', '.jpeg', '.png'],
         maxSizeMB: 5,
-        required: true,
+        required: false,
     },
     {
         type: 'IJAZAH_SD',
         label: 'Ijazah SD / Sederajat',
-        description: 'Upload scan ijazah SD atau Surat Keterangan Lulus (Bisa menyusul)',
+        description: 'Upload scan ijazah SD atau Surat Keterangan Lulus - Opsional (Bisa menyusul)',
         acceptedFormats: ['.pdf', '.jpg', '.jpeg', '.png'],
         maxSizeMB: 5,
         required: false,
@@ -420,15 +427,15 @@ export const SMA_DOCUMENTS: DocumentRequirement[] = [
     {
         type: 'KTP_ORTU',
         label: 'KTP Orang Tua',
-        description: 'Upload scan KTP Orang Tua (Ayah & Ibu)',
+        description: 'Upload scan KTP Orang Tua (Ayah & Ibu) - Opsional',
         acceptedFormats: ['.pdf', '.jpg', '.jpeg', '.png'],
         maxSizeMB: 5,
-        required: true,
+        required: false,
     },
     {
         type: 'IJAZAH_SMP',
         label: 'Ijazah SMP / Sederajat',
-        description: 'Upload scan ijazah SMP atau Surat Keterangan Lulus (Bisa menyusul)',
+        description: 'Upload scan ijazah SMP atau Surat Keterangan Lulus - Opsional (Bisa menyusul)',
         acceptedFormats: ['.pdf', '.jpg', '.jpeg', '.png'],
         maxSizeMB: 5,
         required: false,
@@ -472,18 +479,18 @@ export const PESANTREN_DOCUMENTS: DocumentRequirement[] = [
     {
         type: 'KTP_ORTU',
         label: 'KTP Orang Tua',
-        description: 'Upload scan KTP Orang Tua',
+        description: 'Upload scan KTP Orang Tua - Opsional',
         acceptedFormats: ['.pdf', '.jpg', '.jpeg', '.png'],
         maxSizeMB: 5,
-        required: true,
+        required: false,
     },
     {
         type: 'IJAZAH',
         label: 'Ijazah Terakhir',
-        description: 'Upload scan ijazah terakhir',
+        description: 'Upload scan ijazah terakhir - Opsional (Bisa menyusul)',
         acceptedFormats: ['.pdf', '.jpg', '.jpeg', '.png'],
         maxSizeMB: 5,
-        required: true,
+        required: false,
     },
     {
         type: 'BUKTI_PEMBAYARAN',
@@ -524,15 +531,15 @@ export const SD_DOCUMENTS: DocumentRequirement[] = [
     {
         type: 'KTP_ORTU',
         label: 'KTP Orang Tua',
-        description: 'Upload scan KTP Orang Tua (Ayah & Ibu)',
+        description: 'Upload scan KTP Orang Tua (Ayah & Ibu) - Opsional',
         acceptedFormats: ['.pdf', '.jpg', '.jpeg', '.png'],
         maxSizeMB: 5,
-        required: true,
+        required: false,
     },
     {
         type: 'IJAZAH_TK',
         label: 'Ijazah TK / PAUD (Jika Ada)',
-        description: 'Upload scan ijazah TK atau Surat Keterangan Lulus (Bisa menyusul)',
+        description: 'Upload scan ijazah TK atau Surat Keterangan Lulus - Opsional (Bisa menyusul)',
         acceptedFormats: ['.pdf', '.jpg', '.jpeg', '.png'],
         maxSizeMB: 5,
         required: false,

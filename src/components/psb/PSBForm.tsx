@@ -314,7 +314,11 @@ export default function PSBForm({
                 alamatLengkap: formData.alamatLengkap || '',
                 noWaIbu: formData.noWaIbu || '',
                 noWaAyah: formData.noWaAyah,
+                emailOrangTua: formData.emailOrangTua,
                 sumberInfo: formData.sumberInfo || '',
+                // Program Spesial
+                grade: formData.grade,
+                jenisSantri: formData.jenisSantri,
             };
 
 
