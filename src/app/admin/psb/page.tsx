@@ -52,6 +52,7 @@ interface PSBRegistrationWithRelations {
     createdAt: Date;
     unit: { name: string };
     documents: { id: string }[];
+    emailStatus: string | null;
 }
 
 interface StatItem {
@@ -289,10 +290,10 @@ export default async function AdminPSBPage({
                                             <td className="px-4 py-4">
                                                 {reg.emailStatus ? (
                                                     <span className={`inline-flex px-2 py-1 text-xs font-medium rounded ${reg.emailStatus === 'opened' ? 'bg-green-100 text-green-700' :
-                                                            reg.emailStatus === 'clicked' ? 'bg-purple-100 text-purple-700' :
-                                                                reg.emailStatus === 'delivered' ? 'bg-blue-100 text-blue-700' :
-                                                                    reg.emailStatus === 'bounced' ? 'bg-red-100 text-red-700' :
-                                                                        'bg-gray-100 text-gray-600'
+                                                        reg.emailStatus === 'clicked' ? 'bg-purple-100 text-purple-700' :
+                                                            reg.emailStatus === 'delivered' ? 'bg-blue-100 text-blue-700' :
+                                                                reg.emailStatus === 'bounced' ? 'bg-red-100 text-red-700' :
+                                                                    'bg-gray-100 text-gray-600'
                                                         }`}>
                                                         {reg.emailStatus === 'opened' ? 'Dibaca' :
                                                             reg.emailStatus === 'clicked' ? 'Diklik' :
