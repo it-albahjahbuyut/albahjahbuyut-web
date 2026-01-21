@@ -49,6 +49,11 @@ model Unit {
   facilities       String?  @db.Text // Fasilitas yang tersedia (JSON atau text)
   registrationLink String?  // Link pendaftaran
   image            String?  // Gambar utama unit
+  // Contact Information
+  address          String?  @db.Text // Alamat lengkap
+  email            String?  // Email kontak
+  phone            String?  // Nomor telepon
+  whatsapp         String?  // Nomor WhatsApp
   isActive         Boolean  @default(true)
   order            Int      @default(0) // Urutan tampilan
   createdAt        DateTime @default(now())

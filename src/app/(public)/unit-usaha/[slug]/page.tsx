@@ -90,7 +90,7 @@ export default async function BusinessUnitDetailPage({
     return (
         <main className="bg-slate-50 min-h-screen font-sans">
             {/* Hero Section - Standardized */}
-            <section className="relative min-h-[50vh] flex items-center justify-center bg-emerald-950 overflow-hidden px-4 pt-24 pb-20">
+            <section className="relative min-h-[50vh] flex items-end bg-emerald-950 overflow-hidden px-4 pt-24 pb-12">
                 {/* Background Image */}
                 <div className="absolute inset-0 z-0">
                     {unit.image ? (
@@ -109,45 +109,39 @@ export default async function BusinessUnitDetailPage({
                             }}
                         />
                     )}
-                    <div className="absolute inset-0 bg-gradient-to-b from-transparent to-emerald-950/90" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-emerald-950 via-emerald-950/40 to-transparent" />
+                    <div className="absolute inset-0 bg-emerald-950/30" />
                 </div>
 
-                <div className="relative z-10 container mx-auto px-4 text-center">
-                    <FadeIn delay={0.2}>
-                        <span className="inline-block px-3 py-1 mb-4 border border-gold-400 text-gold-400 text-xs font-bold tracking-widest uppercase">
-                            Unit Usaha
-                        </span>
-                    </FadeIn>
-                    <FadeIn delay={0.4}>
-                        <h1 className="text-5xl md:text-7xl font-bold text-white tracking-tighter mb-4">
-                            {unit.name}
-                        </h1>
-                    </FadeIn>
-                    <FadeIn delay={0.6}>
-                        {unit.address && (
-                            <p className="text-emerald-100/80 font-serif italic text-lg max-w-3xl mx-auto flex items-center justify-center gap-2">
-                                <MapPin className="w-5 h-5 text-gold-400 inline" />
-                                <span>{unit.address}</span>
-                            </p>
-                        )}
+                {/* Hero Content */}
+                <div className="relative z-10 container mx-auto px-4 lg:px-8">
+                    <FadeIn>
+                        <Link
+                            href="/unit-usaha"
+                            className="inline-flex items-center gap-2 text-white/90 hover:text-white transition-colors bg-white/10 hover:bg-white/20 backdrop-blur-md px-4 py-2 rounded-full text-sm font-medium border border-white/10 mb-8"
+                        >
+                            <ArrowLeft className="w-4 h-4" />
+                            Kembali
+                        </Link>
+                        <div className="max-w-4xl">
+                            <div className="flex flex-wrap gap-3 mb-6">
+                                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-gold-500 text-emerald-950 text-xs font-bold uppercase tracking-wider rounded-full">
+                                    Unit Usaha
+                                </span>
+                                {unit.address && (
+                                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/10 border border-white/20 text-white/90 text-xs font-medium rounded-full backdrop-blur-sm">
+                                        <MapPin className="w-3.5 h-3.5" />
+                                        {unit.address}
+                                    </span>
+                                )}
+                            </div>
+                            <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight tracking-tight">
+                                {unit.name}
+                            </h1>
+                        </div>
                     </FadeIn>
                 </div>
             </section>
-
-            {/* Navigation Bar */}
-            <div className="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-slate-200">
-                <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-                    <Link
-                        href="/unit-usaha"
-                        className="group inline-flex items-center gap-2 text-slate-500 hover:text-emerald-700 transition-colors"
-                    >
-                        <div className="p-2 rounded-full bg-slate-100 group-hover:bg-emerald-50 transition-colors">
-                            <ArrowLeft className="w-4 h-4" />
-                        </div>
-                        <span className="text-sm font-bold uppercase tracking-wider">Kembali</span>
-                    </Link>
-                </div>
-            </div>
 
             {/* Main Content - Editorial Design */}
             <section className="container mx-auto px-4 lg:px-8 py-20 max-w-7xl relative z-20">

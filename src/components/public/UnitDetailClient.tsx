@@ -300,7 +300,7 @@ export function UnitDetailClient({ unit, descriptionHtml, curriculumHtml, facili
                                             </Link>
 
                                             <a
-                                                href="https://wa.me/6289676539390"
+                                                href={`https://wa.me/${(unit.whatsapp || '6289676539390').replace(/[^0-9]/g, '')}`}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 className="block w-full bg-emerald-800/50 text-emerald-100 font-medium py-3 px-6 rounded-xl hover:bg-emerald-800 transition-colors text-sm"
@@ -319,24 +319,41 @@ export function UnitDetailClient({ unit, descriptionHtml, curriculumHtml, facili
                                             Informasi Kontak
                                         </h4>
                                         <ul className="space-y-6">
-                                            <li className="group">
-                                                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Alamat</p>
-                                                <p className="text-sm text-slate-600 leading-relaxed group-hover:text-emerald-800 transition-colors">
-                                                    Jl. Revolusi No.45, Buyut, Kec. Gunungjati, Kabupaten Cirebon
-                                                </p>
-                                            </li>
-                                            <li className="group">
-                                                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Email</p>
-                                                <p className="text-sm text-slate-600 group-hover:text-emerald-800 transition-colors">
-                                                    info@albahjahbuyut.com
-                                                </p>
-                                            </li>
-                                            <li className="group">
-                                                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Telepon</p>
-                                                <p className="text-sm text-slate-600 group-hover:text-emerald-800 transition-colors">
-                                                    0896 7653 9390
-                                                </p>
-                                            </li>
+                                            {unit.address && (
+                                                <li className="group">
+                                                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Alamat</p>
+                                                    <p className="text-sm text-slate-600 leading-relaxed group-hover:text-emerald-800 transition-colors">
+                                                        {unit.address}
+                                                    </p>
+                                                </li>
+                                            )}
+                                            {unit.email && (
+                                                <li className="group">
+                                                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Email</p>
+                                                    <a
+                                                        href={`mailto:${unit.email}`}
+                                                        className="text-sm text-slate-600 group-hover:text-emerald-800 transition-colors hover:underline"
+                                                    >
+                                                        {unit.email}
+                                                    </a>
+                                                </li>
+                                            )}
+                                            {unit.phone && (
+                                                <li className="group">
+                                                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Telepon</p>
+                                                    <a
+                                                        href={`tel:${unit.phone}`}
+                                                        className="text-sm text-slate-600 group-hover:text-emerald-800 transition-colors hover:underline"
+                                                    >
+                                                        {unit.phone}
+                                                    </a>
+                                                </li>
+                                            )}
+                                            {!unit.address && !unit.email && !unit.phone && (
+                                                <li className="text-sm text-slate-400 italic">
+                                                    Belum ada informasi kontak
+                                                </li>
+                                            )}
                                         </ul>
                                     </div>
                                 </FadeIn>

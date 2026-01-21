@@ -72,6 +72,24 @@ export const unitSchema = z.object({
         .string()
         .max(MAX_URL_LENGTH, "URL gambar terlalu panjang")
         .optional(),
+    // Contact Information
+    address: z
+        .string()
+        .max(500, "Alamat terlalu panjang")
+        .optional(),
+    email: z
+        .string()
+        .email("Email tidak valid")
+        .optional()
+        .or(z.literal("")),
+    phone: z
+        .string()
+        .max(20, "Nomor telepon terlalu panjang")
+        .optional(),
+    whatsapp: z
+        .string()
+        .max(20, "Nomor WhatsApp terlalu panjang")
+        .optional(),
     isActive: z.boolean().default(true),
     order: z.number().int().min(0).max(1000).default(0),
 });

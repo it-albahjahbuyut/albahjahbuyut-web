@@ -43,6 +43,10 @@ export function UnitEditForm({ unit }: UnitEditFormProps) {
             facilities: unit.facilities || "",
             registrationLink: unit.registrationLink || "",
             image: unit.image || "",
+            address: (unit as any).address || "",
+            email: (unit as any).email || "",
+            phone: (unit as any).phone || "",
+            whatsapp: (unit as any).whatsapp || "",
             isActive: unit.isActive,
             order: unit.order,
         },
@@ -161,6 +165,86 @@ export function UnitEditForm({ unit }: UnitEditFormProps) {
                         </FormItem>
                     )}
                 />
+
+                <div className="space-y-4 border-t pt-4">
+                    <h3 className="text-lg font-medium">Informasi Kontak</h3>
+                    <div className="grid gap-4 md:grid-cols-2">
+                        <FormField
+                            control={form.control}
+                            name="address"
+                            render={({ field }) => (
+                                <FormItem className="md:col-span-2">
+                                    <FormLabel>Alamat Lengkap</FormLabel>
+                                    <FormControl>
+                                        <Textarea
+                                            {...field}
+                                            placeholder="Jl. Raya Buyut..."
+                                            rows={2}
+                                            value={field.value || ""}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="email"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Email</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            {...field}
+                                            type="email"
+                                            placeholder="info@sekolah.com"
+                                            value={field.value || ""}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="phone"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Nomor Telepon</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            {...field}
+                                            placeholder="0231..."
+                                            value={field.value || ""}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="whatsapp"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Nomor WhatsApp</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            {...field}
+                                            placeholder="628..."
+                                            value={field.value || ""}
+                                        />
+                                    </FormControl>
+                                    <FormDescription>Gunakan format internasional (contoh: 628123456789)</FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+                </div>
 
                 <FormField
                     control={form.control}
