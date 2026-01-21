@@ -314,6 +314,10 @@ model PSBRegistration {
   driveFolderId     String?   // ID folder di Google Drive
   driveFolderUrl    String?   // URL folder di Google Drive
   
+  // Email Tracking
+  lastEmailId       String?   // ID email terakhir dari Resend
+  emailStatus       String?   // sent, delivered, opened, clicked, bounced
+  
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
   

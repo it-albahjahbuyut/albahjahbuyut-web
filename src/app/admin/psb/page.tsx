@@ -232,6 +232,9 @@ export default async function AdminPSBPage({
                                         Berkas
                                     </th>
                                     <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">
+                                        Email
+                                    </th>
+                                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">
                                         Status
                                     </th>
                                     <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">
@@ -282,6 +285,24 @@ export default async function AdminPSBPage({
                                                         </a>
                                                     )}
                                                 </div>
+                                            </td>
+                                            <td className="px-4 py-4">
+                                                {reg.emailStatus ? (
+                                                    <span className={`inline-flex px-2 py-1 text-xs font-medium rounded ${reg.emailStatus === 'opened' ? 'bg-green-100 text-green-700' :
+                                                            reg.emailStatus === 'clicked' ? 'bg-purple-100 text-purple-700' :
+                                                                reg.emailStatus === 'delivered' ? 'bg-blue-100 text-blue-700' :
+                                                                    reg.emailStatus === 'bounced' ? 'bg-red-100 text-red-700' :
+                                                                        'bg-gray-100 text-gray-600'
+                                                        }`}>
+                                                        {reg.emailStatus === 'opened' ? 'Dibaca' :
+                                                            reg.emailStatus === 'clicked' ? 'Diklik' :
+                                                                reg.emailStatus === 'delivered' ? 'Terkirim' :
+                                                                    reg.emailStatus === 'bounced' ? 'Gagal' :
+                                                                        'Terikirim'}
+                                                    </span>
+                                                ) : (
+                                                    <span className="text-gray-400 text-xs">-</span>
+                                                )}
                                             </td>
                                             <td className="px-4 py-4">
                                                 <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-full border ${statusInfo.color}`}>

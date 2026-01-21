@@ -361,21 +361,33 @@ export async function updatePSBStatus(
             const { sendStatusEmail } = await import('@/lib/email');
 
             // Send email notification (non-blocking)
-            sendStatusEmail(registration.emailOrangTua, {
-                namaLengkap: registration.namaLengkap,
-                registrationNumber: registration.registrationNumber,
-                unitName: registration.unit.name,
-                status: status as 'VERIFIED' | 'ACCEPTED' | 'REJECTED',
-                notes: notes,
-            }).then((result) => {
-                if (result.success) {
-                    console.log(`[PSB] Email sent for ${registration.registrationNumber}`);
+            // Send email notification (await to ensure execution in serverless environment)
+            try {
+                const result = await sendStatusEmail(registration.emailOrangTua, {
+                    namaLengkap: registration.namaLengkap,
+                    registrationNumber: registration.registrationNumber,
+                    unitName: registration.unit.name,
+                    status: status as 'VERIFIED' | 'ACCEPTED' | 'REJECTED',
+                    notes: notes,
+                });
+
+                if (result.success && result.id) {
+                    console.log(`[PSB] Email sent for ${registration.registrationNumber}, ID: ${result.id}`);
+
+                    // Update email tracking info
+                    await db.pSBRegistration.update({
+                        where: { id: registrationId },
+                        data: {
+                            lastEmailId: result.id,
+                            emailStatus: 'sent'
+                        }
+                    });
                 } else if (result.error) {
                     console.error(`[PSB] Email failed for ${registration.registrationNumber}:`, result.error);
                 }
-            }).catch((err) => {
+            } catch (err) {
                 console.error('[PSB] Email send error:', err);
-            });
+            }
         }
 
         // Update status di spreadsheet juga (non-blocking)
@@ -498,14 +510,27 @@ export async function bulkUpdatePSBStatus(
 
             for (const reg of registrations) {
                 if (reg.emailOrangTua) {
-                    sendStatusEmail(reg.emailOrangTua, {
-                        namaLengkap: reg.namaLengkap,
-                        registrationNumber: reg.registrationNumber,
-                        unitName: reg.unit.name,
-                        status: status as 'VERIFIED' | 'ACCEPTED' | 'REJECTED',
-                    }).catch((err) => {
+                    try {
+                        const result = await sendStatusEmail(reg.emailOrangTua, {
+                            namaLengkap: reg.namaLengkap,
+                            registrationNumber: reg.registrationNumber,
+                            unitName: reg.unit.name,
+                            status: status as 'VERIFIED' | 'ACCEPTED' | 'REJECTED',
+                        });
+
+                        if (result.success && result.id) {
+                            // Update email tracking info
+                            await db.pSBRegistration.update({
+                                where: { id: reg.id },
+                                data: {
+                                    lastEmailId: result.id,
+                                    emailStatus: 'sent'
+                                }
+                            });
+                        }
+                    } catch (err) {
                         console.error(`[Bulk] Email failed for ${reg.registrationNumber}:`, err);
-                    });
+                    }
                 }
             }
         }

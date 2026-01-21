@@ -291,41 +291,51 @@ function getStatusEmailContent(data: StatusEmailData): { subject: string; html: 
 export async function sendStatusEmail(
     toEmail: string | null | undefined,
     data: StatusEmailData
-): Promise<{ success: boolean; error?: string }> {
-    // Skip if no email provided
+): Promise<{ success: boolean; error?: string; id?: string }> {
+    // Check if email is provided
     if (!toEmail) {
-        console.log(`[Email] Skipped: No email address for ${data.registrationNumber}`);
-        return { success: true }; // Not an error, just skipped
+        console.warn(`[Email] Skipped: No email address for registration ${data.registrationNumber}`);
+        return { success: false, error: 'Email orang tua tidak tersedia in database' };
     }
 
-    // Skip if Resend not configured or improperly initialized
-    if (!isEmailConfigured() || !resend) {
-        console.log(`[Email] Skipped: Resend API key not configured`);
-        return { success: true }; // Not an error, just skipped
+    // Check if Resend is configured
+    if (!process.env.RESEND_API_KEY) {
+        console.error(`[Email] Failed: RESEND_API_KEY is missing in environment variables`);
+        return { success: false, error: 'Server configuration error: RESEND_API_KEY missing' };
     }
+
+    // Re-initialize Resend here to ensure we pick up the latest env var (sometimes issues with file-level consts in serverless)
+    const resendClient = new Resend(process.env.RESEND_API_KEY);
 
     try {
         const { subject, html } = getStatusEmailContent(data);
 
-        const { data: result, error } = await resend.emails.send({
-            from: EMAIL_FROM,
+        console.log(`[Email] Attempting to send to ${toEmail} for ${data.registrationNumber}...`);
+
+        const { data: result, error } = await resendClient.emails.send({
+            from: process.env.EMAIL_FROM || 'PSB Al-Bahjah Buyut <psb@albahjahbuyut.com>',
             to: toEmail,
             subject,
             html,
         });
 
         if (error) {
-            console.error('[Email] Resend error:', error);
-            return { success: false, error: error.message };
+            console.error('[Email] Resend API error:', error);
+            return { success: false, error: `Resend Error: ${error.message}` };
         }
 
-        console.log(`[Email] Sent to ${toEmail} for ${data.registrationNumber}, ID: ${result?.id}`);
-        return { success: true };
+        if (!result?.id) {
+            console.error('[Email] Resend succeeded but no ID returned');
+            return { success: false, error: 'No Email ID returned from Resend' };
+        }
+
+        console.log(`[Email] Successfully sent to ${toEmail}. ID: ${result.id}`);
+        return { success: true, id: result.id };
     } catch (error) {
-        console.error('[Email] Failed to send:', error);
+        console.error('[Email] Unexpected error:', error);
         return {
             success: false,
-            error: error instanceof Error ? error.message : 'Unknown error',
+            error: error instanceof Error ? error.message : 'Unknown error during email sending',
         };
     }
 }
