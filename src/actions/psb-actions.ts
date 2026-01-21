@@ -380,7 +380,7 @@ export async function updatePSBStatus(
 
         // Update status di spreadsheet juga (non-blocking)
         try {
-            await updateSpreadsheetStatus(registration.registrationNumber, status);
+            await updateSpreadsheetStatus(registration.registrationNumber, registration.unit.name, status);
         } catch (sheetError) {
             console.error('Failed to update spreadsheet status (non-blocking):', sheetError);
         }
@@ -512,7 +512,7 @@ export async function bulkUpdatePSBStatus(
 
         // Update spreadsheet in background
         for (const reg of registrations) {
-            updateSpreadsheetStatus(reg.registrationNumber, status).catch((err) => {
+            updateSpreadsheetStatus(reg.registrationNumber, reg.unit.name, status).catch((err) => {
                 console.error(`[Bulk] Spreadsheet update failed for ${reg.registrationNumber}:`, err);
             });
         }

@@ -310,6 +310,7 @@ export async function appendToSpreadsheet(data: PSBSpreadsheetData): Promise<{ s
  */
 export async function updateSpreadsheetStatus(
     registrationNumber: string,
+    unitName: string,
     newStatus: string
 ): Promise<{ success: boolean; message: string }> {
     if (!initGoogleSheets()) {
@@ -320,17 +321,20 @@ export async function updateSpreadsheetStatus(
     }
 
     try {
-        // Get all data to find the row
+        // Tentukan nama sheet berdasarkan Unit
+        const sheetName = getSheetNameFromUnit(unitName);
+
+        // Get all data to find the row (Only need Column A for registration numbers)
         const response = await sheets!.spreadsheets.values.get({
             spreadsheetId: GOOGLE_SPREADSHEET_ID,
-            range: 'PSB!A:O',
+            range: `'${sheetName}'!A:A`,
         });
 
         const rows = response.data.values;
         if (!rows) {
             return {
                 success: false,
-                message: 'No data found in spreadsheet'
+                message: `No data found in sheet ${sheetName}`
             };
         }
 
@@ -346,21 +350,22 @@ export async function updateSpreadsheetStatus(
         if (rowIndex === -1) {
             return {
                 success: false,
-                message: 'Registration not found in spreadsheet'
+                message: `Registration ${registrationNumber} not found in sheet ${sheetName}`
             };
         }
 
-        // Update the status column (column N = index 14)
+        // Update the status column (Column AD is index 29)
+        // A=0, ..., Z=25, AA=26, AB=27, AC=28, AD=29
         await sheets!.spreadsheets.values.update({
             spreadsheetId: GOOGLE_SPREADSHEET_ID,
-            range: `PSB!N${rowIndex}`,
+            range: `'${sheetName}'!AD${rowIndex}`,
             valueInputOption: 'RAW',
             requestBody: {
                 values: [[newStatus]]
             }
         });
 
-        console.log(`Registration ${registrationNumber} status updated to ${newStatus} in spreadsheet`);
+        console.log(`[Spreadsheet] Registration ${registrationNumber} status updated to ${newStatus} in sheet ${sheetName}`);
 
         return {
             success: true,

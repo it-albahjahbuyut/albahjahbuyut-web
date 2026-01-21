@@ -1,7 +1,8 @@
 import { Resend } from 'resend';
+import { getAppUrl } from '@/lib/env';
 
 // Initialize Resend with API key
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
 // Email sender configuration
 const EMAIL_FROM = process.env.EMAIL_FROM || 'PSB Al-Bahjah Buyut <psb@albahjahbuyut.com>';
@@ -10,6 +11,8 @@ const EMAIL_FROM = process.env.EMAIL_FROM || 'PSB Al-Bahjah Buyut <psb@albahjahb
 export function isEmailConfigured(): boolean {
     return !!process.env.RESEND_API_KEY;
 }
+
+// ... (keep interface and getStatusEmailContent as is, we are replacing the top block and the function below)
 
 // Email templates for different statuses
 interface StatusEmailData {
@@ -23,33 +26,62 @@ interface StatusEmailData {
 function getStatusEmailContent(data: StatusEmailData): { subject: string; html: string } {
     const { namaLengkap, registrationNumber, unitName, status, notes } = data;
 
+    // Brand Colors
+    const BRAND_COLOR = '#059669'; // Emerald 600
+    const ACCENT_COLOR = '#10B981'; // Emerald 500
+    const BASE_URL = getAppUrl();
+
     const statusInfo = {
         VERIFIED: {
             title: 'Berkas Terverifikasi',
-            emoji: '✓',
-            bgColor: '#EFF6FF',
-            borderColor: '#3B82F6',
-            textColor: '#1E40AF',
-            message: `Berkas pendaftaran atas nama <strong>${namaLengkap}</strong> di ${unitName} telah kami verifikasi dan dinyatakan <strong>lengkap</strong>.`,
-            nextStep: 'Mohon menunggu pengumuman selanjutnya mengenai hasil seleksi penerimaan santri baru.',
+            params: {
+                icon: 'https://img.icons8.com/cloud/100/40C057/checked-2.png', // Placeholder or use emoji if images blocked
+                bgColor: '#F0FDF4', // Emerald 50
+                borderColor: '#BBF7D0', // Emerald 200
+                textColor: '#166534', // Emerald 800
+            },
+            message: `
+                <p style="margin: 0 0 16px 0;">Alhamdulillah, kami informasikan bahwa berkas pendaftaran calon santri atas nama <strong>${namaLengkap}</strong> telah diperiksa oleh panitia dan dinyatakan <strong>LENGKAP (TERVERIFIKASI)</strong>.</p>
+                <p style="margin: 0;">Data pendaftaran Anda kini telah masuk dalam database seleksi kami.</p>
+            `,
+            nextStep: {
+                title: 'Langkah Selanjutnya',
+                text: 'Mohon menunggu informasi jadwal tes seleksi atau pengumuman selanjutnya yang akan kami kirimkan melalui email atau WhatsApp. Pastikan nomor kontak Anda selalu aktif.'
+            }
         },
         ACCEPTED: {
-            title: 'Diterima',
-            emoji: '🎉',
-            bgColor: '#ECFDF5',
-            borderColor: '#10B981',
-            textColor: '#065F46',
-            message: `Alhamdulillah, dengan ini kami sampaikan bahwa <strong>${namaLengkap}</strong> telah <strong>diterima</strong> sebagai santri baru di ${unitName}.`,
-            nextStep: 'Silakan melakukan daftar ulang sesuai jadwal yang akan kami informasikan. Jazakumullahu khairan atas kepercayaannya.',
+            title: 'Selamat! Anda Diterima',
+            params: {
+                icon: 'https://img.icons8.com/cloud/100/40C057/trophy.png',
+                bgColor: '#ECFDF5',
+                borderColor: '#34D399',
+                textColor: '#065F46',
+            },
+            message: `
+                <p style="margin: 0 0 16px 0;"><strong>Bismillah, Masya Allah Tabarakallah.</strong></p>
+                <p style="margin: 0;">Berdasarkan hasil seleksi yang telah dilakukan, dengan rasa syukur dan bangga kami tetapkan bahwa calon santri atas nama <strong>${namaLengkap}</strong> dinyatakan <strong>DITERIMA</strong> di ${unitName}.</p>
+            `,
+            nextStep: {
+                title: 'Konfirmasi Kelulusan',
+                text: 'Silakan segera melakukan <strong>Daftar Ulang</strong> sesuai dengan instruksi teknis yang terlampir (atau akan diinformasikan terpisah). Keterlambatan daftar ulang dapat mempengaruhi status penerimaan.'
+            }
         },
         REJECTED: {
-            title: 'Belum Diterima',
-            emoji: '',
-            bgColor: '#FEF2F2',
-            borderColor: '#EF4444',
-            textColor: '#991B1B',
-            message: `Dengan berat hati kami sampaikan bahwa pendaftaran atas nama <strong>${namaLengkap}</strong> di ${unitName} <strong>belum dapat kami terima</strong> pada periode ini.`,
-            nextStep: 'Semoga Allah SWT senantiasa memberikan jalan terbaik. Terima kasih atas kepercayaan Anda kepada Al-Bahjah Buyut.',
+            title: 'Hasil Seleksi',
+            params: {
+                icon: 'https://img.icons8.com/cloud/100/FA5252/cancel.png',
+                bgColor: '#FEF2F2', // Red 50
+                borderColor: '#FECACA', // Red 200
+                textColor: '#991B1B', // Red 800
+            },
+            message: `
+                <p style="margin: 0 0 16px 0;">Terima kasih atas kepercayaan Ayah/Bunda mendaftarkan ananda di ${unitName}.</p>
+                <p style="margin: 0;">Berdasarkan hasil seleksi yang ketat dan kuota yang terbatas, mohon maaf kami sampaikan bahwa ananda <strong>${namaLengkap}</strong> <strong>BELUM DAPAT DITERIMA</strong> pada periode tahun ajaran ini.</p>
+            `,
+            nextStep: {
+                title: 'Jangan Berkecil Hati',
+                text: 'Keputusan ini tidak mengurangi potensi ananda. Semoga Allah SWT senantiasa memberikan jalan terbaik dan kesuksesan di tempat pendidikan yang lain. Aamiin.'
+            }
         },
     };
 
@@ -61,103 +93,178 @@ function getStatusEmailContent(data: StatusEmailData): { subject: string; html: 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pemberitahuan PSB Al-Bahjah Buyut</title>
+    <title>${info.title}</title>
+    <!-- Import Font: Plus Jakarta Sans for a modern, distinct look -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Reset & Basics */
+        body { margin: 0; padding: 0; background-color: #f1f5f9; font-family: 'Plus Jakarta Sans', Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+        table { border-collapse: separate; border-spacing: 0; }
+        img { border: 0; outline: none; text-decoration: none; }
+        a { text-decoration: none; color: ${BRAND_COLOR}; font-weight: 600; }
+        
+        /* Utility */
+        .text-center { text-align: center; }
+        .font-bold { font-weight: 700; }
+        .text-sm { font-size: 14px; }
+        .text-xs { font-size: 12px; }
+        .text-muted { color: #64748b; }
+        .text-dark { color: #1e293b; }
+        
+        /* Mobile adjustment */
+        @media only screen and (max-width: 600px) {
+            .container { width: 100% !important; padding: 0 !important; }
+            .content-padding { padding: 24px 20px !important; }
+            .mobile-stack { display: block !important; width: 100% !important; }
+        }
+    </style>
 </head>
-<body style="margin: 0; padding: 0; background-color: #f8fafc;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="padding: 32px 16px;">
+<body style="margin: 0; padding: 0; background-color: #f1f5f9;">
+    
+    <!-- Main Wrapper -->
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #f1f5f9; padding: 40px 0;">
         <tr>
             <td align="center">
-                <!-- Main Container -->
-                <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 520px; background-color: #ffffff; border-radius: 8px; border: 1px solid #e2e8f0;">
+                
+                <!-- Email Container -->
+                <table class="container" width="600" cellpadding="0" cellspacing="0" border="0" style="background-color: #ffffff; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); overflow: hidden; max-width: 600px; width: 100%;">
                     
-                    <!-- Logo Header -->
+                    <!-- Decorative Top Bar -->
                     <tr>
-                        <td style="padding: 32px 32px 24px 32px; text-align: center; border-bottom: 1px solid #e2e8f0;">
-                            <h1 style="margin: 0; font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 20px; font-weight: 700; color: #0f172a; letter-spacing: -0.3px;">
+                        <td height="6" style="background: linear-gradient(90deg, ${BRAND_COLOR} 0%, ${ACCENT_COLOR} 100%);"></td>
+                    </tr>
+
+                    <!-- Header Section -->
+                    <tr>
+                        <td class="content-padding" style="padding: 40px 48px 20px 48px; text-align: center;">
+                            <!-- Logo -->
+                            <img src="https://albahjahbuyut.com/favicon.png" alt="Logo Al-Bahjah" width="64" height="64" style="margin-bottom: 16px; width: 64px; height: 64px; object-fit: contain;">
+                            
+                            <!-- Hospital Name -->
+                            <h1 style="margin: 0 0 8px 0; font-family: 'Plus Jakarta Sans', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 800; color: #0f172a; letter-spacing: -0.5px;">
                                 Al-Bahjah Buyut
                             </h1>
-                            <p style="margin: 4px 0 0 0; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; color: #64748b;">
-                                Penerimaan Santri Baru 2026/2027
+                            <p style="margin: 0; font-family: 'Plus Jakarta Sans', Helvetica, Arial, sans-serif; font-size: 14px; color: #64748b; font-weight: 500; text-transform: uppercase; letter-spacing: 1px;">
+                                Penerimaan Santri Baru
                             </p>
                         </td>
                     </tr>
-                    
-                    <!-- Content -->
+
+                    <!-- Status Hero Section -->
                     <tr>
-                        <td style="padding: 32px;">
-                            <!-- Status Box -->
-                            <div style="background-color: ${info.bgColor}; border-left: 3px solid ${info.borderColor}; padding: 16px 20px; margin-bottom: 24px;">
-                                <p style="margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-weight: 600; color: ${info.textColor};">
-                                    ${info.emoji ? info.emoji + ' ' : ''}Status: ${info.title}
-                                </p>
-                            </div>
-                            
-                            <!-- Greeting -->
-                            <p style="margin: 0 0 16px 0; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; color: #334155; line-height: 1.6;">
-                                Assalamu'alaikum Warahmatullahi Wabarakatuh,
-                            </p>
-                            
-                            <!-- Message -->
-                            <p style="margin: 0 0 20px 0; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; color: #334155; line-height: 1.7;">
-                                ${info.message}
-                            </p>
-                            
-                            <!-- Registration Number -->
-                            <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f8fafc; border-radius: 6px; margin-bottom: 20px;">
+                        <td style="padding: 0 48px;">
+                            <table width="100%" cellpadding="0" cellspacing="0" style="background-color: ${info.params.bgColor}; border: 1px solid ${info.params.borderColor}; border-radius: 12px;">
                                 <tr>
-                                    <td style="padding: 16px;">
-                                        <p style="margin: 0 0 4px 0; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 11px; font-weight: 500; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">
-                                            No. Pendaftaran
-                                        </p>
-                                        <p style="margin: 0; font-family: 'SF Mono', 'Roboto Mono', monospace; font-size: 16px; font-weight: 600; color: #0f172a; letter-spacing: 0.5px;">
-                                            ${registrationNumber}
+                                    <td style="padding: 24px; text-align: center;">
+                                        <p style="margin: 0; font-family: 'Plus Jakarta Sans', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 700; color: ${info.params.textColor};">
+                                            ${info.title}
                                         </p>
                                     </td>
                                 </tr>
                             </table>
-                            
-                            ${notes ? `
-                            <!-- Notes -->
-                            <div style="background-color: #fffbeb; border: 1px solid #fcd34d; border-radius: 6px; padding: 14px 16px; margin-bottom: 20px;">
-                                <p style="margin: 0 0 4px 0; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 11px; font-weight: 600; color: #92400e; text-transform: uppercase; letter-spacing: 0.5px;">
-                                    Catatan
-                                </p>
-                                <p style="margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; color: #78350f; line-height: 1.5;">
-                                    ${notes}
-                                </p>
-                            </div>
-                            ` : ''}
-                            
-                            <!-- Next Step -->
-                            <p style="margin: 0 0 24px 0; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; color: #334155; line-height: 1.7;">
-                                ${info.nextStep}
-                            </p>
-                            
-                            <!-- Closing -->
-                            <p style="margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; color: #334155; line-height: 1.6;">
-                                Wassalamu'alaikum Warahmatullahi Wabarakatuh,
-                            </p>
-                            <p style="margin: 8px 0 0 0; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-weight: 600; color: #0f172a;">
-                                Panitia PSB Al-Bahjah Buyut
-                            </p>
                         </td>
                     </tr>
-                    
+
+                    <!-- Main Content -->
+                    <tr>
+                        <td class="content-padding" style="padding: 32px 48px;">
+                            
+                            <!-- Greeting -->
+                            <p style="margin: 0 0 24px 0; font-family: 'Plus Jakarta Sans', Helvetica, Arial, sans-serif; font-size: 16px; color: #334155; line-height: 1.6;">
+                                Assalamu'alaikum Warahmatullahi Wabarakatuh,
+                            </p>
+
+                            <!-- Custom Message -->
+                            <div style="font-family: 'Plus Jakarta Sans', Helvetica, Arial, sans-serif; font-size: 16px; color: #334155; line-height: 1.6; margin-bottom: 32px;">
+                                ${info.message}
+                            </div>
+
+                            <!-- Detail Card -->
+                            <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 32px;">
+                                <tr>
+                                    <td style="padding: 24px;">
+                                        <table width="100%" cellpadding="0" cellspacing="0">
+                                            <tr>
+                                                <td style="padding-bottom: 8px;">
+                                                    <p style="margin: 0; font-family: 'Plus Jakarta Sans', Helvetica, Arial, sans-serif; font-size: 12px; font-weight: 600; text-transform: uppercase; color: #64748b; letter-spacing: 0.5px;">No. Pendaftaran</p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding-bottom: 20px; border-bottom: 1px dashed #cbd5e1;">
+                                                    <p style="margin: 0; font-family: 'SF Mono', Consolas, monospace; font-size: 20px; font-weight: 700; color: #0f172a; letter-spacing: 1px;">
+                                                        ${registrationNumber}
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding-top: 20px;">
+                                                    <p style="margin: 0; font-family: 'Plus Jakarta Sans', Helvetica, Arial, sans-serif; font-size: 12px; font-weight: 600; text-transform: uppercase; color: #64748b; letter-spacing: 0.5px;">Unit Pendidikan</p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <p style="margin: 4px 0 0 0; font-family: 'Plus Jakarta Sans', Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 600; color: #0f172a;">
+                                                        ${unitName}
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            ${notes ? `
+                            <!-- Admin Notes -->
+                            <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #fffbeb; border: 1px solid #fcd34d; border-radius: 12px; margin-bottom: 32px;">
+                                <tr>
+                                    <td style="padding: 20px;">
+                                        <p style="margin: 0 0 8px 0; font-family: 'Plus Jakarta Sans', Helvetica, Arial, sans-serif; font-size: 13px; font-weight: 700; color: #92400e; text-transform: uppercase; display: flex; align-items: center;">
+                                            ⚠ Catatan Tambahan
+                                        </p>
+                                        <p style="margin: 0; font-family: 'Plus Jakarta Sans', Helvetica, Arial, sans-serif; font-size: 15px; color: #78350f; line-height: 1.5;">
+                                            ${notes}
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                            ` : ''}
+
+                            <!-- Next Step Section -->
+                            <div style="border-left: 4px solid ${BRAND_COLOR}; padding-left: 20px; margin-bottom: 40px;">
+                                <h3 style="margin: 0 0 8px 0; font-family: 'Plus Jakarta Sans', Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 700; color: #0f172a;">
+                                    ${info.nextStep.title}
+                                </h3>
+                                <p style="margin: 0; font-family: 'Plus Jakarta Sans', Helvetica, Arial, sans-serif; font-size: 15px; color: #475569; line-height: 1.6;">
+                                    ${info.nextStep.text}
+                                </p>
+                            </div>
+
+                            <!-- Sign off -->
+                            <p style="margin: 0; font-family: 'Plus Jakarta Sans', Helvetica, Arial, sans-serif; font-size: 16px; color: #334155; line-height: 1.6;">
+                                Wassalamu'alaikum Warahmatullahi Wabarakatuh,
+                            </p>
+                            <p style="margin: 8px 0 0 0; font-family: 'Plus Jakarta Sans', Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 700; color: #0f172a;">
+                                Panitia PSB Al-Bahjah Buyut
+                            </p>
+
+                        </td>
+                    </tr>
+
                     <!-- Footer -->
                     <tr>
-                        <td style="padding: 20px 32px; border-top: 1px solid #e2e8f0; text-align: center;">
-                            <p style="margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 12px; color: #94a3b8;">
-                                Email ini dikirim otomatis. Untuk pertanyaan, hubungi panitia PSB.
+                        <td style="padding: 32px; background-color: #f8fafc; border-top: 1px solid #e2e8f0; text-align: center;">
+                            <p style="margin: 0 0 12px 0; font-size: 13px; color: #64748b; font-family: 'Plus Jakarta Sans', Helvetica, Arial, sans-serif;">
+                                Butuh bantuan? Hubungi kami melalui <a href="https://wa.me/628123456789" style="color: ${BRAND_COLOR}; text-decoration: underline; font-weight: 600;">WhatsApp</a> atau <a href="mailto:psb@albahjahbuyut.com" style="color: ${BRAND_COLOR}; text-decoration: underline; font-weight: 600;">Email</a>
+                            </p>
+                            <p style="margin: 0; font-family: 'Plus Jakarta Sans', Helvetica, Arial, sans-serif; font-size: 12px; color: #94a3b8;">
+                                © 2026 Al-Bahjah Buyut. All rights reserved.<br>
+                                Jl. Revolusi No.45 Desa Buyut Kec. Gunungjati Kab. Cirebon
                             </p>
                         </td>
                     </tr>
                 </table>
-                
-                <!-- Bottom Text -->
-                <p style="margin: 24px 0 0 0; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 11px; color: #94a3b8; text-align: center;">
-                    © 2026 Al-Bahjah Buyut · Cirebon, Jawa Barat
-                </p>
+                <!-- End Email Container -->
+
             </td>
         </tr>
     </table>
@@ -166,9 +273,9 @@ function getStatusEmailContent(data: StatusEmailData): { subject: string; html: 
     `;
 
     const subjectMap = {
-        VERIFIED: `Berkas Terverifikasi - ${registrationNumber}`,
-        ACCEPTED: `Selamat! Anda Diterima - ${registrationNumber}`,
-        REJECTED: `Pemberitahuan Pendaftaran - ${registrationNumber}`,
+        VERIFIED: `[Lengkap] Berkas Pendaftaran Terverifikasi - ${registrationNumber}`,
+        ACCEPTED: `[PENTING] Hasil Seleksi PSB: DITERIMA - ${registrationNumber}`,
+        REJECTED: `Informasi Hasil Seleksi PSB - ${registrationNumber}`,
     };
 
     return {
@@ -191,8 +298,8 @@ export async function sendStatusEmail(
         return { success: true }; // Not an error, just skipped
     }
 
-    // Skip if Resend not configured
-    if (!isEmailConfigured()) {
+    // Skip if Resend not configured or improperly initialized
+    if (!isEmailConfigured() || !resend) {
         console.log(`[Email] Skipped: Resend API key not configured`);
         return { success: true }; // Not an error, just skipped
     }
