@@ -88,10 +88,6 @@ export const metadata: Metadata = {
     apple: "/favicon.png",
   },
   category: 'education',
-  verification: {
-    // Ganti dengan verification code dari Google Search Console
-    google: 'YOUR_GOOGLE_VERIFICATION_CODE',
-  },
 };
 
 export default function RootLayout({
@@ -99,8 +95,52 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // JSON-LD Structured Data for WebSite (Site Name in Google Search)
+  const websiteJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "LPD Al-Bahjah Buyut",
+    "alternateName": ["Lembaga Pengembangan Dakwah Al-Bahjah Buyut", "Pondok Pesantren Al-Bahjah Buyut", "Al-Bahjah Buyut"],
+    "url": "https://albahjahbuyut.com"
+  };
+
+  // JSON-LD for Organization
+  const organizationJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "EducationalOrganization",
+    "name": "LPD Al-Bahjah Buyut",
+    "alternateName": "Lembaga Pengembangan Dakwah Al-Bahjah Buyut",
+    "url": "https://albahjahbuyut.com",
+    "logo": "https://albahjahbuyut.com/logo-buyut.png",
+    "description": "Lembaga Pengembangan Dakwah Al-Bahjah Buyut",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Jl. Revolusi No.45",
+      "addressLocality": "Gunungjati",
+      "addressRegion": "Cirebon",
+      "postalCode": "45151",
+      "addressCountry": "ID"
+    },
+    "sameAs": [
+      "https://www.instagram.com/abahsayfabuhanifah",
+      "https://www.youtube.com/@ASAHTVOFFICIAL"
+    ]
+  };
+
   return (
     <html lang="id">
+      <head>
+        {/* WebSite Structured Data for Site Name */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+        />
+        {/* Organization Structured Data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+        />
+      </head>
       <body className={`${plusJakartaSans.variable} antialiased font-sans overflow-x-hidden`} suppressHydrationWarning>
         {/* Google Analytics */}
         <Script
@@ -125,3 +165,4 @@ export default function RootLayout({
     </html>
   );
 }
+

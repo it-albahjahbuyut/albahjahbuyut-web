@@ -313,6 +313,7 @@ model PSBRegistration {
   // Google Drive folder for this registration
   driveFolderId     String?   // ID folder di Google Drive
   driveFolderUrl    String?   // URL folder di Google Drive
+  pasFotoUrl        String?   // URL pas foto dari Google Drive
   
   // Email Tracking
   lastEmailId       String?   // ID email terakhir dari Resend

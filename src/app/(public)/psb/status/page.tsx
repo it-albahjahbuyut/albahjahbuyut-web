@@ -2,14 +2,21 @@ import { Metadata } from 'next';
 import PSBStatusChecker from '@/components/psb/PSBStatusChecker';
 import { FadeIn } from '@/components/animations/FadeIn';
 import Link from 'next/link';
-import { ArrowLeft, Search } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 
 export const metadata: Metadata = {
     title: 'Cek Status Pendaftaran | PSB Al-Bahjah Buyut',
     description: 'Cek status pendaftaran santri baru Pondok Pesantren Al-Bahjah Buyut',
 };
 
-export default function PSBStatusPage() {
+interface PSBStatusPageProps {
+    searchParams: Promise<{ no?: string }>;
+}
+
+export default async function PSBStatusPage({ searchParams }: PSBStatusPageProps) {
+    const params = await searchParams;
+    const initialNumber = params.no || undefined;
+
     return (
         <main className="bg-gradient-to-b from-emerald-50 to-white min-h-screen">
             {/* Header */}
@@ -46,7 +53,7 @@ export default function PSBStatusPage() {
             <section className="py-12">
                 <div className="container mx-auto px-4 lg:px-8 max-w-2xl">
                     <FadeIn delay={0.4}>
-                        <PSBStatusChecker />
+                        <PSBStatusChecker initialNumber={initialNumber} />
                     </FadeIn>
                 </div>
             </section>

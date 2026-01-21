@@ -248,12 +248,17 @@ async function processUploadsInBackground(
 
         const uploadedDocuments = await Promise.all(uploadPromises);
 
+        // Extract pas foto URL for registration card
+        const pasFotoDoc = uploadedDocuments.find(doc => doc.documentType === 'PAS_FOTO');
+        const pasFotoUrl = pasFotoDoc?.driveFileUrl || null;
+
         // Update registration dengan folder info dan documents
         await db.pSBRegistration.update({
             where: { id: registrationId },
             data: {
                 driveFolderId: folderResult.folderId,
                 driveFolderUrl: folderResult.folderUrl,
+                pasFotoUrl: pasFotoUrl,
                 documents: {
                     create: uploadedDocuments,
                 },

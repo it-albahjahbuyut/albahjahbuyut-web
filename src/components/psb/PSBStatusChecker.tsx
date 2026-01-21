@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Search, Loader2, CheckCircle2, XCircle, Clock, FileCheck, AlertCircle } from 'lucide-react';
 import { getPSBRegistrationByNumber, PSBStatus } from '@/actions/psb-actions';
 
@@ -60,21 +60,24 @@ interface SearchResult {
     data?: RegistrationResult;
 }
 
-export default function PSBStatusChecker() {
-    const [registrationNumber, setRegistrationNumber] = useState('');
+interface PSBStatusCheckerProps {
+    initialNumber?: string;
+}
+
+export default function PSBStatusChecker({ initialNumber }: PSBStatusCheckerProps) {
+    const [registrationNumber, setRegistrationNumber] = useState(initialNumber || '');
     const [isLoading, setIsLoading] = useState(false);
     const [result, setResult] = useState<SearchResult | null>(null);
 
-    const handleSearch = async (e: React.FormEvent) => {
-        e.preventDefault();
-
-        if (!registrationNumber.trim()) return;
+    // Auto-search function (without event)
+    const doSearch = async (searchNumber: string) => {
+        if (!searchNumber.trim()) return;
 
         setIsLoading(true);
         setResult(null);
 
         try {
-            const data = await getPSBRegistrationByNumber(registrationNumber.trim().toUpperCase());
+            const data = await getPSBRegistrationByNumber(searchNumber.trim().toUpperCase());
 
             if (data) {
                 setResult({ found: true, data: data as RegistrationResult });
@@ -87,6 +90,18 @@ export default function PSBStatusChecker() {
         } finally {
             setIsLoading(false);
         }
+    };
+
+    // Auto-search when initialNumber is provided (from QR code)
+    useEffect(() => {
+        if (initialNumber) {
+            doSearch(initialNumber);
+        }
+    }, [initialNumber]);
+
+    const handleSearch = async (e: React.FormEvent) => {
+        e.preventDefault();
+        doSearch(registrationNumber);
     };
 
     return (

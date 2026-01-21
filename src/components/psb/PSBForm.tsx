@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { FormField, DocumentRequirement, getPaymentInfo, BankInfo } from '@/lib/psb-config';
 import { submitPSBRegistration, PSBFormData, DocumentUpload } from '@/actions/psb-actions';
+import RegistrationCard from './RegistrationCard';
 
 
 interface PSBFormProps {
@@ -46,6 +47,7 @@ export default function PSBForm({
     const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [submitResult, setSubmitResult] = useState<{ success: boolean; message: string; registrationNumber?: string } | null>(null);
+    const [pasFotoPreview, setPasFotoPreview] = useState<string | null>(null);
     const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
     const formTopRef = useRef<HTMLDivElement>(null);
 
@@ -231,6 +233,15 @@ export default function PSBForm({
         let preview: string | undefined;
         if (file.type.startsWith('image/')) {
             preview = URL.createObjectURL(file);
+
+            // If this is pas foto, also save as base64 for RegistrationCard
+            if (documentType === 'PAS_FOTO') {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    setPasFotoPreview(reader.result as string);
+                };
+                reader.readAsDataURL(file);
+            }
         }
 
         // Update uploaded files
@@ -396,21 +407,40 @@ export default function PSBForm({
         }
     };
 
-    // Render success result
+    // Render success result with Registration Card
     if (submitResult?.success) {
         return (
-            <div id="psb-success-message" className="max-w-2xl mx-auto text-center py-8 sm:py-12 px-4">
-                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
-                    <CheckCircle2 className="w-8 h-8 sm:w-10 sm:h-10 text-emerald-600" />
+            <div id="psb-success-message" className="max-w-2xl mx-auto py-8 sm:py-12 px-4">
+                {/* Success Header */}
+                <div className="text-center mb-8">
+                    <div className="w-16 h-16 sm:w-20 sm:h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                        <CheckCircle2 className="w-8 h-8 sm:w-10 sm:h-10 text-emerald-600" />
+                    </div>
+                    <h2 className="text-2xl sm:text-3xl font-bold text-emerald-900 mb-3 sm:mb-4">
+                        Pendaftaran Berhasil!
+                    </h2>
+                    <p className="text-sm sm:text-base text-slate-600">
+                        Simpan kartu peserta di bawah ini untuk dibawa saat tes seleksi.
+                    </p>
                 </div>
-                <h2 className="text-2xl sm:text-3xl font-bold text-emerald-900 mb-3 sm:mb-4">
-                    Pendaftaran Berhasil!
-                </h2>
-                <p className="text-sm sm:text-base text-slate-600 mb-4 sm:mb-6">
-                    {submitResult.message}
-                </p>
+
+                {/* Registration Card */}
+                <div className="flex justify-center mb-8">
+                    <RegistrationCard
+                        registrationNumber={submitResult.registrationNumber || ''}
+                        namaLengkap={formData.namaLengkap || ''}
+                        unitName={unitName}
+                        grade={formData.grade}
+                        jenisSantri={formData.jenisSantri}
+                        jenisKelamin={formData.jenisKelamin}
+                        pasFotoUrl={pasFotoPreview || undefined}
+                        tahunAjaran="2026/2027"
+                    />
+                </div>
+
+                {/* Registration Number Copy Section */}
                 <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 sm:p-6 mb-6 sm:mb-8">
-                    <p className="text-sm text-emerald-700 mb-2">Nomor Pendaftaran Anda:</p>
+                    <p className="text-sm text-emerald-700 mb-2 text-center">Nomor Pendaftaran Anda:</p>
                     <div className="flex items-center justify-center gap-2 sm:gap-3">
                         <p className="text-lg sm:text-2xl font-mono font-bold text-emerald-900 break-all">
                             {submitResult.registrationNumber}
@@ -427,21 +457,25 @@ export default function PSBForm({
                         </button>
                     </div>
                     {copied && (
-                        <p className="text-xs text-emerald-600 mt-2 animate-in fade-in">
+                        <p className="text-xs text-emerald-600 mt-2 animate-in fade-in text-center">
                             ✓ Tersalin ke clipboard!
                         </p>
                     )}
-                    <p className="text-xs text-emerald-600 mt-3">
+                    <p className="text-xs text-emerald-600 mt-3 text-center">
                         Simpan nomor ini untuk mengecek status pendaftaran
                     </p>
                 </div>
-                <button
-                    onClick={() => router.push('/psb')}
-                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-emerald-900 text-white font-semibold rounded-lg hover:bg-emerald-800 transition-colors"
-                >
-                    <ArrowLeft className="w-4 h-4" />
-                    Kembali ke Halaman PSB
-                </button>
+
+                {/* Back Button */}
+                <div className="text-center">
+                    <button
+                        onClick={() => router.push('/psb')}
+                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-emerald-900 text-white font-semibold rounded-lg hover:bg-emerald-800 transition-colors"
+                    >
+                        <ArrowLeft className="w-4 h-4" />
+                        Kembali ke Halaman PSB
+                    </button>
+                </div>
             </div>
         );
     }
