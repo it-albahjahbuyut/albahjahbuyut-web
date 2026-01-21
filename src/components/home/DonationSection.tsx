@@ -114,6 +114,7 @@ export function DonationSection({ program }: { program: DonationProgram | null }
                                     src={program.image}
                                     alt={program.title}
                                     fill
+                                    sizes="(max-width: 1024px) 100vw, 50vw"
                                     className="object-cover"
                                     priority
                                 />

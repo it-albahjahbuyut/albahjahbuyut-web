@@ -94,6 +94,7 @@ export function ProgramsSection({ units }: { units: Unit[] }) {
                                             src={program.image || defaultImage}
                                             alt={program.name}
                                             fill
+                                            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 50vw"
                                             className="object-cover object-center transition-transform duration-700 group-hover:scale-110 opacity-50"
                                         />
                                         {/* Gradient overlay: Solid on left, clear on right for image visibility */}

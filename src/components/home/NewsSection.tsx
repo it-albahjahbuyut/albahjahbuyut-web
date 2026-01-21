@@ -59,6 +59,7 @@ export function NewsSection({ posts }: { posts: Post[] }) {
                                                 src={post.image}
                                                 alt={post.title}
                                                 fill
+                                                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                                                 className="object-cover transition-all duration-500 ease-in-out group-hover:scale-105"
                                             />
                                         ) : (

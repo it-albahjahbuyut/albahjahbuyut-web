@@ -70,6 +70,7 @@ export function ProfileSection() {
                                         src="https://upload.wikimedia.org/wikipedia/commons/a/aa/Buya_Yahya.jpg"
                                         alt="Buya Yahya"
                                         fill
+                                        priority
                                         sizes="(max-width: 1024px) 50vw, 25vw"
                                         className="object-cover hover:scale-105 transition-transform duration-700"
                                     />
