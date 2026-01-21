@@ -66,7 +66,9 @@ export function DonationCard({ program, index = 0, featured = false }: DonationC
                         src={program.image}
                         alt={program.title}
                         fill
-                        className="object-cover"
+                        className="object-cover z-10"
+                        loading="eager"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
                 ) : (
                     <div className="flex h-full items-center justify-center">

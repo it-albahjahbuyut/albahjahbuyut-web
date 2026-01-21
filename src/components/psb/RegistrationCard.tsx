@@ -30,7 +30,7 @@ export default function RegistrationCard({
     const [downloadSuccess, setDownloadSuccess] = useState(false);
 
     // Generate status check URL for QR code
-    const statusCheckUrl = `https://albahjahbuyut.or.id/psb/status?no=${registrationNumber}`;
+    const statusCheckUrl = `https://albahjahbuyut.com/psb/status?no=${registrationNumber}`;
 
     const handleDownload = async () => {
         if (!cardRef.current) return;

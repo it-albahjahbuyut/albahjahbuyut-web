@@ -120,7 +120,9 @@ export default async function ProfilePage() {
                                         src="https://upload.wikimedia.org/wikipedia/commons/a/aa/Buya_Yahya.jpg"
                                         alt="Buya Yahya"
                                         fill
-                                        className="object-cover"
+                                        className="object-cover z-10"
+                                        loading="eager"
+                                        sizes="(max-width: 768px) 100vw, 320px"
                                     />
                                     <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/80 via-transparent to-transparent opacity-80" />
                                     <div className="absolute bottom-4 left-4 right-4 text-white bg-emerald-950/30 backdrop-blur-sm p-3 rounded-lg border border-white/10">
@@ -169,7 +171,9 @@ export default async function ProfilePage() {
                                         src="https://res.cloudinary.com/dand8rpbb/image/upload/v1767976355/DSC00058_ioql27.jpg"
                                         alt="Abah Sayf Abu Hanifah"
                                         fill
-                                        className="object-cover"
+                                        className="object-cover z-10"
+                                        loading="eager"
+                                        sizes="(max-width: 768px) 100vw, 320px"
                                     />
                                     <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/80 via-transparent to-transparent opacity-80" />
                                     <div className="absolute bottom-4 left-4 right-4 text-white bg-emerald-950/30 backdrop-blur-sm p-3 rounded-lg border border-white/10">
@@ -314,7 +318,9 @@ export default async function ProfilePage() {
                                             src={figure.image || ""}
                                             alt={figure.name}
                                             fill
-                                            className="object-cover group-hover:scale-105 transition-transform duration-700"
+                                            className="object-cover z-10 group-hover:scale-105 transition-transform duration-700"
+                                            loading="eager"
+                                            sizes="(max-width: 768px) 100vw, 280px"
                                         />
                                         <div className="absolute inset-0 bg-emerald-950/0 group-hover:bg-emerald-950/10 transition-colors duration-300" />
                                     </div>
@@ -341,7 +347,9 @@ export default async function ProfilePage() {
                                                 src={figure.image}
                                                 alt={figure.name}
                                                 fill
-                                                className="object-cover group-hover:scale-105 transition-transform duration-700"
+                                                className="object-cover z-10 group-hover:scale-105 transition-transform duration-700"
+                                                loading="eager"
+                                                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 240px"
                                             />
                                         ) : (
                                             <div className="w-full h-full flex items-center justify-center text-slate-300 bg-slate-50">
@@ -411,7 +419,9 @@ export default async function ProfilePage() {
                                                 src={unit.image || defaultImage}
                                                 alt={unit.name}
                                                 fill
-                                                className="object-cover object-center transition-transform duration-700 group-hover:scale-110 opacity-60"
+                                                className="object-cover object-center z-10 transition-transform duration-700 group-hover:scale-110 opacity-60"
+                                                loading="eager"
+                                                sizes="(max-width: 768px) 100vw, 50vw"
                                             />
                                             {/* Gradient overlay */}
                                             <div className="absolute inset-0 bg-gradient-to-r from-emerald-950 via-emerald-950/80 to-transparent" />

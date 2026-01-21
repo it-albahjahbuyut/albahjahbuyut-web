@@ -48,7 +48,9 @@ export function UnitCard({ unit, index = 0 }: UnitCardProps) {
                                 src={unit.image}
                                 alt={unit.name}
                                 fill
-                                className="object-cover transition-transform duration-500 group-hover:scale-110"
+                                className="object-cover z-10 transition-transform duration-500 group-hover:scale-110"
+                                loading="eager"
+                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                             />
                         ) : (
                             <div className="flex h-full items-center justify-center">
