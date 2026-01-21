@@ -326,6 +326,7 @@ async function processUploadsInBackground(
 
 /**
  * Update status pendaftaran (admin only)
+ * Sends email notification if parent email is provided
  */
 export async function updatePSBStatus(
     registrationId: string,
@@ -333,6 +334,17 @@ export async function updatePSBStatus(
     notes?: string
 ): Promise<{ success: boolean; message: string }> {
     try {
+        // Get registration data first for email
+        const registration = await db.pSBRegistration.findUnique({
+            where: { id: registrationId },
+            include: { unit: true },
+        });
+
+        if (!registration) {
+            return { success: false, message: 'Pendaftaran tidak ditemukan' };
+        }
+
+        // Update status in database
         await db.pSBRegistration.update({
             where: { id: registrationId },
             data: {
@@ -343,22 +355,46 @@ export async function updatePSBStatus(
 
         revalidatePath('/admin/psb');
 
-        // Update status di spreadsheet juga
-        try {
-            const registration = await db.pSBRegistration.findUnique({
-                where: { id: registrationId },
-                select: { registrationNumber: true }
+        // Only send email for VERIFIED, ACCEPTED, REJECTED (not PENDING)
+        if (['VERIFIED', 'ACCEPTED', 'REJECTED'].includes(status)) {
+            // Import dynamically to avoid circular dependency
+            const { sendStatusEmail } = await import('@/lib/email');
+
+            // Send email notification (non-blocking)
+            sendStatusEmail(registration.emailOrangTua, {
+                namaLengkap: registration.namaLengkap,
+                registrationNumber: registration.registrationNumber,
+                unitName: registration.unit.name,
+                status: status as 'VERIFIED' | 'ACCEPTED' | 'REJECTED',
+                notes: notes,
+            }).then((result) => {
+                if (result.success) {
+                    console.log(`[PSB] Email sent for ${registration.registrationNumber}`);
+                } else if (result.error) {
+                    console.error(`[PSB] Email failed for ${registration.registrationNumber}:`, result.error);
+                }
+            }).catch((err) => {
+                console.error('[PSB] Email send error:', err);
             });
-            if (registration) {
-                await updateSpreadsheetStatus(registration.registrationNumber, status);
-            }
+        }
+
+        // Update status di spreadsheet juga (non-blocking)
+        try {
+            await updateSpreadsheetStatus(registration.registrationNumber, status);
         } catch (sheetError) {
             console.error('Failed to update spreadsheet status (non-blocking):', sheetError);
         }
 
+        const statusLabels: Record<PSBStatus, string> = {
+            PENDING: 'Menunggu',
+            VERIFIED: 'Terverifikasi',
+            ACCEPTED: 'Diterima',
+            REJECTED: 'Ditolak',
+        };
+
         return {
             success: true,
-            message: `Status pendaftaran berhasil diubah menjadi ${status}`,
+            message: `Status pendaftaran berhasil diubah menjadi ${statusLabels[status]}`,
         };
     } catch (error) {
         console.error('Error updating PSB status:', error);
@@ -414,6 +450,93 @@ export async function deletePSBRegistration(
         return {
             success: false,
             message: 'Terjadi kesalahan saat menghapus data',
+        };
+    }
+}
+
+/**
+ * Bulk update status pendaftaran (admin only)
+ * Updates multiple registrations at once and sends email notifications
+ */
+export async function bulkUpdatePSBStatus(
+    status: PSBStatus,
+    filter?: { unitId?: string; currentStatus?: PSBStatus }
+): Promise<{ success: boolean; message: string; count: number }> {
+    try {
+        // Build where clause based on filter
+        const whereClause: Record<string, unknown> = {};
+        if (filter?.unitId) {
+            whereClause.unitId = filter.unitId;
+        }
+        if (filter?.currentStatus) {
+            whereClause.status = filter.currentStatus;
+        }
+
+        // Get all registrations that will be updated
+        const registrations = await db.pSBRegistration.findMany({
+            where: whereClause,
+            include: { unit: true },
+        });
+
+        if (registrations.length === 0) {
+            return {
+                success: false,
+                message: 'Tidak ada pendaftaran yang sesuai kriteria',
+                count: 0,
+            };
+        }
+
+        // Update all matching registrations
+        await db.pSBRegistration.updateMany({
+            where: whereClause,
+            data: { status },
+        });
+
+        // Send emails in background (non-blocking)
+        if (['VERIFIED', 'ACCEPTED', 'REJECTED'].includes(status)) {
+            const { sendStatusEmail } = await import('@/lib/email');
+
+            for (const reg of registrations) {
+                if (reg.emailOrangTua) {
+                    sendStatusEmail(reg.emailOrangTua, {
+                        namaLengkap: reg.namaLengkap,
+                        registrationNumber: reg.registrationNumber,
+                        unitName: reg.unit.name,
+                        status: status as 'VERIFIED' | 'ACCEPTED' | 'REJECTED',
+                    }).catch((err) => {
+                        console.error(`[Bulk] Email failed for ${reg.registrationNumber}:`, err);
+                    });
+                }
+            }
+        }
+
+        // Update spreadsheet in background
+        for (const reg of registrations) {
+            updateSpreadsheetStatus(reg.registrationNumber, status).catch((err) => {
+                console.error(`[Bulk] Spreadsheet update failed for ${reg.registrationNumber}:`, err);
+            });
+        }
+
+        revalidatePath('/admin/psb');
+
+        const statusLabels: Record<PSBStatus, string> = {
+            PENDING: 'Menunggu',
+            VERIFIED: 'Terverifikasi',
+            ACCEPTED: 'Diterima',
+            REJECTED: 'Ditolak',
+        };
+
+        return {
+            success: true,
+            message: `${registrations.length} pendaftaran berhasil diubah menjadi ${statusLabels[status]}`,
+            count: registrations.length,
+        };
+    } catch (error) {
+        console.error('Error bulk updating PSB status:', error);
+        return {
+            success: false,
+            message: 'Terjadi kesalahan saat mengubah status',
+            count: 0,
         };
     }
 }
@@ -494,6 +617,7 @@ export async function getPSBRegistrationByNumber(registrationNumber: string) {
             namaLengkap: registration.namaLengkap as string,
             unitName: registration.unit.name as string,
             status: registration.status as PSBStatus,
+            notes: registration.notes as string | null,
             createdAt: registration.createdAt as Date,
         };
     } catch (error) {

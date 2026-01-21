@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import type { PSBStatus } from '@/actions/psb-actions';
 import PSBUnitFilter from '@/components/admin/PSBUnitFilter';
+import PSBBulkActions from '@/components/admin/PSBBulkActions';
 
 export const metadata: Metadata = {
     title: 'Kelola Pendaftaran PSB | Admin Al-Bahjah Buyut',
@@ -86,19 +87,40 @@ export default async function AdminPSBPage({
         },
     }) as unknown as PSBRegistrationWithRelations[];
 
-    // Get stats
-    const stats = await db.pSBRegistration.groupBy({
+    // Get global stats (for stat cards)
+    const globalStats = await db.pSBRegistration.groupBy({
         by: ['status'],
         _count: true,
     }) as unknown as StatItem[];
 
     const statCounts = {
-        PENDING: stats.find((s: StatItem) => s.status === 'PENDING')?._count || 0,
-        VERIFIED: stats.find((s: StatItem) => s.status === 'VERIFIED')?._count || 0,
-        ACCEPTED: stats.find((s: StatItem) => s.status === 'ACCEPTED')?._count || 0,
-        REJECTED: stats.find((s: StatItem) => s.status === 'REJECTED')?._count || 0,
-        total: stats.reduce((acc: number, s: StatItem) => acc + s._count, 0),
+        PENDING: globalStats.find((s: StatItem) => s.status === 'PENDING')?._count || 0,
+        VERIFIED: globalStats.find((s: StatItem) => s.status === 'VERIFIED')?._count || 0,
+        ACCEPTED: globalStats.find((s: StatItem) => s.status === 'ACCEPTED')?._count || 0,
+        REJECTED: globalStats.find((s: StatItem) => s.status === 'REJECTED')?._count || 0,
+        total: globalStats.reduce((acc: number, s: StatItem) => acc + s._count, 0),
     };
+
+    // Get filtered stats for bulk actions (based on current unit filter)
+    const filteredStats = params.unit
+        ? await db.pSBRegistration.groupBy({
+            by: ['status'],
+            where: { unitId: params.unit },
+            _count: true,
+        }) as unknown as StatItem[]
+        : globalStats;
+
+    const filteredCounts = {
+        PENDING: filteredStats.find((s: StatItem) => s.status === 'PENDING')?._count || 0,
+        VERIFIED: filteredStats.find((s: StatItem) => s.status === 'VERIFIED')?._count || 0,
+        ACCEPTED: filteredStats.find((s: StatItem) => s.status === 'ACCEPTED')?._count || 0,
+        REJECTED: filteredStats.find((s: StatItem) => s.status === 'REJECTED')?._count || 0,
+    };
+
+    // Get current unit name for display
+    const currentUnitName = params.unit
+        ? units.find(u => u.id === params.unit)?.name
+        : undefined;
 
     return (
         <div className="p-6 lg:p-8">
@@ -174,6 +196,16 @@ export default async function AdminPSBPage({
                     <PSBUnitFilter units={units} currentUnit={params.unit} />
                 </div>
             </div>
+
+            {/* Bulk Actions */}
+            <PSBBulkActions
+                currentFilter={{
+                    unitId: params.unit,
+                    status: params.status as PSBStatus | undefined,
+                }}
+                counts={filteredCounts}
+                unitName={currentUnitName}
+            />
 
             {/* Table */}
             <div className="bg-white rounded-xl border overflow-hidden">

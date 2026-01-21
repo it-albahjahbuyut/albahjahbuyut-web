@@ -51,6 +51,7 @@ interface RegistrationResult {
     namaLengkap: string;
     unitName: string;
     status: PSBStatus;
+    notes: string | null;
     createdAt: Date;
 }
 
@@ -129,13 +130,13 @@ export default function PSBStatusChecker() {
                                 const StatusIcon = statusInfo.icon;
 
                                 return (
-                                    <div className={`p-6 border-b ${statusInfo.color}`}>
-                                        <div className="flex items-center gap-4">
-                                            <div className={`w-16 h-16 rounded-full ${statusInfo.iconBg} flex items-center justify-center`}>
-                                                <StatusIcon className={`w-8 h-8 ${statusInfo.iconColor}`} />
+                                    <div className={`p-4 sm:p-6 border-b ${statusInfo.color}`}>
+                                        <div className="flex items-start sm:items-center gap-3 sm:gap-4">
+                                            <div className={`w-12 h-12 sm:w-16 sm:h-16 rounded-full ${statusInfo.iconBg} flex items-center justify-center flex-shrink-0`}>
+                                                <StatusIcon className={`w-6 h-6 sm:w-8 sm:h-8 ${statusInfo.iconColor}`} />
                                             </div>
-                                            <div>
-                                                <h3 className="text-xl font-bold">{statusInfo.label}</h3>
+                                            <div className="min-w-0">
+                                                <h3 className="text-lg sm:text-xl font-bold">{statusInfo.label}</h3>
                                                 <p className="text-sm opacity-80">{statusInfo.description}</p>
                                             </div>
                                         </div>
@@ -169,6 +170,18 @@ export default function PSBStatusChecker() {
                                         </p>
                                     </div>
                                 </div>
+
+                                {/* Catatan dari Panitia */}
+                                {result.data.notes && (
+                                    <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+                                        <p className="text-xs text-amber-700 uppercase tracking-wide font-semibold mb-1">
+                                            Catatan dari Panitia
+                                        </p>
+                                        <p className="text-sm text-amber-900">
+                                            {result.data.notes}
+                                        </p>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     ) : (
