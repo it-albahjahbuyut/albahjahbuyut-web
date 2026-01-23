@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
+import { Suspense } from 'react';
 import { db } from '@/lib/db';
 import {
     UserPlus,
@@ -13,6 +14,7 @@ import {
 import type { PSBStatus } from '@/actions/psb-actions';
 import PSBUnitFilter from '@/components/admin/PSBUnitFilter';
 import PSBBulkActions from '@/components/admin/PSBBulkActions';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export const metadata: Metadata = {
     title: 'Kelola Pendaftaran PSB | Admin Al-Bahjah Buyut',
@@ -60,35 +62,47 @@ interface StatItem {
     _count: number;
 }
 
-export default async function AdminPSBPage({
-    searchParams,
-}: {
-    searchParams: Promise<{ status?: string; unit?: string }>;
-}) {
-    const params = await searchParams;
+// Loading skeleton for stats
+function StatsSkeleton() {
+    return (
+        <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+            {[...Array(5)].map((_, i) => (
+                <div key={i} className="bg-white rounded-xl border p-5">
+                    <Skeleton className="h-4 w-24 mb-2" />
+                    <Skeleton className="h-8 w-16" />
+                </div>
+            ))}
+        </div>
+    );
+}
 
-    // Get all units for filter
-    const units = await db.unit.findMany({
-        where: { isActive: true },
-        orderBy: { order: 'asc' },
-    });
+// Loading skeleton for table
+function TableSkeleton() {
+    return (
+        <div className="bg-white rounded-xl border overflow-hidden">
+            <div className="p-4 border-b">
+                <Skeleton className="h-6 w-48" />
+            </div>
+            <div className="divide-y">
+                {[...Array(5)].map((_, i) => (
+                    <div key={i} className="p-4 flex items-center gap-4">
+                        <Skeleton className="h-5 w-24" />
+                        <div className="flex-1 space-y-1">
+                            <Skeleton className="h-4 w-40" />
+                            <Skeleton className="h-3 w-28" />
+                        </div>
+                        <Skeleton className="h-6 w-16 rounded" />
+                        <Skeleton className="h-6 w-20 rounded-full" />
+                        <Skeleton className="h-4 w-24" />
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}
 
-    // Get registrations with filters
-    const registrations = await db.pSBRegistration.findMany({
-        where: {
-            ...(params.status && { status: params.status as PSBStatus }),
-            ...(params.unit && { unitId: params.unit }),
-        },
-        include: {
-            unit: true,
-            documents: true,
-        },
-        orderBy: {
-            createdAt: 'desc',
-        },
-    }) as unknown as PSBRegistrationWithRelations[];
-
-    // Get global stats (for stat cards)
+// Async component for stats
+async function PSBStats() {
     const globalStats = await db.pSBRegistration.groupBy({
         by: ['status'],
         _count: true,
@@ -102,64 +116,79 @@ export default async function AdminPSBPage({
         total: globalStats.reduce((acc: number, s: StatItem) => acc + s._count, 0),
     };
 
-    // Get filtered stats for bulk actions (based on current unit filter)
-    const filteredStats = params.unit
-        ? await db.pSBRegistration.groupBy({
-            by: ['status'],
-            where: { unitId: params.unit },
-            _count: true,
-        }) as unknown as StatItem[]
-        : globalStats;
+    return (
+        <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+            <div className="bg-white rounded-xl border p-5">
+                <p className="text-sm text-gray-500">Total Pendaftar</p>
+                <p className="text-3xl font-bold text-gray-900">{statCounts.total}</p>
+            </div>
+            <div className="bg-amber-50 rounded-xl border border-amber-200 p-5">
+                <p className="text-sm text-amber-700">Menunggu</p>
+                <p className="text-3xl font-bold text-amber-800">{statCounts.PENDING}</p>
+            </div>
+            <div className="bg-blue-50 rounded-xl border border-blue-200 p-5">
+                <p className="text-sm text-blue-700">Terverifikasi</p>
+                <p className="text-3xl font-bold text-blue-800">{statCounts.VERIFIED}</p>
+            </div>
+            <div className="bg-emerald-50 rounded-xl border border-emerald-200 p-5">
+                <p className="text-sm text-emerald-700">Diterima</p>
+                <p className="text-3xl font-bold text-emerald-800">{statCounts.ACCEPTED}</p>
+            </div>
+            <div className="bg-red-50 rounded-xl border border-red-200 p-5">
+                <p className="text-sm text-red-700">Ditolak</p>
+                <p className="text-3xl font-bold text-red-800">{statCounts.REJECTED}</p>
+            </div>
+        </div>
+    );
+}
 
+// Async component for table content
+async function PSBTableContent({ params }: { params: { status?: string; unit?: string } }) {
+    const [registrations, units, globalStats, filteredStats] = await Promise.all([
+        db.pSBRegistration.findMany({
+            where: {
+                ...(params.status && { status: params.status as PSBStatus }),
+                ...(params.unit && { unitId: params.unit }),
+            },
+            include: {
+                unit: true,
+                documents: true,
+            },
+            orderBy: {
+                createdAt: 'desc',
+            },
+        }) as unknown as Promise<PSBRegistrationWithRelations[]>,
+        db.unit.findMany({
+            where: { isActive: true },
+            orderBy: { order: 'asc' },
+        }),
+        db.pSBRegistration.groupBy({
+            by: ['status'],
+            _count: true,
+        }) as unknown as Promise<StatItem[]>,
+        params.unit
+            ? db.pSBRegistration.groupBy({
+                by: ['status'],
+                where: { unitId: params.unit },
+                _count: true,
+            }) as unknown as Promise<StatItem[]>
+            : Promise.resolve(null),
+    ]);
+
+    const actualFilteredStats = filteredStats || globalStats;
     const filteredCounts = {
-        PENDING: filteredStats.find((s: StatItem) => s.status === 'PENDING')?._count || 0,
-        VERIFIED: filteredStats.find((s: StatItem) => s.status === 'VERIFIED')?._count || 0,
-        ACCEPTED: filteredStats.find((s: StatItem) => s.status === 'ACCEPTED')?._count || 0,
-        REJECTED: filteredStats.find((s: StatItem) => s.status === 'REJECTED')?._count || 0,
+        PENDING: actualFilteredStats.find((s: StatItem) => s.status === 'PENDING')?._count || 0,
+        VERIFIED: actualFilteredStats.find((s: StatItem) => s.status === 'VERIFIED')?._count || 0,
+        ACCEPTED: actualFilteredStats.find((s: StatItem) => s.status === 'ACCEPTED')?._count || 0,
+        REJECTED: actualFilteredStats.find((s: StatItem) => s.status === 'REJECTED')?._count || 0,
     };
 
-    // Get current unit name for display
     const currentUnitName = params.unit
         ? units.find(u => u.id === params.unit)?.name
         : undefined;
 
     return (
-        <div className="p-6 lg:p-8">
-            {/* Header */}
-            <div className="mb-8">
-                <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-                    <UserPlus className="w-8 h-8 text-emerald-600" />
-                    Pendaftaran PSB
-                </h1>
-                <p className="text-gray-500 mt-1">
-                    Kelola data pendaftaran santri baru
-                </p>
-            </div>
-
-            {/* Stats */}
-            <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
-                <div className="bg-white rounded-xl border p-5">
-                    <p className="text-sm text-gray-500">Total Pendaftar</p>
-                    <p className="text-3xl font-bold text-gray-900">{statCounts.total}</p>
-                </div>
-                <div className="bg-amber-50 rounded-xl border border-amber-200 p-5">
-                    <p className="text-sm text-amber-700">Menunggu</p>
-                    <p className="text-3xl font-bold text-amber-800">{statCounts.PENDING}</p>
-                </div>
-                <div className="bg-blue-50 rounded-xl border border-blue-200 p-5">
-                    <p className="text-sm text-blue-700">Terverifikasi</p>
-                    <p className="text-3xl font-bold text-blue-800">{statCounts.VERIFIED}</p>
-                </div>
-                <div className="bg-emerald-50 rounded-xl border border-emerald-200 p-5">
-                    <p className="text-sm text-emerald-700">Diterima</p>
-                    <p className="text-3xl font-bold text-emerald-800">{statCounts.ACCEPTED}</p>
-                </div>
-                <div className="bg-red-50 rounded-xl border border-red-200 p-5">
-                    <p className="text-sm text-red-700">Ditolak</p>
-                    <p className="text-3xl font-bold text-red-800">{statCounts.REJECTED}</p>
-                </div>
-            </div>
-
+        <>
             {/* Filters */}
             <div className="bg-white rounded-xl border p-4 mb-6">
                 <div className="flex flex-wrap items-center gap-4">
@@ -334,6 +363,39 @@ export default async function AdminPSBPage({
                     </div>
                 )}
             </div>
+        </>
+    );
+}
+
+export default async function AdminPSBPage({
+    searchParams,
+}: {
+    searchParams: Promise<{ status?: string; unit?: string }>;
+}) {
+    const params = await searchParams;
+
+    return (
+        <div className="p-6 lg:p-8">
+            {/* Header - Shows instantly */}
+            <div className="mb-8">
+                <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
+                    <UserPlus className="w-8 h-8 text-emerald-600" />
+                    Pendaftaran PSB
+                </h1>
+                <p className="text-gray-500 mt-1">
+                    Kelola data pendaftaran santri baru
+                </p>
+            </div>
+
+            {/* Stats - Streams in */}
+            <Suspense fallback={<StatsSkeleton />}>
+                <PSBStats />
+            </Suspense>
+
+            {/* Filters and Table - Streams in */}
+            <Suspense fallback={<TableSkeleton />}>
+                <PSBTableContent params={params} />
+            </Suspense>
         </div>
     );
 }

@@ -1,20 +1,39 @@
+import { Suspense } from "react";
 import { AdminHeader } from "@/components/admin/header";
 import { MajelisList } from "./majelis-list";
 import { db } from "@/lib/db";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import Link from "next/link";
+import { Skeleton } from "@/components/ui/skeleton";
 
-async function getMajelisList() {
+// Async component for data fetching
+async function MajelisContent() {
     const majelisList = await db.majelis.findMany({
         orderBy: { order: "asc" },
     });
-    return majelisList;
+    return <MajelisList majelisList={majelisList} />;
 }
 
-export default async function MajelisPage() {
-    const majelisList = await getMajelisList();
+// Loading skeleton
+function MajelisSkeleton() {
+    return (
+        <div className="space-y-3">
+            {[...Array(5)].map((_, i) => (
+                <div key={i} className="bg-white rounded-lg border p-4 flex items-center gap-4">
+                    <Skeleton className="h-12 w-12 rounded-lg" />
+                    <div className="flex-1 space-y-2">
+                        <Skeleton className="h-5 w-48" />
+                        <Skeleton className="h-4 w-32" />
+                    </div>
+                    <Skeleton className="h-8 w-20" />
+                </div>
+            ))}
+        </div>
+    );
+}
 
+export default function MajelisPage() {
     return (
         <div>
             <AdminHeader
@@ -29,8 +48,11 @@ export default async function MajelisPage() {
                 </Link>
             </AdminHeader>
             <div className="p-6">
-                <MajelisList majelisList={majelisList} />
+                <Suspense fallback={<MajelisSkeleton />}>
+                    <MajelisContent />
+                </Suspense>
             </div>
         </div>
     );
 }
+

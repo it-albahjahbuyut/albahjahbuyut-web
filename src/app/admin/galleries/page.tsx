@@ -1,34 +1,51 @@
+import { Suspense } from "react";
 import { AdminHeader } from "@/components/admin/header";
 import { GalleryList } from "./gallery-list";
 import { db } from "@/lib/db";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import Link from "next/link";
+import { Skeleton } from "@/components/ui/skeleton";
 
-async function getGalleries() {
-    const galleries = await db.gallery.findMany({
-        orderBy: { createdAt: "desc" },
-        include: {
-            unit: {
-                select: { id: true, name: true },
+// Async component for data fetching
+async function GalleriesContent() {
+    const [galleries, units] = await Promise.all([
+        db.gallery.findMany({
+            orderBy: { createdAt: "desc" },
+            include: {
+                unit: {
+                    select: { id: true, name: true },
+                },
             },
-        },
-    });
-    return galleries;
+        }),
+        db.unit.findMany({
+            where: { isActive: true },
+            select: { id: true, name: true },
+            orderBy: { order: "asc" },
+        }),
+    ]);
+
+    return <GalleryList galleries={galleries} units={units} />;
 }
 
-async function getUnits() {
-    const units = await db.unit.findMany({
-        where: { isActive: true },
-        select: { id: true, name: true },
-        orderBy: { order: "asc" },
-    });
-    return units;
+// Loading skeleton
+function GalleriesSkeleton() {
+    return (
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {[...Array(8)].map((_, i) => (
+                <div key={i} className="bg-white rounded-lg border overflow-hidden">
+                    <Skeleton className="aspect-square w-full" />
+                    <div className="p-3 space-y-2">
+                        <Skeleton className="h-4 w-3/4" />
+                        <Skeleton className="h-3 w-1/2" />
+                    </div>
+                </div>
+            ))}
+        </div>
+    );
 }
 
-export default async function GalleriesPage() {
-    const [galleries, units] = await Promise.all([getGalleries(), getUnits()]);
-
+export default function GalleriesPage() {
     return (
         <div>
             <AdminHeader
@@ -43,8 +60,11 @@ export default async function GalleriesPage() {
                 </Link>
             </AdminHeader>
             <div className="p-6">
-                <GalleryList galleries={galleries} units={units} />
+                <Suspense fallback={<GalleriesSkeleton />}>
+                    <GalleriesContent />
+                </Suspense>
             </div>
         </div>
     );
 }
+
