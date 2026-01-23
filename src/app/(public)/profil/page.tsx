@@ -379,8 +379,12 @@ export default async function ProfilePage() {
             </section>
 
             {/* Programs Section - Redesigned Minimalist Grid */}
-            <section className="py-24 bg-white text-emerald-950">
-                <div className="container mx-auto px-4 lg:px-8">
+            <section className="py-24 bg-white text-emerald-950 relative overflow-hidden">
+                {/* Background Blobs - Added for "Ijo Ijo" Aesthetic */}
+                <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-emerald-100/40 rounded-full blur-3xl -translate-y-1/2 -translate-x-1/2 pointer-events-none" />
+                <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-gold-100/20 rounded-full blur-3xl translate-y-1/2 translate-x-1/2 pointer-events-none" />
+
+                <div className="container mx-auto px-4 lg:px-8 relative z-10">
                     <FadeIn className="mb-16 md:flex justify-between items-end">
                         <div className="max-w-2xl">
                             <h2 className="text-sm font-bold text-gold-600 uppercase tracking-[0.2em] mb-4">Pendidikan</h2>
@@ -415,29 +419,29 @@ export default async function ProfilePage() {
                                 <FadeIn key={unit.id}>
                                     <Link
                                         href={`/pendidikan/${unit.slug}`}
-                                        className="group relative flex flex-col h-[320px] w-full overflow-hidden border border-emerald-100 bg-emerald-950 transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl"
+                                        className="group relative flex flex-col h-[320px] w-full overflow-hidden rounded-xl border border-emerald-800 bg-emerald-950 transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl"
                                     >
                                         {/* Background Image with Gradient */}
-                                        <div className="absolute inset-0 bg-emerald-950">
+                                        <div className="absolute inset-0">
                                             <OptimizedImage
                                                 src={unit.image || defaultImage}
                                                 alt={unit.name}
                                                 fill
-                                                className="object-cover object-center z-10 transition-transform duration-700 group-hover:scale-110 opacity-60"
+                                                className="object-cover object-center transition-transform duration-700 group-hover:scale-110 opacity-50"
                                                 loading="eager"
                                                 sizes="(max-width: 768px) 100vw, 50vw"
                                             />
-                                            {/* Gradient overlay */}
-                                            <div className="absolute inset-0 bg-gradient-to-r from-emerald-950 via-emerald-950/80 to-transparent" />
+                                            {/* Gradient overlay: Matches Home Page ProgramsSection */}
+                                            <div className="absolute inset-0 bg-gradient-to-r from-emerald-950 via-emerald-950/90 to-transparent" />
                                         </div>
 
                                         {/* Content */}
-                                        <div className="relative z-10 flex h-full flex-col p-8">
-                                            <h4 className="mb-3 text-2xl font-bold text-white group-hover:text-gold-400 transition-colors pt-4">
+                                        <div className="relative z-10 flex h-full flex-col p-8 md:p-10">
+                                            <h4 className="mb-4 text-3xl font-bold text-white group-hover:text-gold-400 transition-colors pt-4">
                                                 {unit.name}
                                             </h4>
 
-                                            <p className="mb-6 line-clamp-2 text-emerald-100/80 leading-relaxed font-light">
+                                            <p className="mb-6 line-clamp-2 text-emerald-100/90 text-lg leading-relaxed font-light">
                                                 {cleanDesc}
                                             </p>
 
