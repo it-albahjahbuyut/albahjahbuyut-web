@@ -33,8 +33,8 @@ export function HeroSection({ videoSrc, posterSrc }: HeroSectionProps) {
             </video>
 
             {/* Solid Uniform Overlay - No Gradient to ensure consistency */}
-            {/* Using emerald-950 with high opacity to keep it dark but colored, removing the top-to-bottom fade */}
-            <div className="absolute inset-0 bg-emerald-950/85 z-0" />
+            {/* Solid Uniform Overlay - Changed to Black as requested */}
+            <div className="absolute inset-0 bg-black/70 z-0" />
 
             {/* Decorative Elements */}
             <div className="hidden md:block absolute left-1/2 top-0 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gold-500/20 blur-3xl z-10" />
