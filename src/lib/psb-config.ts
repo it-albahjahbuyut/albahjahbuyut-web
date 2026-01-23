@@ -351,7 +351,7 @@ export const SMP_DOCUMENTS: DocumentRequirement[] = [
     {
         type: 'PAS_FOTO',
         label: 'Pas Foto 3x4',
-        description: 'Upload pas foto ukuran 3x4',
+        description: 'Upload pas foto ukuran 3x4 (Wajib untuk Kartu Peserta)',
         acceptedFormats: ['.jpg', '.jpeg', '.png'],
         maxSizeMB: 2,
         required: true,
@@ -362,7 +362,7 @@ export const SMP_DOCUMENTS: DocumentRequirement[] = [
         description: 'Upload scan Kartu Keluarga',
         acceptedFormats: ['.pdf', '.jpg', '.jpeg', '.png'],
         maxSizeMB: 5,
-        required: true,
+        required: false,
     },
     {
         type: 'AKTA_KELAHIRAN',
@@ -370,7 +370,7 @@ export const SMP_DOCUMENTS: DocumentRequirement[] = [
         description: 'Upload scan Akta Kelahiran',
         acceptedFormats: ['.pdf', '.jpg', '.jpeg', '.png'],
         maxSizeMB: 5,
-        required: true,
+        required: false,
     },
     {
         type: 'KTP_ORTU',
@@ -394,7 +394,7 @@ export const SMP_DOCUMENTS: DocumentRequirement[] = [
         description: 'Upload bukti transfer biaya pendaftaran',
         acceptedFormats: ['.jpg', '.jpeg', '.png', '.pdf'],
         maxSizeMB: 2,
-        required: true,
+        required: false,
     },
 ];
 
@@ -403,7 +403,7 @@ export const SMA_DOCUMENTS: DocumentRequirement[] = [
     {
         type: 'PAS_FOTO',
         label: 'Pas Foto 3x4',
-        description: 'Upload pas foto ukuran 3x4',
+        description: 'Upload pas foto ukuran 3x4 (Wajib untuk Kartu Peserta)',
         acceptedFormats: ['.jpg', '.jpeg', '.png'],
         maxSizeMB: 2,
         required: true,
@@ -414,7 +414,7 @@ export const SMA_DOCUMENTS: DocumentRequirement[] = [
         description: 'Upload scan Kartu Keluarga',
         acceptedFormats: ['.pdf', '.jpg', '.jpeg', '.png'],
         maxSizeMB: 5,
-        required: true,
+        required: false,
     },
     {
         type: 'AKTA_KELAHIRAN',
@@ -422,7 +422,7 @@ export const SMA_DOCUMENTS: DocumentRequirement[] = [
         description: 'Upload scan Akta Kelahiran',
         acceptedFormats: ['.pdf', '.jpg', '.jpeg', '.png'],
         maxSizeMB: 5,
-        required: true,
+        required: false,
     },
     {
         type: 'KTP_ORTU',
@@ -446,7 +446,7 @@ export const SMA_DOCUMENTS: DocumentRequirement[] = [
         description: 'Upload bukti transfer biaya pendaftaran',
         acceptedFormats: ['.jpg', '.jpeg', '.png', '.pdf'],
         maxSizeMB: 2,
-        required: true,
+        required: false,
     },
 ];
 
@@ -455,7 +455,7 @@ export const PESANTREN_DOCUMENTS: DocumentRequirement[] = [
     {
         type: 'PAS_FOTO',
         label: 'Pas Foto 3x4',
-        description: 'Upload pas foto ukuran 3x4',
+        description: 'Upload pas foto ukuran 3x4 (Wajib untuk Kartu Peserta)',
         acceptedFormats: ['.jpg', '.jpeg', '.png'],
         maxSizeMB: 2,
         required: true,
@@ -466,7 +466,7 @@ export const PESANTREN_DOCUMENTS: DocumentRequirement[] = [
         description: 'Upload scan Kartu Keluarga',
         acceptedFormats: ['.pdf', '.jpg', '.jpeg', '.png'],
         maxSizeMB: 5,
-        required: true,
+        required: false,
     },
     {
         type: 'AKTA_KELAHIRAN',
@@ -474,7 +474,7 @@ export const PESANTREN_DOCUMENTS: DocumentRequirement[] = [
         description: 'Upload scan Akta Kelahiran',
         acceptedFormats: ['.pdf', '.jpg', '.jpeg', '.png'],
         maxSizeMB: 5,
-        required: true,
+        required: false,
     },
     {
         type: 'KTP_ORTU',
@@ -498,7 +498,7 @@ export const PESANTREN_DOCUMENTS: DocumentRequirement[] = [
         description: 'Upload bukti transfer biaya pendaftaran',
         acceptedFormats: ['.jpg', '.jpeg', '.png', '.pdf'],
         maxSizeMB: 2,
-        required: true,
+        required: false,
     },
 ];
 
@@ -507,7 +507,7 @@ export const SD_DOCUMENTS: DocumentRequirement[] = [
     {
         type: 'PAS_FOTO',
         label: 'Pas Foto 3x4',
-        description: 'Upload pas foto ukuran 3x4',
+        description: 'Upload pas foto ukuran 3x4 (Wajib untuk Kartu Peserta)',
         acceptedFormats: ['.jpg', '.jpeg', '.png'],
         maxSizeMB: 2,
         required: true,
@@ -518,7 +518,7 @@ export const SD_DOCUMENTS: DocumentRequirement[] = [
         description: 'Upload scan Kartu Keluarga',
         acceptedFormats: ['.pdf', '.jpg', '.jpeg', '.png'],
         maxSizeMB: 5,
-        required: true,
+        required: false,
     },
     {
         type: 'AKTA_KELAHIRAN',
@@ -526,7 +526,7 @@ export const SD_DOCUMENTS: DocumentRequirement[] = [
         description: 'Upload scan Akta Kelahiran',
         acceptedFormats: ['.pdf', '.jpg', '.jpeg', '.png'],
         maxSizeMB: 5,
-        required: true,
+        required: false,
     },
     {
         type: 'KTP_ORTU',
@@ -550,7 +550,7 @@ export const SD_DOCUMENTS: DocumentRequirement[] = [
         description: 'Upload bukti transfer biaya pendaftaran',
         acceptedFormats: ['.jpg', '.jpeg', '.png', '.pdf'],
         maxSizeMB: 2,
-        required: true,
+        required: false,
     },
 ];
 

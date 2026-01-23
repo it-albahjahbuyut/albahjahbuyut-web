@@ -1,53 +1,54 @@
-"use client";
-import { useState, useEffect } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { OptimizedImage } from "@/components/ui/OptimizedImage";
 
-export function HeroSection() {
-    const [activeVideo, setActiveVideo] = useState<{ src: string; poster: string } | null>(null);
+interface HeroSectionProps {
+    videoSrc: string;
+    posterSrc: string;
+}
 
-    useEffect(() => {
-        const videos = [
-            {
-                src: "https://res.cloudinary.com/dand8rpbb/video/upload/q_auto/v1768020274/Untitled_Video_-_Made_With_Clipchamp_2_gvcww2.mp4",
-                poster: "https://res.cloudinary.com/dand8rpbb/video/upload/so_0,q_auto,f_auto/v1768020274/Untitled_Video_-_Made_With_Clipchamp_2_gvcww2.jpg"
-            },
-            {
-                src: "https://res.cloudinary.com/dand8rpbb/video/upload/v1767984439/Untitled_Video_-_Made_With_Clipchamp_rpbfw1.mp4",
-                poster: "https://res.cloudinary.com/dand8rpbb/video/upload/so_0,q_auto,f_auto/v1767984439/Untitled_Video_-_Made_With_Clipchamp_rpbfw1.jpg"
-            }
-        ];
-        setActiveVideo(videos[Math.floor(Math.random() * videos.length)]);
-    }, []);
-
+export function HeroSection({ videoSrc, posterSrc }: HeroSectionProps) {
     return (
         <section className="relative h-screen flex items-center justify-center overflow-hidden bg-emerald-950">
-            {/* Background Video - optimized for all devices */}
+            {/* LCP Optimization: Prioritized Background Image */}
+            <div className="absolute inset-0 z-0">
+                <OptimizedImage
+                    src={posterSrc}
+                    alt="Background Al-Bahjah Buyut"
+                    fill
+                    priority
+                    className="object-cover"
+                />
+            </div>
+
+            {/* Background Video - plays over the image */}
             <video
                 autoPlay
                 loop
                 muted
                 playsInline
-                className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ${activeVideo ? 'opacity-30' : 'opacity-0'}`}
-                poster={activeVideo?.poster}
+                className="absolute inset-0 h-full w-full object-cover z-0 mix-blend-normal opacity-100"
+                poster={posterSrc}
             >
-                {activeVideo && <source src={activeVideo.src} type="video/mp4" />}
+                <source src={videoSrc} type="video/mp4" />
             </video>
 
             {/* Darker Overlay for better text readability */}
-            <div className="absolute inset-0 bg-black/20" />
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-emerald-950/20 to-emerald-950/80" />
+            {/* Increased opacity to 50% as requested for better contrast without heavy rendering */}
+            <div className="absolute inset-0 bg-black/70 z-0" />
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-emerald-950/30 to-emerald-950/90 z-0" />
 
-            {/* Decorative Elements - Hidden on mobile for performance */}
-            <div className="hidden md:block absolute left-1/2 top-0 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gold-500/20 blur-3xl" />
-            <div className="hidden md:block absolute bottom-0 right-0 h-64 w-64 translate-x-1/3 translate-y-1/3 rounded-full bg-emerald-500/20 blur-3xl" />
+            {/* Decorative Elements */}
+            <div className="hidden md:block absolute left-1/2 top-0 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gold-500/20 blur-3xl z-10" />
+            <div className="hidden md:block absolute bottom-0 right-0 h-64 w-64 translate-x-1/3 translate-y-1/3 rounded-full bg-emerald-500/20 blur-3xl z-10" />
 
             <div className="container relative z-20 mx-auto px-4 text-center">
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, ease: "easeOut" }}
-                    className="max-w-4xl mx-auto"
+                <div
+                    className="max-w-4xl mx-auto animate-fade-in-up"
+                // Removed framer-motion here for faster LCP perception (CSS animation is often lighter for Hero LCP)
+                // Or keep it simple div if motion is causing delays. 
+                // To keep the 'wow' effect without hydration mismatch, we can use simple CSS classes if defined, 
+                // or just keep it static for the LCP element text.
+                // For now, removing client-side motion only on the wrapper to speed up initial paint.
                 >
                     <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 tracking-tight">
                         Bumi Mahabbah <br />
@@ -72,7 +73,7 @@ export function HeroSection() {
                             Lihat Profil
                         </Link>
                     </div>
-                </motion.div>
+                </div>
             </div>
         </section>
     );

@@ -71,13 +71,31 @@ export default async function HomePage() {
 
   const { units, featuredDonation, latestNews, navUnits } = await getHomePageData();
 
+  // Video Data for Hero Section (moved from HeroSection.tsx)
+  const heroVideos = [
+    {
+      src: "https://res.cloudinary.com/dand8rpbb/video/upload/q_auto/v1768020274/Untitled_Video_-_Made_With_Clipchamp_2_gvcww2.mp4",
+      poster: "https://res.cloudinary.com/dand8rpbb/video/upload/so_0,q_auto,f_auto/v1768020274/Untitled_Video_-_Made_With_Clipchamp_2_gvcww2.jpg"
+    },
+    {
+      src: "https://res.cloudinary.com/dand8rpbb/video/upload/v1767984439/Untitled_Video_-_Made_With_Clipchamp_rpbfw1.mp4",
+      poster: "https://res.cloudinary.com/dand8rpbb/video/upload/so_0,q_auto,f_auto/v1767984439/Untitled_Video_-_Made_With_Clipchamp_rpbfw1.jpg"
+    }
+  ];
+
+  // Select random video on server render
+  const selectedVideo = heroVideos[Math.floor(Math.random() * heroVideos.length)];
+
   return (
     <div className="flex min-h-screen flex-col font-sans text-slate-900 bg-white">
       <Navbar units={navUnits} />
 
       <main>
         {/* 1. Hero Section */}
-        <HeroSection />
+        <HeroSection
+          videoSrc={selectedVideo.src}
+          posterSrc={selectedVideo.poster}
+        />
 
         {/* 2. YouTube Live Stream (appears when channel is live) */}
         <YouTubeLiveSection />
