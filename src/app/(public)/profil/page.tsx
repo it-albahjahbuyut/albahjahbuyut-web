@@ -49,7 +49,7 @@ export default async function ProfilePage() {
         {
             name: "Abdurrosyid, S.Kom.",
             role: "HRD Al-Bahjah Buyut",
-            image: null,
+            image: "https://res.cloudinary.com/dand8rpbb/image/upload/v1769161676/WhatsApp_Image_2026-01-22_at_5.02.32_PM_qz6su8.jpg",
         }
     ];
 

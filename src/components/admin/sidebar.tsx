@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
     LayoutDashboard,
@@ -19,7 +19,7 @@ import {
     Loader2,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
 const navItems = [
@@ -72,21 +72,14 @@ const navItems = [
 
 export function AdminSidebar() {
     const pathname = usePathname();
-    const router = useRouter();
     const [isOpen, setIsOpen] = useState(false);
-    const [isPending, startTransition] = useTransition();
     const [loadingHref, setLoadingHref] = useState<string | null>(null);
 
     const handleNavigation = (href: string) => {
-        // Don't navigate if already on this page
+        // Don't set loading if already on this page
         if (pathname === href) return;
-
         setLoadingHref(href);
         setIsOpen(false);
-
-        startTransition(() => {
-            router.push(href);
-        });
     };
 
     // Reset loading state when pathname changes
@@ -137,13 +130,13 @@ export function AdminSidebar() {
                         const isActive =
                             pathname === item.href ||
                             (item.href !== "/admin" && pathname.startsWith(item.href));
-                        const isLoading = loadingHref === item.href && isPending;
+                        const isLoading = loadingHref === item.href;
 
                         return (
-                            <button
+                            <Link
                                 key={item.href}
+                                href={item.href}
                                 onClick={() => handleNavigation(item.href)}
-                                disabled={isLoading}
                                 className={cn(
                                     "flex w-full items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-all",
                                     isActive
@@ -158,7 +151,7 @@ export function AdminSidebar() {
                                     <item.icon className="h-5 w-5" />
                                 )}
                                 {item.title}
-                            </button>
+                            </Link>
                         );
                     })}
                 </nav>
