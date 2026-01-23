@@ -10,11 +10,11 @@ export function HeroSection() {
         const videos = [
             {
                 src: "https://res.cloudinary.com/dand8rpbb/video/upload/q_auto/v1768020274/Untitled_Video_-_Made_With_Clipchamp_2_gvcww2.mp4",
-                poster: "https://res.cloudinary.com/dand8rpbb/video/upload/so_0,q_auto,f_jpg/v1768020274/Untitled_Video_-_Made_With_Clipchamp_2_gvcww2.jpg"
+                poster: "https://res.cloudinary.com/dand8rpbb/video/upload/so_0,q_auto,f_auto/v1768020274/Untitled_Video_-_Made_With_Clipchamp_2_gvcww2.jpg"
             },
             {
                 src: "https://res.cloudinary.com/dand8rpbb/video/upload/v1767984439/Untitled_Video_-_Made_With_Clipchamp_rpbfw1.mp4",
-                poster: "https://res.cloudinary.com/dand8rpbb/video/upload/so_0,q_auto,f_jpg/v1767984439/Untitled_Video_-_Made_With_Clipchamp_rpbfw1.jpg"
+                poster: "https://res.cloudinary.com/dand8rpbb/video/upload/so_0,q_auto,f_auto/v1767984439/Untitled_Video_-_Made_With_Clipchamp_rpbfw1.jpg"
             }
         ];
         setActiveVideo(videos[Math.floor(Math.random() * videos.length)]);

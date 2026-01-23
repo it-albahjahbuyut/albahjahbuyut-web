@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { MapPin, Phone, Mail, Clock, Facebook, Instagram, Youtube } from "lucide-react";
 
 // Custom TikTok icon (lucide-react doesn't have one)
@@ -34,7 +35,13 @@ export function Footer() {
                     {/* About */}
                     <div className="lg:col-span-1">
                         <div className="mb-6">
-                            <img src="/logo-buyut.png" alt="Logo Al-Bahjah Buyut" className="h-20 w-auto object-contain mb-4" />
+                            <Image
+                                src="/logo-buyut.png"
+                                alt="Logo Al-Bahjah Buyut"
+                                width={200}
+                                height={80}
+                                className="h-20 w-auto object-contain mb-4"
+                            />
                             <div>
                                 <h3 className="text-lg font-bold tracking-wide">Al-Bahjah Buyut</h3>
                                 <p className="text-[10px] font-bold text-emerald-400 tracking-widest">Membangun Generasi Qur'ani</p>

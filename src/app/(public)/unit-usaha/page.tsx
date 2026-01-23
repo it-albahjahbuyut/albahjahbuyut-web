@@ -4,6 +4,7 @@ import Image from "next/image";
 import { ArrowUpRight, MapPin, Phone, Globe, ArrowRight } from "lucide-react";
 import { FadeIn, FadeInStagger } from "@/components/animations/FadeIn";
 import type { Metadata } from "next";
+import { OptimizedImage } from "@/components/ui/OptimizedImage";
 
 // Revalidate on every request to ensure data is always fresh after updates
 export const revalidate = 0;
@@ -69,12 +70,15 @@ export default async function UnitUsahaPage() {
         <main className="bg-slate-50 min-h-screen">
             {/* Hero Section - Standardized to match Infaq/Berita */}
             <section className="relative min-h-[50vh] flex items-center justify-center bg-emerald-950 overflow-hidden px-4 pt-24 pb-20">
-                <div
-                    className="absolute inset-0 bg-cover bg-center opacity-30 fixed-bg"
-                    style={{
-                        backgroundImage: `url('https://res.cloudinary.com/dand8rpbb/image/upload/v1768820687/WhatsApp_Image_2026-01-08_at_11.07.45_PM_ir9xhk.jpg')`
-                    }}
-                />
+                <div className="absolute inset-0 opacity-30 fixed-bg">
+                    <OptimizedImage
+                        src="https://res.cloudinary.com/dand8rpbb/image/upload/v1768820687/WhatsApp_Image_2026-01-08_at_11.07.45_PM_ir9xhk.jpg"
+                        alt="Unit Usaha Background"
+                        fill
+                        className="object-cover"
+                        priority
+                    />
+                </div>
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent to-emerald-950/90" />
 
                 <div className="relative z-10 container mx-auto px-4 text-center">
@@ -112,7 +116,7 @@ export default async function UnitUsahaPage() {
                                             <div className="relative aspect-[4/3] overflow-hidden bg-slate-100 group-hover:shadow-inner">
                                                 {unit.image ? (
                                                     <>
-                                                        <Image
+                                                        <OptimizedImage
                                                             src={unit.image}
                                                             alt={unit.name}
                                                             fill

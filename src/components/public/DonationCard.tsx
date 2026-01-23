@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { OptimizedImage } from "@/components/ui/OptimizedImage";
 import Link from "next/link";
 import { Copy, Check, Landmark, ArrowRight } from "lucide-react";
 import { useState } from "react";
@@ -62,7 +63,7 @@ export function DonationCard({ program, index = 0, featured = false }: DonationC
             {/* Image */}
             <div className="relative h-48 overflow-hidden bg-gradient-to-br from-emerald-600 to-emerald-800">
                 {program.image ? (
-                    <Image
+                    <OptimizedImage
                         src={program.image}
                         alt={program.title}
                         fill

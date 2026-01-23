@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { OptimizedImage } from "@/components/ui/OptimizedImage";
 import Link from "next/link";
 import { Target, User, GraduationCap, BookOpen, Scroll, BookOpenCheck, Quote, ArrowRight } from "lucide-react";
 import { db } from "@/lib/db";
@@ -58,12 +59,15 @@ export default async function ProfilePage() {
         <main className="bg-white">
             {/* Hero Section */}
             <section className="relative min-h-[50vh] flex items-center justify-center bg-emerald-950 overflow-hidden px-4 pt-24 pb-20">
-                <div
-                    className="absolute inset-0 bg-cover bg-center opacity-40 fixed-bg"
-                    style={{
-                        backgroundImage: `url('https://res.cloudinary.com/dand8rpbb/image/upload/v1767934623/WhatsApp_Image_2026-01-08_at_11.07.46_PM_qqhota.jpg')`
-                    }}
-                />
+                <div className="absolute inset-0 opacity-40 fixed-bg">
+                    <OptimizedImage
+                        src="https://res.cloudinary.com/dand8rpbb/image/upload/v1767934623/WhatsApp_Image_2026-01-08_at_11.07.46_PM_qqhota.jpg"
+                        alt="Profil Background"
+                        fill
+                        className="object-cover"
+                        priority
+                    />
+                </div>
                 <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/20 via-emerald-950/60 to-emerald-950/90" />
 
                 <div className="relative z-10 container mx-auto px-4 text-center">
@@ -116,7 +120,7 @@ export default async function ProfilePage() {
                             {/* Floated Image - Right for Buya to alternate */}
                             <div className="float-right w-full md:w-72 lg:w-80 ml-8 mb-4 md:mb-2 relative">
                                 <div className="aspect-[3/4] relative rounded-2xl overflow-hidden shadow-xl ring-1 ring-slate-200">
-                                    <Image
+                                    <OptimizedImage
                                         src="https://upload.wikimedia.org/wikipedia/commons/a/aa/Buya_Yahya.jpg"
                                         alt="Buya Yahya"
                                         fill
@@ -167,7 +171,7 @@ export default async function ProfilePage() {
                             {/* Floated Image */}
                             <div className="float-left w-full md:w-72 lg:w-80 mr-8 mb-4 md:mb-2 relative">
                                 <div className="aspect-[3/4] relative rounded-2xl overflow-hidden shadow-xl ring-1 ring-slate-200">
-                                    <Image
+                                    <OptimizedImage
                                         src="https://res.cloudinary.com/dand8rpbb/image/upload/v1767976355/DSC00058_ioql27.jpg"
                                         alt="Abah Sayf Abu Hanifah"
                                         fill
@@ -343,7 +347,7 @@ export default async function ProfilePage() {
                                     {/* Image Container */}
                                     <div className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-slate-100 mb-4 mx-auto w-full max-w-[240px]">
                                         {figure.image ? (
-                                            <Image
+                                            <OptimizedImage
                                                 src={figure.image}
                                                 alt={figure.name}
                                                 fill
@@ -415,7 +419,7 @@ export default async function ProfilePage() {
                                     >
                                         {/* Background Image with Gradient */}
                                         <div className="absolute inset-0 bg-emerald-950">
-                                            <Image
+                                            <OptimizedImage
                                                 src={unit.image || defaultImage}
                                                 alt={unit.name}
                                                 fill

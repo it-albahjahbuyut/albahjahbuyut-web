@@ -40,3 +40,32 @@ export function getCloudinaryUrl(
 export function isCloudinaryUrl(url: string): boolean {
     return url.includes("res.cloudinary.com");
 }
+
+// Next.js Image Loader
+export function cloudinaryLoader({
+    src,
+    width,
+    quality,
+}: {
+    src: string;
+    width: number;
+    quality?: number;
+}) {
+    // If it's already a full Cloudinary URL, we can inject params
+    if (isCloudinaryUrl(src)) {
+        // Simple regex to insert transformations after /upload/
+        // This handles cases where src might already have some transforms
+        const uploadIndex = src.indexOf("/upload/");
+        if (uploadIndex === -1) return src;
+
+        const prefix = src.slice(0, uploadIndex + 8); // include /upload/
+        const suffix = src.slice(uploadIndex + 8);
+        const params = [`f_auto`, `q_${quality || "auto"}`, `w_${width}`];
+
+        return `${prefix}${params.join(",")}/${suffix}`;
+    }
+
+    // If it's just a public ID (often safer/cleaner)
+    const params = [`f_auto`, `q_${quality || "auto"}`, `w_${width}`];
+    return `https://res.cloudinary.com/${cloudinaryConfig.cloudName}/image/upload/${params.join(",")}/${src}`;
+}

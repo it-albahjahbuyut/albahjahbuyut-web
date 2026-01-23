@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import { OptimizedImage } from "@/components/ui/OptimizedImage";
 import { Image as ImageIcon } from "lucide-react";
 import { FadeIn } from "@/components/animations/FadeIn";
 import { GalleryGrid } from "./gallery-grid";
@@ -31,12 +32,15 @@ export default async function GalleryPage() {
         <main>
             {/* Hero Section */}
             <section className="relative min-h-[50vh] flex items-center justify-center bg-emerald-950 overflow-hidden px-4 pt-24 pb-20">
-                <div
-                    className="absolute inset-0 bg-cover bg-center opacity-30 fixed-bg"
-                    style={{
-                        backgroundImage: `url('https://res.cloudinary.com/dand8rpbb/image/upload/v1767984690/DSC00034_xsnbmq.jpg')`
-                    }}
-                />
+                <div className="absolute inset-0 opacity-30 fixed-bg">
+                    <OptimizedImage
+                        src="https://res.cloudinary.com/dand8rpbb/image/upload/v1767984690/DSC00034_xsnbmq.jpg"
+                        alt="Galeri Background"
+                        fill
+                        className="object-cover"
+                        priority
+                    />
+                </div>
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent to-emerald-950/90" />
 
                 <div className="relative z-10 container mx-auto px-4 text-center">

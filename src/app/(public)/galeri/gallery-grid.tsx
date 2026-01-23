@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { OptimizedImage } from "@/components/ui/OptimizedImage";
 import { X, ChevronLeft, ChevronRight, ZoomIn } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { FadeIn, FadeInStagger } from "@/components/animations/FadeIn";
@@ -81,7 +82,7 @@ export function GalleryGrid({ galleries }: GalleryGridProps) {
                             className="group relative rounded-2xl overflow-hidden bg-white shadow-md hover:shadow-xl transition-all duration-500 w-full text-left focus:outline-none focus:ring-2 focus:ring-emerald-500"
                         >
                             <div className="relative">
-                                <Image
+                                <OptimizedImage
                                     src={gallery.imageUrl}
                                     alt={gallery.title}
                                     width={800}
@@ -160,7 +161,7 @@ export function GalleryGrid({ galleries }: GalleryGridProps) {
 
                         {/* Image */}
                         <div className="relative w-full h-full max-w-5xl max-h-full">
-                            <Image
+                            <OptimizedImage
                                 src={currentGallery.imageUrl}
                                 alt={currentGallery.title}
                                 fill
@@ -216,7 +217,7 @@ export function GalleryGrid({ galleries }: GalleryGridProps) {
                                                 : "border-transparent opacity-60 hover:opacity-100"
                                         )}
                                     >
-                                        <Image
+                                        <OptimizedImage
                                             src={gallery.imageUrl}
                                             alt={gallery.title}
                                             fill

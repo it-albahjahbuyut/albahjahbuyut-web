@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { OptimizedImage } from "@/components/ui/OptimizedImage";
 import Link from "next/link";
 import {
     BookOpen,
@@ -44,7 +45,7 @@ export function UnitCard({ unit, index = 0 }: UnitCardProps) {
                     {/* Image Section */}
                     <div className="relative h-48 overflow-hidden bg-gradient-to-br from-emerald-600 to-emerald-800">
                         {unit.image ? (
-                            <Image
+                            <OptimizedImage
                                 src={unit.image}
                                 alt={unit.name}
                                 fill

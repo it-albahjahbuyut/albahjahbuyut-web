@@ -4,6 +4,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import {
     Menu,
@@ -64,7 +65,14 @@ export function Navbar({ units }: NavbarProps) {
                 {/* Logo */}
                 {/* Logo */}
                 <Link href="/" className="flex items-center gap-3">
-                    <img src="/logo-buyut.png" alt="Logo Al-Bahjah Buyut" className="h-12 w-auto object-contain" />
+                    <Image
+                        src="/logo-buyut.png"
+                        alt="Logo Al-Bahjah Buyut"
+                        width={200}
+                        height={80}
+                        className="h-12 w-auto object-contain"
+                        priority
+                    />
                 </Link>
 
                 {/* Desktop Navigation */}

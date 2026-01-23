@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import { DonationCard } from "@/components/public/DonationCard";
+import { OptimizedImage } from "@/components/ui/OptimizedImage";
 import { Heart, ArrowRight } from "lucide-react";
 import { FadeIn, FadeInStagger } from "@/components/animations/FadeIn";
 import type { Metadata } from "next";
@@ -33,12 +34,15 @@ export default async function DonationPage() {
         <main className="bg-slate-50 min-h-screen">
             {/* Hero Section */}
             <section className="relative min-h-[50vh] flex items-center justify-center bg-emerald-950 overflow-hidden px-4 pt-24 pb-20">
-                <div
-                    className="absolute inset-0 bg-cover bg-center opacity-30 fixed-bg"
-                    style={{
-                        backgroundImage: `url('https://res.cloudinary.com/dand8rpbb/image/upload/v1767934623/WhatsApp_Image_2026-01-08_at_11.07.46_PM_1_uzkquu.jpg')`
-                    }}
-                />
+                <div className="absolute inset-0 opacity-30 fixed-bg">
+                    <OptimizedImage
+                        src="https://res.cloudinary.com/dand8rpbb/image/upload/v1767934623/WhatsApp_Image_2026-01-08_at_11.07.46_PM_1_uzkquu.jpg"
+                        alt="Infaq Background"
+                        fill
+                        className="object-cover"
+                        priority
+                    />
+                </div>
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent to-emerald-950/90" />
 
                 <div className="relative z-10 container mx-auto px-4 text-center">

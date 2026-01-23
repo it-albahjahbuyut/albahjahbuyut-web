@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { FadeIn, FadeInStagger } from "@/components/animations/FadeIn";
+import { AnimatedCounter } from "@/components/animations/AnimatedCounter";
+import { OptimizedImage } from "@/components/ui/OptimizedImage";
 
 export function FeaturesSection() {
     return (
@@ -7,12 +9,15 @@ export function FeaturesSection() {
             {/* Main Banner Area */}
             <div className="relative py-16 lg:py-24 flex items-center justify-center overflow-hidden">
                 {/* Background Image with Parallax-like fixed attachment */}
-                <div
-                    className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-fixed opacity-40"
-                    style={{
-                        backgroundImage: `url('https://res.cloudinary.com/dand8rpbb/image/upload/v1768123892/WhatsApp_Image_2026-01-08_at_11.07.43_PM_vpzgeu.jpg')`
-                    }}
-                />
+                <div className="absolute inset-0 opacity-40">
+                    <OptimizedImage
+                        src="https://res.cloudinary.com/dand8rpbb/image/upload/v1768123892/WhatsApp_Image_2026-01-08_at_11.07.43_PM_vpzgeu.jpg"
+                        alt="Background Masjid"
+                        fill
+                        className="object-cover object-center"
+                        priority
+                    />
+                </div>
 
                 {/* Gradient Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-b from-emerald-950/80 via-emerald-900/60 to-emerald-950/90" />
@@ -23,6 +28,7 @@ export function FeaturesSection() {
                             Visi & Misi
                         </span>
                     </FadeIn>
+
 
                     <FadeIn delay={0.2}>
                         <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold uppercase tracking-tighter mb-6 max-w-5xl text-white leading-[1.1] text-left">
@@ -55,15 +61,15 @@ export function FeaturesSection() {
                 <div className="container mx-auto px-4">
                     <FadeInStagger className="grid grid-cols-2 lg:grid-cols-4 [&>*]:border-white/10 [&>*:nth-child(even)]:border-l lg:[&>*:nth-child(3)]:border-l">
                         {[
-                            { number: "55", label: "Pengajar" },
-                            { number: "550+", label: "Alumni" },
-                            { number: "25+", label: "Fasilitas" },
-                            { number: "20+", label: "Ekstrakulikuler" },
+                            { number: 55, suffix: "", label: "Pengajar" },
+                            { number: 550, suffix: "+", label: "Alumni" },
+                            { number: 25, suffix: "+", label: "Fasilitas" },
+                            { number: 20, suffix: "+", label: "Ekstrakulikuler" },
                         ].map((stat, idx) => (
                             <FadeIn key={idx}>
                                 <div className="py-8 text-center group cursor-default hover:bg-white/5 transition-colors">
                                     <div className="text-3xl md:text-4xl font-bold text-white mb-2 group-hover:text-gold-400 transition-colors bg-clip-text">
-                                        {stat.number}
+                                        <AnimatedCounter value={stat.number} suffix={stat.suffix} />
                                     </div>
                                     <div className="text-xs font-bold uppercase tracking-[0.2em] text-emerald-400/80 group-hover:text-white transition-colors">
                                         {stat.label}

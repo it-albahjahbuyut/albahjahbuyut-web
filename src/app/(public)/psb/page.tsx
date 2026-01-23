@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { FadeIn, FadeInStagger } from "@/components/animations/FadeIn";
 import { FAQSection } from "@/components/psb/FAQSection";
+import { OptimizedImage } from "@/components/ui/OptimizedImage";
 
 export const metadata = {
     title: "Penerimaan Santri Baru (PSB) | Pondok Pesantren Al-Bahjah Buyut",
@@ -70,12 +71,15 @@ export default async function PSBPage() {
         <main className="bg-white min-h-screen font-sans selection:bg-emerald-100 selection:text-emerald-900">
             {/* Hero Section */}
             <section className="relative min-h-[60vh] flex items-center justify-center bg-emerald-950 overflow-hidden px-4 pt-24 pb-20">
-                <div
-                    className="absolute inset-0 bg-cover bg-center opacity-30 fixed-bg"
-                    style={{
-                        backgroundImage: `url('https://res.cloudinary.com/dand8rpbb/image/upload/v1767984833/IMG_8043_tnqwdf.jpg')`
-                    }}
-                />
+                <div className="absolute inset-0 opacity-30 fixed-bg">
+                    <OptimizedImage
+                        src="https://res.cloudinary.com/dand8rpbb/image/upload/v1767984833/IMG_8043_tnqwdf.jpg"
+                        alt="Background PSB"
+                        fill
+                        className="object-cover object-center"
+                        priority
+                    />
+                </div>
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent to-emerald-950/90" />
 
                 <div className="relative z-10 container mx-auto px-4 text-center">
@@ -493,7 +497,7 @@ export default async function PSBPage() {
                                 </div>
                                 <h3 className="text-xl font-bold text-emerald-950 mb-1">Santri Reguler</h3>
                                 <p className="text-slate-400 text-sm mb-6">Untuk calon santri reguler</p>
-                                
+
                                 <div className="space-y-5">
                                     <div className="bg-slate-50 rounded-xl p-4">
                                         <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Santri Umum</div>
@@ -520,7 +524,7 @@ export default async function PSBPage() {
                                 </div>
                                 <h3 className="text-xl font-bold text-emerald-950 mb-1">Program Beasiswa</h3>
                                 <p className="text-slate-400 text-sm mb-6">Penawaran khusus beasiswa</p>
-                                
+
                                 <div className="space-y-5">
                                     <div className="bg-slate-50 rounded-xl p-4">
                                         <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Santri Umum</div>

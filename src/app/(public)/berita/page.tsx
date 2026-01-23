@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { OptimizedImage } from "@/components/ui/OptimizedImage";
 import { db } from "@/lib/db";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
@@ -52,12 +53,15 @@ export default async function NewsPage() {
         <main className="bg-slate-50 min-h-screen">
             {/* Hero Section */}
             <section className="relative min-h-[50vh] flex items-center justify-center bg-emerald-950 overflow-hidden px-4 pt-24 pb-20">
-                <div
-                    className="absolute inset-0 bg-cover bg-center opacity-30 fixed-bg"
-                    style={{
-                        backgroundImage: `url('https://res.cloudinary.com/dand8rpbb/image/upload/v1767984965/IMG_8054_zkwzrx.jpg')`
-                    }}
-                />
+                <div className="absolute inset-0 opacity-30 fixed-bg">
+                    <OptimizedImage
+                        src="https://res.cloudinary.com/dand8rpbb/image/upload/v1767984965/IMG_8054_zkwzrx.jpg"
+                        alt="Kabar Pesantren"
+                        fill
+                        className="object-cover"
+                        priority
+                    />
+                </div>
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent to-emerald-950/90" />
 
                 <div className="relative z-10 container mx-auto px-4 text-center">
@@ -90,7 +94,7 @@ export default async function NewsPage() {
                                         {/* Image */}
                                         <div className="relative h-56 overflow-hidden bg-slate-200 shrink-0">
                                             {post.image ? (
-                                                <Image
+                                                <OptimizedImage
                                                     src={post.image}
                                                     alt={post.title}
                                                     fill

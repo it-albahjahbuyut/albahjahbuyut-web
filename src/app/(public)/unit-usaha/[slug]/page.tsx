@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { FadeIn, FadeInStagger } from "@/components/animations/FadeIn";
 import { Button } from "@/components/ui/button";
+import { OptimizedImage } from "@/components/ui/OptimizedImage";
 
 // Revalidate on every request to ensure data is always fresh after updates
 export const revalidate = 0;
@@ -94,7 +95,7 @@ export default async function BusinessUnitDetailPage({
                 {/* Background Image */}
                 <div className="absolute inset-0 z-0">
                     {unit.image ? (
-                        <Image
+                        <OptimizedImage
                             src={unit.image}
                             alt={unit.name}
                             fill
@@ -102,12 +103,14 @@ export default async function BusinessUnitDetailPage({
                             priority
                         />
                     ) : (
-                        <div
-                            className="absolute inset-0 bg-cover bg-center opacity-30 fixed-bg"
-                            style={{
-                                backgroundImage: `url('https://res.cloudinary.com/dand8rpbb/image/upload/v1767934623/WhatsApp_Image_2026-01-08_at_11.07.46_PM_1_uzkquu.jpg')`
-                            }}
-                        />
+                        <div className="absolute inset-0 opacity-30 fixed-bg">
+                            <OptimizedImage
+                                src="https://res.cloudinary.com/dand8rpbb/image/upload/v1767934623/WhatsApp_Image_2026-01-08_at_11.07.46_PM_1_uzkquu.jpg"
+                                alt="Unit Usaha Background"
+                                fill
+                                className="object-cover"
+                            />
+                        </div>
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-emerald-950 via-emerald-950/40 to-transparent" />
                     <div className="absolute inset-0 bg-emerald-950/30" />
@@ -208,7 +211,7 @@ export default async function BusinessUnitDetailPage({
                                                 key={image.id}
                                                 className="group relative overflow-hidden rounded-2xl shadow-lg break-inside-avoid"
                                             >
-                                                <Image
+                                                <OptimizedImage
                                                     src={image.imageUrl}
                                                     alt={image.caption || `${unit.name} - Gambar ${index + 1}`}
                                                     width={800}
