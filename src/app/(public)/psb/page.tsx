@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { FadeIn, FadeInStagger } from "@/components/animations/FadeIn";
 import { FAQSection } from "@/components/psb/FAQSection";
+import { AgendaSection } from "@/components/psb/AgendaSection";
 import { OptimizedImage } from "@/components/ui/OptimizedImage";
 
 export const metadata = {
@@ -354,6 +355,9 @@ export default async function PSBPage() {
                     </div>
                 </div>
             </section>
+
+            {/* Agenda Harian */}
+            <AgendaSection />
 
             {/* Rincian Biaya */}
             <section className="py-24 bg-white relative">
