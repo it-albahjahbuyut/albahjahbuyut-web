@@ -360,8 +360,8 @@ export default async function PSBPage() {
             {/* Agenda Harian */}
             <AgendaSection />
 
-            {/* Galeri Kegiatan */}
-            <GallerySection />
+            {/* Galeri Kegiatan - Disabled for now */}
+            {/* <GallerySection /> */}
 
             {/* Rincian Biaya */}
             <section className="py-24 bg-white relative">
