@@ -95,14 +95,8 @@ export function MajelisForm({ majelis, isNew = false }: MajelisFormProps) {
             <AdminHeader
                 title={isNew ? "Tambah Majelis" : "Edit Majelis"}
                 description={isNew ? "Tambahkan jadwal majelis rutin baru" : `Edit jadwal ${majelis?.title}`}
-            >
-                <Link href="/admin/majelis">
-                    <Button variant="outline">
-                        <ArrowLeft className="h-4 w-4 mr-2" />
-                        Kembali
-                    </Button>
-                </Link>
-            </AdminHeader>
+                showBackButton={true}
+            />
 
             <form onSubmit={handleSubmit} className="p-6">
                 <div className="max-w-2xl space-y-6">

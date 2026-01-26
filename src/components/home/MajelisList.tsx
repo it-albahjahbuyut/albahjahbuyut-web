@@ -27,7 +27,7 @@ export function MajelisList({ activities }: MajelisListProps) {
                     >
                         {/* Schedule Badge */}
                         <div className="inline-flex items-center gap-2 mb-6">
-                            <span className="w-2 h-2 rounded-full bg-gold-500" />
+                            <span className="w-2 h-2 rounded-none bg-gold-500" />
                             <span className="text-xs font-bold uppercase tracking-widest text-slate-400 group-hover:text-gold-600 transition-colors">
                                 {activity.schedule}
                             </span>

@@ -62,6 +62,7 @@ export default function PostsPage() {
             <AdminHeader
                 title="Berita & Artikel"
                 description="Kelola berita, pengumuman, dan artikel pesantren"
+                showBackButton={true}
             />
             <div className="p-6">
                 <Suspense fallback={<PostsSkeleton />}>

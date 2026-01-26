@@ -46,7 +46,7 @@ export function ProfileSection() {
                             <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
                                 <Link
                                     href="/profil"
-                                    className="px-8 py-3 bg-emerald-950 text-white text-xs font-bold uppercase tracking-widest rounded-full hover:bg-emerald-900 transition-all shadow-lg hover:shadow-emerald-900/20"
+                                    className="px-8 py-3 bg-emerald-950 text-white text-xs font-bold uppercase tracking-widest rounded-none hover:bg-emerald-900 transition-all shadow-lg hover:shadow-emerald-900/20"
                                 >
                                     Profil Lengkap
                                 </Link>

@@ -7,6 +7,7 @@ export default function NewDonationPage() {
             <AdminHeader
                 title="Tambah Program Donasi"
                 description="Buat program donasi atau infaq baru"
+                showBackButton={true}
             />
             <div className="p-6">
                 <div className="max-w-2xl">

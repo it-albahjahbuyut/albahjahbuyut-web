@@ -11,16 +11,19 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { signOut } from "next-auth/react";
-import { LogOut, User } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { LogOut, User, ChevronLeft } from "lucide-react";
 
 interface AdminHeaderProps {
     title: string;
     description?: string;
     children?: React.ReactNode;
+    showBackButton?: boolean;
 }
 
-export function AdminHeader({ title, description, children }: AdminHeaderProps) {
+export function AdminHeader({ title, description, children, showBackButton }: AdminHeaderProps) {
     const { data: session } = useSession();
+    const router = useRouter();
 
     const getInitials = (name?: string | null) => {
         if (!name) return "AD";
@@ -34,11 +37,22 @@ export function AdminHeader({ title, description, children }: AdminHeaderProps) 
 
     return (
         <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-white px-6">
-            <div>
-                <h1 className="text-xl font-semibold text-gray-900">{title}</h1>
-                {description && (
-                    <p className="text-sm text-gray-500">{description}</p>
+            <div className="flex items-center gap-4">
+                {showBackButton && (
+                    <button
+                        onClick={() => router.back()}
+                        className="flex h-8 w-8 items-center justify-center rounded-lg border bg-white text-gray-500 hover:bg-gray-50 hover:text-gray-700 transition-colors"
+                        title="Kembali"
+                    >
+                        <ChevronLeft className="h-5 w-5" />
+                    </button>
                 )}
+                <div>
+                    <h1 className="text-xl font-semibold text-gray-900">{title}</h1>
+                    {description && (
+                        <p className="text-sm text-gray-500">{description}</p>
+                    )}
+                </div>
             </div>
 
             <div className="flex items-center gap-4">

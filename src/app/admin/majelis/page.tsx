@@ -39,6 +39,7 @@ export default function MajelisPage() {
             <AdminHeader
                 title="Majelis Rutin"
                 description="Kelola jadwal kegiatan majelis rutin mingguan"
+                showBackButton={true}
             >
                 <Link href="/admin/majelis/new">
                     <Button className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700">

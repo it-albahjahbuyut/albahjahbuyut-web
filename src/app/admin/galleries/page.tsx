@@ -51,6 +51,7 @@ export default function GalleriesPage() {
             <AdminHeader
                 title="Galeri"
                 description="Kelola foto dan gambar pesantren"
+                showBackButton={true}
             >
                 <Link href="/admin/galleries/new">
                     <Button className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700">

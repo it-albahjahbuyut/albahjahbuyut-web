@@ -11,6 +11,7 @@ export default async function NewPostPage() {
             <AdminHeader
                 title="Tambah Artikel"
                 description="Buat artikel atau berita baru"
+                showBackButton={true}
             />
             <div className="p-6">
                 <div className="max-w-4xl">

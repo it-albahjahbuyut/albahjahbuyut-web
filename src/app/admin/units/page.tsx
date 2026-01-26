@@ -35,6 +35,7 @@ export default function UnitsPage() {
             <AdminHeader
                 title="Unit Pendidikan"
                 description="Kelola informasi unit pendidikan: SMP, SMA, Tafaqquh, dan Tahfidz"
+                showBackButton={true}
             />
             <div className="p-6">
                 <Suspense fallback={<UnitsSkeleton />}>

@@ -9,15 +9,10 @@ export function FeaturesSection() {
             {/* Main Banner Area */}
             <div className="relative py-16 lg:py-24 flex items-center justify-center overflow-hidden">
                 {/* Background Image with Parallax-like fixed attachment */}
-                <div className="absolute inset-0 opacity-40">
-                    <OptimizedImage
-                        src="https://res.cloudinary.com/dand8rpbb/image/upload/v1768123892/WhatsApp_Image_2026-01-08_at_11.07.43_PM_vpzgeu.jpg"
-                        alt="Background Masjid"
-                        fill
-                        className="object-cover object-center"
-                        priority
-                    />
-                </div>
+                <div
+                    className="absolute inset-0 opacity-40 bg-fixed bg-cover bg-center"
+                    style={{ backgroundImage: `url(https://res.cloudinary.com/dand8rpbb/image/upload/q_auto,f_auto/v1768123892/WhatsApp_Image_2026-01-08_at_11.07.43_PM_vpzgeu.jpg)` }}
+                />
 
                 {/* Gradient Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-b from-emerald-950/80 via-emerald-900/60 to-emerald-950/90" />
@@ -48,7 +43,7 @@ export function FeaturesSection() {
                     <FadeIn delay={0.6} className="flex flex-col sm:flex-row items-start justify-start gap-6 mb-12">
                         <Link
                             href="https://wa.me/6282318611707"
-                            className="group relative px-8 py-4 bg-gold-500 text-emerald-950 font-bold tracking-widest text-xs overflow-hidden rounded-full transition-all hover:bg-white hover:text-emerald-950 hover:shadow-[0_0_40px_-10px_rgba(255,255,255,0.3)]"
+                            className="group relative px-8 py-4 bg-gold-500 text-emerald-950 font-bold tracking-widest text-xs overflow-hidden rounded-none transition-all hover:bg-white hover:text-emerald-950 hover:shadow-[0_0_40px_-10px_rgba(255,255,255,0.3)]"
                         >
                             <span className="relative z-10">Hubungi Kami</span>
                         </Link>

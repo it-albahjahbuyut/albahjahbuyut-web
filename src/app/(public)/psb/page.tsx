@@ -15,6 +15,7 @@ import {
 import { FadeIn, FadeInStagger } from "@/components/animations/FadeIn";
 import { FAQSection } from "@/components/psb/FAQSection";
 import { AgendaSection } from "@/components/psb/AgendaSection";
+import { GallerySection } from "@/components/psb/GallerySection";
 import { OptimizedImage } from "@/components/ui/OptimizedImage";
 
 export const metadata = {
@@ -358,6 +359,9 @@ export default async function PSBPage() {
 
             {/* Agenda Harian */}
             <AgendaSection />
+
+            {/* Galeri Kegiatan */}
+            <GallerySection />
 
             {/* Rincian Biaya */}
             <section className="py-24 bg-white relative">

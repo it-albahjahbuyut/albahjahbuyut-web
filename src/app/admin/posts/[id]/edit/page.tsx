@@ -26,6 +26,7 @@ export default async function EditPostPage({ params }: EditPostPageProps) {
             <AdminHeader
                 title="Edit Artikel"
                 description={postResult.data.title}
+                showBackButton={true}
             />
             <div className="p-6">
                 <div className="max-w-4xl">

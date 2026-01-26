@@ -67,7 +67,7 @@ export async function LatestVideosSection() {
                     <Link
                         href={`https://www.youtube.com/channel/${process.env.YOUTUBE_CHANNEL_ID}`}
                         target="_blank"
-                        className="group flex items-center gap-2 bg-white text-slate-900 px-6 py-3 rounded-full font-semibold shadow-sm border border-slate-200 hover:border-red-200 hover:text-red-600 transition-all self-start md:self-end"
+                        className="group flex items-center gap-2 bg-white text-slate-900 px-6 py-3 rounded-none font-semibold shadow-sm border border-slate-200 hover:border-red-200 hover:text-red-600 transition-all self-start md:self-end"
                     >
                         <Youtube className="w-5 h-5 text-red-600" />
                         Lihat Channel

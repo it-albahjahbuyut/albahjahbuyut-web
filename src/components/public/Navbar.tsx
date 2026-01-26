@@ -166,7 +166,7 @@ export function Navbar({ units }: NavbarProps) {
                     {/* Mobile Menu Button */}
                     <button
                         onClick={() => setIsOpen(!isOpen)}
-                        className={`flex h-10 w-10 items-center justify-center rounded-sm transition-colors lg:hidden ${mobileMenuButtonColor}`}
+                        className={`flex h-10 w-10 items-center justify-center rounded-none transition-colors lg:hidden ${mobileMenuButtonColor}`}
                     >
                         {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
                     </button>
@@ -219,7 +219,7 @@ export function Navbar({ units }: NavbarProps) {
                                 <Link
                                     href="/psb"
                                     onClick={() => setIsOpen(false)}
-                                    className="flex w-full items-center justify-center rounded-full bg-gradient-to-r from-emerald-600 to-emerald-700 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/20"
+                                    className="flex w-full items-center justify-center rounded-none bg-gradient-to-r from-emerald-600 to-emerald-700 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/20"
                                 >
                                     PSB Online
                                 </Link>

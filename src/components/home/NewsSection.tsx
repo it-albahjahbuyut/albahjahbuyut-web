@@ -120,7 +120,7 @@ export function NewsSection({ posts }: { posts: Post[] }) {
                 <div className="mt-12 text-center md:hidden">
                     <Link
                         href="/berita"
-                        className="inline-flex items-center justify-center px-8 py-4 bg-emerald-950 text-white font-bold rounded-full text-sm tracking-widest hover:bg-emerald-900 transition-all shadow-lg shadow-emerald-900/20"
+                        className="inline-flex items-center justify-center px-8 py-4 bg-emerald-950 text-white font-bold rounded-none text-sm tracking-widest hover:bg-emerald-900 transition-all shadow-lg shadow-emerald-900/20"
                     >
                         Lihat Semua
                     </Link>

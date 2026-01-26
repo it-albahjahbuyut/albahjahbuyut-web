@@ -37,7 +37,7 @@ export function DonationSection({ program }: { program: DonationProgram | null }
                             <p className="text-slate-600 mb-8 leading-relaxed font-light text-lg">
                                 Saat ini kami sedang mempersiapkan program kebaikan selanjutnya. Mari bersama-sama menebar manfaat untuk umat.
                             </p>
-                            <Button asChild className="rounded-full bg-emerald-950 text-white hover:bg-emerald-900">
+                            <Button asChild className="rounded-none bg-emerald-950 text-white hover:bg-emerald-900">
                                 <Link href="/infaq">
                                     Lihat Program Lain <ArrowRight className="ml-2 w-4 h-4" />
                                 </Link>
@@ -57,8 +57,14 @@ export function DonationSection({ program }: { program: DonationProgram | null }
         : program.targetAmount.toNumber();
     const percentage = target > 0 ? Math.min((current / target) * 100, 100) : 0;
 
-    // Sembunyikan progress jika hideProgress true atau jika target dan current keduanya 0
-    const showProgress = !program.hideProgress && (target > 0 || current > 0);
+    // Logic:
+    // 1. Show the floating card if we have anything to show (collected > 0 or target > 0)
+    //    UNLESS hideProgress is explicitly true in admin.
+    const showStatsCard = !program.hideProgress && (target > 0 || current > 0);
+
+    // 2. Even if we show the card (because collected > 0), we might want to hide the bar 
+    //    if there's no target (target = 0).
+    const showProgressDetails = target > 0;
 
     return (
         <section className="py-12 md:py-20 bg-slate-50 relative">
@@ -70,7 +76,7 @@ export function DonationSection({ program }: { program: DonationProgram | null }
                         {/* Left Column: Content */}
                         <div className="p-6 md:p-10 lg:p-14 order-2 lg:order-1 flex flex-col justify-center">
                             <FadeIn>
-                                <div className="inline-flex items-center gap-2 text-emerald-600 text-xs font-bold uppercase tracking-widest mb-4 bg-emerald-50 px-3 py-1 rounded-full w-fit">
+                                <div className="inline-flex items-center gap-2 text-emerald-600 text-xs font-bold uppercase tracking-widest mb-4 bg-emerald-50 px-3 py-1 rounded-none w-fit">
                                     Program Infaq
                                 </div>
 
@@ -87,7 +93,7 @@ export function DonationSection({ program }: { program: DonationProgram | null }
                                     <Button
                                         asChild
                                         size="lg"
-                                        className="rounded-full bg-emerald-600 hover:bg-emerald-700 text-white h-12 px-8 text-base shadow-lg shadow-emerald-600/20"
+                                        className="rounded-none bg-emerald-600 hover:bg-emerald-700 text-white h-12 px-8 text-base shadow-lg shadow-emerald-600/20"
                                     >
                                         <Link href={`/infaq/${program.slug}`}>
                                             Infaq Sekarang
@@ -97,7 +103,7 @@ export function DonationSection({ program }: { program: DonationProgram | null }
                                         asChild
                                         variant="outline"
                                         size="lg"
-                                        className="rounded-full border-slate-200 text-slate-600 hover:bg-slate-50 h-12 px-8 text-base"
+                                        className="rounded-none border-slate-200 text-slate-600 hover:bg-slate-50 h-12 px-8 text-base"
                                     >
                                         <Link href="/infaq">
                                             Program Lain
@@ -125,9 +131,9 @@ export function DonationSection({ program }: { program: DonationProgram | null }
                             )}
 
                             {/* Floating Stats Card - only show if there's progress */}
-                            {showProgress && (
+                            {showStatsCard && (
                                 <div className="absolute bottom-0 left-0 right-0 p-4 lg:p-6 bg-gradient-to-t from-black/60 to-transparent">
-                                    <FadeIn delay={0.2} className="bg-white rounded-xl p-5 shadow-lg shadow-black/5 border border-slate-100 w-full relative z-20">
+                                    <FadeIn delay={0.2} className="bg-white rounded-none p-5 shadow-lg shadow-black/5 border border-slate-100 w-full relative z-20">
                                         <div className="flex justify-between items-center mb-3">
                                             <div className="space-y-1">
                                                 <p className="text-[10px] uppercase text-slate-500 font-bold tracking-wider">Terkumpul</p>
@@ -135,23 +141,29 @@ export function DonationSection({ program }: { program: DonationProgram | null }
                                                     {formatCurrency(current)}
                                                 </p>
                                             </div>
-                                            <div className="flex flex-col items-end pl-4">
-                                                <span className="inline-flex items-center justify-center bg-emerald-100 text-emerald-700 text-xs font-bold px-3 py-1 rounded-full min-w-[3.5rem]">
-                                                    {percentage.toFixed(0)}%
-                                                </span>
-                                            </div>
+                                            {showProgressDetails && (
+                                                <div className="flex flex-col items-end pl-4">
+                                                    <span className="inline-flex items-center justify-center bg-emerald-100 text-emerald-700 text-xs font-bold px-3 py-1 rounded-none min-w-[3.5rem]">
+                                                        {percentage.toFixed(0)}%
+                                                    </span>
+                                                </div>
+                                            )}
                                         </div>
 
-                                        <div className="h-3 w-full bg-slate-200 rounded-full overflow-hidden mb-2">
-                                            <div
-                                                className="h-full bg-emerald-500 rounded-full transition-all duration-1000 ease-out relative"
-                                                style={{ width: `${Math.max(percentage, 2)}%` }}
-                                            />
-                                        </div>
-                                        <div className="flex justify-between items-center text-[10px] text-slate-400 font-medium">
-                                            <span>Progres Donasi</span>
-                                            <span>Target: {formatCurrency(target)}</span>
-                                        </div>
+                                        {showProgressDetails && (
+                                            <>
+                                                <div className="h-3 w-full bg-slate-200 rounded-none overflow-hidden mb-2">
+                                                    <div
+                                                        className="h-full bg-emerald-500 rounded-none transition-all duration-1000 ease-out relative"
+                                                        style={{ width: `${Math.max(percentage, 2)}%` }}
+                                                    />
+                                                </div>
+                                                <div className="flex justify-between items-center text-[10px] text-slate-400 font-medium">
+                                                    <span>Progres Donasi</span>
+                                                    <span>Target: {formatCurrency(target)}</span>
+                                                </div>
+                                            </>
+                                        )}
                                     </FadeIn>
                                 </div>
                             )}

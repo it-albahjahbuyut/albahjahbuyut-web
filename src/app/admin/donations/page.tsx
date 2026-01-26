@@ -64,6 +64,7 @@ export default function DonationsPage() {
             <AdminHeader
                 title="Program Donasi"
                 description="Kelola program infaq dan donasi pesantren"
+                showBackButton={true}
             />
             <div className="p-6">
                 <Suspense fallback={<DonationsSkeleton />}>

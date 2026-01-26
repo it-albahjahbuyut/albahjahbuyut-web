@@ -25,6 +25,7 @@ export default async function EditDonationPage({ params }: EditDonationPageProps
             <AdminHeader
                 title="Edit Program Donasi"
                 description={result.data.title}
+                showBackButton={true}
             />
             <div className="p-6">
                 <div className="max-w-2xl">

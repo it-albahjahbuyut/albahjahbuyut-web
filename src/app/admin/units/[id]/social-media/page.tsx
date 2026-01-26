@@ -33,6 +33,7 @@ export default async function UnitSocialMediaPage({ params }: UnitSocialMediaPag
             <AdminHeader
                 title={`Social Media - ${unit.name}`}
                 description="Kelola link social media untuk unit pendidikan ini"
+                showBackButton={true}
             />
             <div className="p-6">
                 <div className="mb-6">

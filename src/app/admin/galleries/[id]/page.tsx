@@ -34,6 +34,7 @@ export default async function EditGalleryPage({
             <AdminHeader
                 title="Edit Foto"
                 description={`Mengedit: ${gallery.title}`}
+                showBackButton={true}
             />
             <div className="p-6">
                 <GalleryForm gallery={gallery} units={units} />

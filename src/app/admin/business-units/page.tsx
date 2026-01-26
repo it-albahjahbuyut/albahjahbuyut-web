@@ -37,6 +37,7 @@ export default function BusinessUnitsPage() {
             <AdminHeader
                 title="Unit Usaha"
                 description="Kelola unit usaha: AB Travel, AB Mart, AB Fashion"
+                showBackButton={true}
             >
                 <Link href="/admin/business-units/new">
                     <Button className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700">

@@ -17,6 +17,7 @@ export default async function NewGalleryPage() {
             <AdminHeader
                 title="Tambah Foto Baru"
                 description="Upload foto baru ke galeri"
+                showBackButton={true}
             />
             <div className="p-6">
                 <GalleryForm units={units} />

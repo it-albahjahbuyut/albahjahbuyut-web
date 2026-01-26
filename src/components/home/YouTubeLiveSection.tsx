@@ -49,11 +49,11 @@ export function YouTubeLiveSection() {
         <section className="py-12 lg:py-24 bg-white relative z-20">
             <div className="container mx-auto px-4 lg:px-8">
                 <div className="relative max-w-5xl mx-auto">
-                    <div className="relative bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden group">
+                    <div className="relative bg-white border border-slate-200 rounded-none shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden group">
                         {/* Close button */}
                         <button
                             onClick={() => setIsDismissed(true)}
-                            className="absolute top-2 right-2 z-20 p-1 rounded-full text-slate-300 hover:text-slate-500 hover:bg-slate-50 transition-colors"
+                            className="absolute top-2 right-2 z-20 p-1 rounded-none text-slate-300 hover:text-slate-500 hover:bg-slate-50 transition-colors"
                             aria-label="Tutup"
                         >
                             <X className="w-4 h-4" />
@@ -81,8 +81,8 @@ export function YouTubeLiveSection() {
                                 )}
 
                                 {/* Simple Live Overlay on Thumbnail - Optimized: No Blur */}
-                                <div className="absolute top-2 left-2 flex items-center gap-1.5 bg-red-600 text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow-sm">
-                                    <span className="w-1 h-1 bg-white rounded-full animate-pulse" />
+                                <div className="absolute top-2 left-2 flex items-center gap-1.5 bg-red-600 text-white text-[9px] font-bold px-2 py-0.5 rounded-none shadow-sm">
+                                    <span className="w-1 h-1 bg-white rounded-none animate-pulse" />
                                     LIVE
                                 </div>
                             </a>
