@@ -7,7 +7,7 @@ import { FadeIn, FadeInStagger } from "@/components/animations/FadeIn";
 const faqs = [
     {
         question: "Kapan Pendaftaran Dibuka?",
-        answer: "Pendaftaran Santri Baru Gelombang 1 dibuka pada bulan April 2026 M (Syawwal-Dzulqaidah 1447 H). Gelombang 2 dibuka pada bulan Mei 2026 M (Dzulqaidah-Dzulhijjah 1447 H)."
+        answer: "Pendaftaran Santri Baru dibuka pada Juli 2025 M (Muharam/Shafar 1447 H) sampai dengan Juni 2026 M (Dzulhijjah/Muharam 1448 H)."
     },
     {
         question: "Apakah ada tes seleksi?",

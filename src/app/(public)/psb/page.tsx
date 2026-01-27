@@ -509,15 +509,16 @@ export default async function PSBPage() {
                                 <div className="space-y-5">
                                     <div className="bg-slate-50 rounded-xl p-4">
                                         <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Santri Umum</div>
-                                        <div className="text-slate-400 text-sm line-through">Rp 23.000.000</div>
-                                        <div className="text-2xl font-bold text-emerald-950">Rp 20.000.000</div>
-                                        <div className="text-emerald-600 text-xs font-medium mt-1">Hemat Rp 3.000.000</div>
+                                        <div className="text-2xl font-bold text-emerald-950">Rp 23.000.000</div>
                                     </div>
                                     <div className="bg-slate-50 rounded-xl p-4">
                                         <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Santri Lanjutan</div>
-                                        <div className="text-slate-400 text-sm line-through">Rp 20.000.000</div>
-                                        <div className="text-2xl font-bold text-emerald-950">Rp 18.000.000</div>
-                                        <div className="text-emerald-600 text-xs font-medium mt-1">Hemat Rp 2.000.000</div>
+                                        <div className="text-2xl font-bold text-emerald-950">Rp 20.000.000</div>
+                                    </div>
+                                    <div className="bg-emerald-50 rounded-xl p-4 border border-emerald-100">
+                                        <div className="text-xs font-semibold text-emerald-600 uppercase tracking-wide mb-2">SPP Bulanan</div>
+                                        <div className="text-2xl font-bold text-emerald-950">Rp 2.150.000</div>
+                                        <p className="text-xs text-emerald-600 mt-1">/ bulan</p>
                                     </div>
                                 </div>
                             </div>
@@ -536,15 +537,16 @@ export default async function PSBPage() {
                                 <div className="space-y-5">
                                     <div className="bg-slate-50 rounded-xl p-4">
                                         <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Santri Umum</div>
-                                        <div className="text-slate-400 text-sm line-through">Rp 15.000.000</div>
-                                        <div className="text-2xl font-bold text-emerald-950">Rp 12.500.000</div>
-                                        <div className="text-emerald-600 text-xs font-medium mt-1">Hemat Rp 2.500.000</div>
+                                        <div className="text-2xl font-bold text-emerald-950">Rp 15.000.000</div>
                                     </div>
                                     <div className="bg-slate-50 rounded-xl p-4">
                                         <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Santri Lanjutan</div>
-                                        <div className="text-slate-400 text-sm line-through">Rp 13.000.000</div>
-                                        <div className="text-2xl font-bold text-emerald-950">Rp 10.000.000</div>
-                                        <div className="text-emerald-600 text-xs font-medium mt-1">Hemat Rp 3.000.000</div>
+                                        <div className="text-2xl font-bold text-emerald-950">Rp 13.000.000</div>
+                                    </div>
+                                    <div className="bg-amber-50 rounded-xl p-4 border border-amber-100">
+                                        <div className="text-xs font-semibold text-amber-600 uppercase tracking-wide mb-2">SPP Bulanan</div>
+                                        <div className="text-2xl font-bold text-emerald-950">Rp 2.000.000</div>
+                                        <p className="text-xs text-amber-600 mt-1">/ bulan</p>
                                     </div>
                                 </div>
                             </div>
@@ -552,9 +554,19 @@ export default async function PSBPage() {
                     </div>
 
                     <FadeIn delay={0.2} className="mt-10 text-center">
-                        <p className="text-sm text-slate-400">
-                            * Promo berlaku untuk pembayaran dalam 1 bulan. Kuota terbatas.
+                        <p className="text-sm text-slate-500 font-medium">
+                            * Abi & Umi, ada promo spesial nih! Silakan hubungi admin untuk informasi lebih lanjut.
                         </p>
+                        <div className="mt-4">
+                            <Link
+                                href="https://wa.me/6289676539390"
+                                target="_blank"
+                                className="inline-flex items-center gap-2 px-6 py-2.5 bg-emerald-600 text-white text-sm font-bold rounded-full hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/30 hover:-translate-y-0.5"
+                            >
+                                <Phone className="w-4 h-4" />
+                                Hubungi Admin
+                            </Link>
+                        </div>
                     </FadeIn>
                 </div>
             </section>
