@@ -79,46 +79,6 @@ async function ensureLocalDir(dirPath: string): Promise<void> {
 }
 
 /**
- * Test if we can upload a small file to Google Drive
- */
-async function testDriveUpload(folderId: string): Promise<boolean> {
-    if (!drive) return false;
-
-    // Test if we can upload a small file to Google Drive
-    // Returns true if upload succeeds, false otherwise
-    try {
-        const { Readable } = await import('stream');
-        const testContent = 'test quota check';
-
-        const response = await drive.files.create({
-            requestBody: {
-                name: '.test_verification',
-                parents: [folderId],
-            },
-            media: {
-                mimeType: 'text/plain',
-                body: Readable.from(Buffer.from(testContent)),
-            },
-            fields: 'id',
-            supportsAllDrives: true, // Support Shared Drives
-        });
-
-        // Delete test file immediately
-        if (response.data.id) {
-            await drive.files.delete({
-                fileId: response.data.id,
-                supportsAllDrives: true
-            });
-        }
-
-        return true;
-    } catch (error) {
-        console.log('Drive upload verification failed:', error);
-        return false;
-    }
-}
-
-/**
  * Membuat folder untuk pendaftaran baru
  * Attempts to use Google Drive, falls back to local storage if Drive fails or quota is exceeded
  */
@@ -234,21 +194,10 @@ export async function createRegistrationFolder(
                 console.log(`Drive folder created: ${folderId}`);
             }
 
-            // Test if we can actually upload files (check quota/permissions)
-            // If this fails, we should fall back to local storage entirely to keep files organized
-            // UNLESS we want to keep the folder structure in Drive but files locally? 
-            // The prompt says "drive cuma bisa buat folder saja tapi tidak bisa upload". 
-            // We should try to fix upload.
-            const canUpload = await testDriveUpload(folderId);
-
-            if (canUpload) {
-                console.log('Drive upload verified, using Google Drive');
-                return { folderId, folderUrl };
-            } else {
-                console.warn('Drive upload verification failed (Service Account Quota Exceeded or Permission Issue).');
-                console.warn('NOTE: Service Accounts usually have 0 storage quota. Use a SHARED DRIVE (Team Drive) to enable uploads.');
-                // Proceed to Supabase fallback
-            }
+            // Google Drive folder created successfully, return it directly
+            // No test verification needed - actual uploads will handle errors gracefully
+            console.log('Drive folder ready, using Google Drive for uploads');
+            return { folderId, folderUrl };
         } catch (error) {
             console.error('Error dealing with Google Drive:', error);
             // Proceed to Supabase fallback

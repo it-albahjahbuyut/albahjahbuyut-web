@@ -394,7 +394,7 @@ export const SMP_DOCUMENTS: DocumentRequirement[] = [
         description: 'Upload bukti transfer biaya pendaftaran',
         acceptedFormats: ['.jpg', '.jpeg', '.png', '.pdf'],
         maxSizeMB: 2,
-        required: false,
+        required: true,
     },
 ];
 
@@ -446,7 +446,7 @@ export const SMA_DOCUMENTS: DocumentRequirement[] = [
         description: 'Upload bukti transfer biaya pendaftaran',
         acceptedFormats: ['.jpg', '.jpeg', '.png', '.pdf'],
         maxSizeMB: 2,
-        required: false,
+        required: true,
     },
 ];
 
@@ -498,7 +498,7 @@ export const PESANTREN_DOCUMENTS: DocumentRequirement[] = [
         description: 'Upload bukti transfer biaya pendaftaran',
         acceptedFormats: ['.jpg', '.jpeg', '.png', '.pdf'],
         maxSizeMB: 2,
-        required: false,
+        required: true,
     },
 ];
 
@@ -550,7 +550,7 @@ export const SD_DOCUMENTS: DocumentRequirement[] = [
         description: 'Upload bukti transfer biaya pendaftaran',
         acceptedFormats: ['.jpg', '.jpeg', '.png', '.pdf'],
         maxSizeMB: 2,
-        required: false,
+        required: true,
     },
 ];
 
