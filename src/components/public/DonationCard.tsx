@@ -20,6 +20,7 @@ interface DonationCardProps {
         accountNumber: string;
         accountName: string | null;
         categoryLabel?: string | null;
+        hideProgress?: boolean;
     };
     index?: number;
     featured?: boolean;
@@ -30,6 +31,7 @@ export function DonationCard({ program, index = 0, featured = false }: DonationC
 
     const target = Number(program.targetAmount);
     const current = Number(program.currentAmount);
+    const showProgress = !program.hideProgress && target > 0;
     const percentage = target > 0 ? Math.min((current / target) * 100, 100) : 0;
 
     const formatCurrency = (amount: number) => {
@@ -91,8 +93,7 @@ export function DonationCard({ program, index = 0, featured = false }: DonationC
                 </p>
 
                 {/* Progress Bar */}
-                {/* Progress Bar */}
-                {target > 0 ? (
+                {showProgress ? (
                     <div className="mb-4">
                         <div className="mb-2 flex justify-between text-sm">
                             <span className="font-semibold text-emerald-700">
@@ -117,9 +118,16 @@ export function DonationCard({ program, index = 0, featured = false }: DonationC
                     </div>
                 ) : (
                     <div className="mb-4 pt-2 pb-1">
-                        <span className="inline-block px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-full">
-                            {program.categoryLabel || "✨ Infaq Operasional"}
-                        </span>
+                        <div className="flex flex-wrap gap-2">
+                            <span className="inline-block px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-full">
+                                {program.categoryLabel || "✨ Infaq Operasional"}
+                            </span>
+                            {!program.hideProgress && current > 0 && target === 0 && (
+                                <span className="inline-block px-3 py-1 bg-gold-50 text-gold-700 text-xs font-bold rounded-full">
+                                    Terkumpul: {formatCurrency(current)}
+                                </span>
+                            )}
+                        </div>
                     </div>
                 )}
 

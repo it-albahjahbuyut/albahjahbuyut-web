@@ -49,8 +49,8 @@ export function HeroSection({ videoSrc, posterSrc }: HeroSectionProps) {
                 // or just keep it static for the LCP element text.
                 // For now, removing client-side motion only on the wrapper to speed up initial paint.
                 >
-                    <div className="inline-flex items-center gap-2 text-gold-400 text-xs md:text-sm font-bold uppercase tracking-[0.3em] mb-4 md:mb-6">
-                        Lembaga Pengembangan Da'wah
+                    <div className="flex justify-center items-center gap-2 text-gold-400 text-xs sm:text-base md:text-xl font-bold uppercase tracking-[0.25em] sm:tracking-[0.35em] md:tracking-[0.5em] mb-2 text-shadow-sm pr-[-0.5em] whitespace-nowrap w-full max-w-lg md:max-w-4xl mx-auto">
+                        <span className="mr-[-0.25em] sm:mr-[-0.35em] md:mr-[-0.5em] w-full">Lembaga Pengembangan Da'wah</span>
                     </div>
 
                     <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-white mb-6 md:mb-8 tracking-tighter leading-[0.9]">
@@ -58,7 +58,7 @@ export function HeroSection({ videoSrc, posterSrc }: HeroSectionProps) {
                     </h1>
 
                     <p className="text-lg md:text-2xl text-white/90 mb-10 font-light max-w-2xl mx-auto leading-relaxed">
-                        Membangun Generasi Qur'ani & Berakhlak dibawah naungan Buya Yahya
+                        Membangun Generasi Qur'ani & Berakhlak dibawah naungan guru mulia Buya Yahya
                     </p>
 
                     <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">

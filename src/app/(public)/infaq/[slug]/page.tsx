@@ -192,7 +192,15 @@ export default async function DonationDetailPage({ params }: PageProps) {
                                 <div className="absolute top-0 right-0 w-32 h-32 bg-gold-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
 
                                 {/* Progress Section */}
-                                {!hideProgress && (
+                                {hideProgress ? (
+                                    <div className="mb-8">
+                                        <div className="text-center py-4 bg-emerald-50/50 rounded-2xl border border-emerald-100/50">
+                                            <p className="text-emerald-900 font-bold tracking-wide">
+                                                {program.categoryLabel || "✨ Infaq Operasional & Rutin"}
+                                            </p>
+                                        </div>
+                                    </div>
+                                ) : (
                                     <div className="mb-8">
                                         {target > 0 ? (
                                             <>

@@ -96,6 +96,7 @@ export default async function DonationPage() {
                                             accountNumber: program.accountNumber,
                                             accountName: program.accountName,
                                             categoryLabel: program.categoryLabel,
+                                            hideProgress: program.hideProgress,
                                         }}
                                         index={index}
                                     />
