@@ -372,6 +372,11 @@ export default async function AdminPSBDetailPage({ params }: PageProps) {
                                     <FileText className="w-4 h-4" />
                                     Disimpan Lokal
                                 </span>
+                            ) : registration.documents.length > 0 ? (
+                                <span className="inline-flex items-center gap-2 text-sm text-emerald-600">
+                                    <CheckCircle2 className="w-4 h-4" />
+                                    {registration.documents.length} dokumen
+                                </span>
                             ) : (
                                 <span className="inline-flex items-center gap-2 text-sm text-amber-600">
                                     <Clock className="w-4 h-4" />
@@ -380,47 +385,55 @@ export default async function AdminPSBDetailPage({ params }: PageProps) {
                             )}
                         </div>
 
-                        <div className="space-y-3">
-                            {registration.documents.map((doc: PSBDocument) => (
-                                <div
-                                    key={doc.id}
-                                    className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
-                                >
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 bg-white rounded-lg border flex items-center justify-center">
-                                            <FileText className="w-5 h-5 text-gray-400" />
+                        {registration.documents.length > 0 ? (
+                            <div className="space-y-3">
+                                {registration.documents.map((doc: PSBDocument) => (
+                                    <div
+                                        key={doc.id}
+                                        className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 bg-white rounded-lg border flex items-center justify-center">
+                                                <FileText className="w-5 h-5 text-gray-400" />
+                                            </div>
+                                            <div>
+                                                <p className="font-medium text-gray-900">{doc.documentType.replace(/_/g, ' ')}</p>
+                                                <p className="text-sm text-gray-500">{doc.fileName}</p>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <p className="font-medium text-gray-900">{doc.documentType.replace(/_/g, ' ')}</p>
-                                            <p className="text-sm text-gray-500">{doc.fileName}</p>
-                                        </div>
+                                        {doc.driveFileUrl && !doc.driveFileUrl.startsWith('/') ? (
+                                            <a
+                                                href={doc.driveFileUrl}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="px-3 py-1.5 text-sm font-medium text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors"
+                                            >
+                                                Lihat
+                                            </a>
+                                        ) : doc.driveFileUrl?.startsWith('/') ? (
+                                            <a
+                                                href={doc.driveFileUrl}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="px-3 py-1.5 text-sm font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+                                            >
+                                                Lihat (Lokal)
+                                            </a>
+                                        ) : (
+                                            <span className="px-3 py-1.5 text-sm text-gray-400">
+                                                Belum tersedia
+                                            </span>
+                                        )}
                                     </div>
-                                    {doc.driveFileUrl && !doc.driveFileUrl.startsWith('/') ? (
-                                        <a
-                                            href={doc.driveFileUrl}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="px-3 py-1.5 text-sm font-medium text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors"
-                                        >
-                                            Lihat
-                                        </a>
-                                    ) : doc.driveFileUrl?.startsWith('/') ? (
-                                        <a
-                                            href={doc.driveFileUrl}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="px-3 py-1.5 text-sm font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
-                                        >
-                                            Lihat (Lokal)
-                                        </a>
-                                    ) : (
-                                        <span className="px-3 py-1.5 text-sm text-gray-400">
-                                            Belum tersedia
-                                        </span>
-                                    )}
-                                </div>
-                            ))}
-                        </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="text-center py-8 text-gray-500">
+                                <FileText className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                                <p>Belum ada dokumen yang diupload</p>
+                                <p className="text-sm">Gunakan form upload di sebelah kanan untuk menambah dokumen</p>
+                            </div>
+                        )}
                     </div>
 
                     {/* Metadata */}
@@ -472,6 +485,7 @@ export default async function AdminPSBDetailPage({ params }: PageProps) {
                         registrationId={registration.id}
                         currentStatus={registration.status}
                         notes={registration.notes}
+                        driveFolderId={registration.driveFolderId}
                     />
                 </div>
             </div>

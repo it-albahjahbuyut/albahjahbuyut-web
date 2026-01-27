@@ -423,6 +423,102 @@ export async function updatePSBStatus(
 }
 
 /**
+ * Admin upload dokumen manual ke pendaftaran yang sudah ada
+ */
+export async function adminUploadDocument(
+    registrationId: string,
+    documentType: string,
+    fileName: string,
+    mimeType: string,
+    base64Data: string
+): Promise<{ success: boolean; message: string; document?: { id: string; fileName: string; driveFileUrl: string } }> {
+    try {
+        // Get registration data
+        const registration = await db.pSBRegistration.findUnique({
+            where: { id: registrationId },
+            include: { unit: true },
+        });
+
+        if (!registration) {
+            return { success: false, message: 'Pendaftaran tidak ditemukan' };
+        }
+
+        let folderId = registration.driveFolderId;
+        let folderUrl = registration.driveFolderUrl;
+
+        // If no folder exists yet, create one
+        if (!folderId) {
+            console.log(`[Admin Upload] Creating folder for ${registration.registrationNumber}...`);
+            const folderResult = await createRegistrationFolder(
+                registration.unit.name,
+                registration.namaLengkap,
+                registration.registrationNumber,
+                registration.unit.slug
+            );
+            folderId = folderResult.folderId;
+            folderUrl = folderResult.folderUrl;
+
+            // Update registration with folder info
+            await db.pSBRegistration.update({
+                where: { id: registrationId },
+                data: {
+                    driveFolderId: folderId,
+                    driveFolderUrl: folderUrl,
+                },
+            });
+        }
+
+        // Convert base64 to buffer and upload
+        const buffer = Buffer.from(base64Data, 'base64');
+        console.log(`[Admin Upload] Uploading ${fileName} to folder ${folderId}...`);
+
+        const uploadResult = await uploadToDrive(buffer, fileName, mimeType, folderId);
+
+        // Save document record to database
+        const document = await db.pSBDocument.create({
+            data: {
+                registrationId,
+                documentType,
+                fileName: uploadResult.fileName,
+                fileSize: buffer.length,
+                mimeType,
+                driveFileId: uploadResult.fileId,
+                driveFileUrl: uploadResult.fileUrl,
+            },
+        });
+
+        // If this is a PAS_FOTO, update the pasFotoUrl
+        if (documentType === 'PAS_FOTO') {
+            await db.pSBRegistration.update({
+                where: { id: registrationId },
+                data: { pasFotoUrl: uploadResult.fileUrl },
+            });
+        }
+
+        revalidatePath(`/admin/psb/${registrationId}`);
+        revalidatePath('/admin/psb');
+
+        console.log(`[Admin Upload] Successfully uploaded ${fileName}`);
+
+        return {
+            success: true,
+            message: `Dokumen ${documentType.replace(/_/g, ' ')} berhasil diupload`,
+            document: {
+                id: document.id,
+                fileName: document.fileName,
+                driveFileUrl: document.driveFileUrl,
+            },
+        };
+    } catch (error) {
+        console.error('[Admin Upload] Error:', error);
+        return {
+            success: false,
+            message: error instanceof Error ? error.message : 'Terjadi kesalahan saat upload dokumen',
+        };
+    }
+}
+
+/**
  * Hapus pendaftaran (admin only)
  */
 export async function deletePSBRegistration(
