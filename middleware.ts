@@ -255,7 +255,7 @@ export default auth(async (req) => {
 
         if (!isStaticOrApi) {
             // Allow only PSB-related paths
-            const isPSBPath = pathname === '/' || 
+            const isPSBPath = pathname === '/' ||
                 pathname.startsWith('/psb') ||
                 pathname.startsWith('/daftar') ||
                 pathname.startsWith('/status');
@@ -395,6 +395,58 @@ export default auth(async (req) => {
         loginUrl.searchParams.set("callbackUrl", nextUrl.pathname);
         const response = NextResponse.redirect(loginUrl);
         return addSecurityHeaders(response);
+    }
+
+    // ============================================
+    // ROLE-BASED ACCESS CONTROL FOR ADMIN ROUTES
+    // ============================================
+    if (isAdminRoute && isLoggedIn && req.auth?.user) {
+        const userRole = req.auth.user.role;
+        const pathname = nextUrl.pathname;
+
+        // Define allowed paths for each role
+        const roleAllowedPaths: Record<string, string[]> = {
+            SUPER_ADMIN: ["*"],
+            // ADMIN can access website management but NOT PSB
+            ADMIN: [
+                "/admin",
+                "/admin/units",
+                "/admin/posts",
+                "/admin/donations",
+                "/admin/galleries",
+                "/admin/majelis",
+                "/admin/business-units",
+                "/admin/newsletter",
+                "/admin/settings",
+            ],
+            ADMIN_INFAQ: ["/admin", "/admin/donations"],
+            ADMIN_PSB_PAUD: ["/admin", "/admin/psb"],
+            ADMIN_PSB_SMP_SMA: ["/admin", "/admin/psb"],
+        };
+
+        const allowedPaths = roleAllowedPaths[userRole] || [];
+
+        // Check if user can access this path
+        // Note: "/admin" is exact match only, other paths match subpaths too
+        const hasAccess = allowedPaths.includes("*") ||
+            allowedPaths.some(allowed => {
+                if (allowed === "/admin") {
+                    return pathname === "/admin";
+                }
+                return pathname === allowed || pathname.startsWith(allowed + "/");
+            });
+
+        // Special case: /admin/users only for SUPER_ADMIN
+        if (pathname.startsWith("/admin/users") && userRole !== "SUPER_ADMIN") {
+            const response = NextResponse.redirect(new URL("/admin", nextUrl));
+            return addSecurityHeaders(response);
+        }
+
+        // Redirect if no access
+        if (!hasAccess) {
+            const response = NextResponse.redirect(new URL("/admin", nextUrl));
+            return addSecurityHeaders(response);
+        }
     }
 
     // Add security headers to all responses

@@ -6,7 +6,18 @@ import { UserRole } from "@prisma/client";
  */
 export const ROLE_MENU_ACCESS: Record<UserRole, string[]> = {
     SUPER_ADMIN: ["*"],
-    ADMIN: ["*"],
+    // ADMIN can access website management but NOT PSB
+    ADMIN: [
+        "/admin",
+        "/admin/units",
+        "/admin/posts",
+        "/admin/donations",
+        "/admin/galleries",
+        "/admin/majelis",
+        "/admin/business-units",
+        "/admin/newsletter",
+        "/admin/settings",
+    ],
     ADMIN_INFAQ: ["/admin", "/admin/donations"],
     ADMIN_PSB_PAUD: ["/admin", "/admin/psb"],
     ADMIN_PSB_SMP_SMA: ["/admin", "/admin/psb"],
@@ -18,14 +29,16 @@ export const ROLE_MENU_ACCESS: Record<UserRole, string[]> = {
  */
 export const ROLE_PSB_UNITS: Record<UserRole, string[] | "*"> = {
     SUPER_ADMIN: "*",
-    ADMIN: "*",
+    ADMIN: [], // ADMIN cannot access PSB
     ADMIN_INFAQ: [],
-    ADMIN_PSB_PAUD: ["paud"],
+    ADMIN_PSB_PAUD: ["paudqu"],
     ADMIN_PSB_SMP_SMA: ["smpiqu", "smaiqu"],
 };
 
 /**
  * Check if a role can access a specific path
+ * Note: "/admin" is treated as exact match only (dashboard)
+ * Other paths like "/admin/donations" match themselves and their subpaths
  */
 export function canAccessPath(role: UserRole, path: string): boolean {
     const allowedPaths = ROLE_MENU_ACCESS[role];
@@ -33,10 +46,15 @@ export function canAccessPath(role: UserRole, path: string): boolean {
     // Full access
     if (allowedPaths.includes("*")) return true;
 
-    // Check exact match or starts with allowed path
-    return allowedPaths.some(
-        (allowed) => path === allowed || path.startsWith(allowed + "/")
-    );
+    // Check each allowed path
+    return allowedPaths.some((allowed) => {
+        // Dashboard (/admin) - only exact match
+        if (allowed === "/admin") {
+            return path === "/admin";
+        }
+        // Other paths - exact match or starts with (for subpaths)
+        return path === allowed || path.startsWith(allowed + "/");
+    });
 }
 
 /**

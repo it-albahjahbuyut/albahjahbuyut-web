@@ -85,7 +85,7 @@ export async function updateUser(
 ) {
     const session = await auth();
 
-    if (!session?.user || !isSuperAdmin(session.user.role)) {
+    if (!session?.user || session.user.role !== "SUPER_ADMIN") {
         throw new Error("Unauthorized");
     }
 
@@ -119,6 +119,11 @@ export async function updateUser(
     if (data.name) updateData.name = data.name;
     if (data.email) updateData.email = data.email.toLowerCase().trim();
     if (data.role) updateData.role = data.role;
+
+    // Track if password is being changed for self
+    const isPasswordChange = !!data.password;
+    const isSelfUpdate = session.user.id === id;
+
     if (data.password) {
         updateData.password = await bcrypt.hash(data.password, 10);
     }
@@ -129,7 +134,12 @@ export async function updateUser(
     });
 
     revalidatePath("/admin/users");
-    return user;
+
+    // Return flag indicating if this user should re-login
+    return {
+        user,
+        shouldLogout: isPasswordChange && isSelfUpdate,
+    };
 }
 
 /**

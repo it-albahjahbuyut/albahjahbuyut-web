@@ -93,12 +93,22 @@ export function UserList({ users, currentUserId }: UserListProps) {
 
         try {
             if (editingUser) {
-                await updateUser(editingUser.id, {
+                const result = await updateUser(editingUser.id, {
                     name,
                     email,
                     role,
                     ...(password && { password }),
                 });
+
+                // If user changed their own password, force logout
+                if (result.shouldLogout) {
+                    toast.success("Password berhasil diubah. Silakan login kembali.");
+                    // Dynamic import to avoid issues with server components
+                    const { signOut } = await import("next-auth/react");
+                    await signOut({ callbackUrl: "/login" });
+                    return;
+                }
+
                 toast.success("User berhasil diperbarui");
             } else {
                 if (!password) {
