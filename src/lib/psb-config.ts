@@ -692,8 +692,16 @@ export const PAUD_FORM_FIELDS: FormField[] = [
         ],
     },
     {
+        name: 'imunisasi',
+        label: 'Imunisasi yang Pernah Diberikan',
+        type: 'textarea',
+        placeholder: 'Contoh: BCG, DPT, Polio, Campak, Hepatitis B',
+        required: false,
+        fullWidth: true,
+    },
+    {
         name: 'riwayatPenyakit',
-        label: 'Riwayat Kesehatan / Penyakit',
+        label: 'Riwayat Kesehatan / Penyakit Anak',
         type: 'textarea',
         placeholder: 'Penyakit yang pernah diderita / Alergi (kosongkan jika tidak ada)',
         required: false,
@@ -733,6 +741,14 @@ export const PAUD_FORM_FIELDS: FormField[] = [
         options: PENDIDIKAN_OPTIONS,
     },
     {
+        name: 'alamatAyah',
+        label: 'Alamat/Tempat Tinggal Ayah',
+        type: 'textarea',
+        placeholder: 'Alamat lengkap tempat tinggal ayah',
+        required: false,
+        fullWidth: true,
+    },
+    {
         name: 'pekerjaanAyah',
         label: 'Pekerjaan Ayah',
         type: 'select',
@@ -759,6 +775,13 @@ export const PAUD_FORM_FIELDS: FormField[] = [
         type: 'tel',
         placeholder: '08123456789',
         required: true,
+    },
+    {
+        name: 'jumlahTanggunganAyah',
+        label: 'Jumlah Tanggungan Ayah',
+        type: 'number',
+        placeholder: 'Jumlah orang yang ditanggung',
+        required: false,
     },
 
     // B. Identitas Orang Tua - Ibu
@@ -794,6 +817,14 @@ export const PAUD_FORM_FIELDS: FormField[] = [
         options: PENDIDIKAN_OPTIONS,
     },
     {
+        name: 'alamatIbu',
+        label: 'Alamat/Tempat Tinggal Ibu',
+        type: 'textarea',
+        placeholder: 'Alamat lengkap tempat tinggal ibu',
+        required: false,
+        fullWidth: true,
+    },
+    {
         name: 'pekerjaanIbu',
         label: 'Pekerjaan Ibu',
         type: 'select',
@@ -822,11 +853,11 @@ export const PAUD_FORM_FIELDS: FormField[] = [
         required: true,
     },
     {
-        name: 'jumlahTanggungan',
-        label: 'Jumlah Tanggungan',
+        name: 'jumlahTanggunganIbu',
+        label: 'Jumlah Tanggungan Ibu',
         type: 'number',
-        placeholder: 'Jumlah anak/tanggungan',
-        required: true,
+        placeholder: 'Jumlah orang yang ditanggung',
+        required: false,
     },
 
     // C. Riwayat Sekolah Anak

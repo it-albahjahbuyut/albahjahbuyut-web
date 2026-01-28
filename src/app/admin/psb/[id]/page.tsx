@@ -74,6 +74,29 @@ interface PSBRegistration {
     updatedAt: Date;
     unit: { id: string; name: string; slug: string };
     documents: PSBDocument[];
+    // Custom Data for PAUD
+    customData: {
+        namaPanggilan?: string;
+        kewarganegaraan?: string;
+        jumlahSaudaraTiri?: string;
+        bahasaSehariHari?: string;
+        beratBadan?: string;
+        tinggiBadan?: string;
+        golonganDarah?: string;
+        imunisasi?: string;
+        riwayatPenyakit?: string;
+        usia?: string;
+        ttlAyah?: string;
+        kewarganegaraanAyah?: string;
+        alamatAyah?: string;
+        jumlahTanggunganAyah?: string;
+        ttlIbu?: string;
+        kewarganegaraanIbu?: string;
+        alamatIbu?: string;
+        jumlahTanggunganIbu?: string;
+        statusMasuk?: string;
+        tanggalDiterima?: string;
+    } | null;
 }
 
 
@@ -119,13 +142,13 @@ const statusConfig: Record<PSBStatus, { label: string; color: string; icon: type
 export default async function AdminPSBDetailPage({ params }: PageProps) {
     const { id } = await params;
 
-    const registration: PSBRegistration | null = await db.pSBRegistration.findUnique({
+    const registration = await db.pSBRegistration.findUnique({
         where: { id },
         include: {
             unit: true,
             documents: true,
         },
-    });
+    }) as unknown as PSBRegistration | null;
 
     if (!registration) {
         notFound();
@@ -225,7 +248,148 @@ export default async function AdminPSBDetailPage({ params }: PageProps) {
                         </div>
                     </div>
 
-                    {/* Data Orang Tua */}
+                    {/* Data Khusus PAUD (jika ada customData) */}
+                    {registration.customData && Object.keys(registration.customData).some(k => registration.customData?.[k as keyof typeof registration.customData]) && (
+                        <div className="bg-white rounded-xl border p-6">
+                            <h2 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                                <User className="w-5 h-5 text-pink-600" />
+                                Data Khusus PAUD
+                            </h2>
+
+                            <div className="grid sm:grid-cols-2 gap-4">
+                                {registration.customData.namaPanggilan && (
+                                    <div>
+                                        <p className="text-xs text-gray-500 uppercase tracking-wide">Nama Panggilan</p>
+                                        <p className="font-medium text-gray-900">{registration.customData.namaPanggilan}</p>
+                                    </div>
+                                )}
+                                {registration.customData.usia && (
+                                    <div>
+                                        <p className="text-xs text-gray-500 uppercase tracking-wide">Usia</p>
+                                        <p className="font-medium text-gray-900">{registration.customData.usia} tahun</p>
+                                    </div>
+                                )}
+                                {registration.customData.kewarganegaraan && (
+                                    <div>
+                                        <p className="text-xs text-gray-500 uppercase tracking-wide">Kewarganegaraan</p>
+                                        <p className="font-medium text-gray-900">{registration.customData.kewarganegaraan}</p>
+                                    </div>
+                                )}
+                                {registration.customData.bahasaSehariHari && (
+                                    <div>
+                                        <p className="text-xs text-gray-500 uppercase tracking-wide">Bahasa Sehari-hari</p>
+                                        <p className="font-medium text-gray-900">{registration.customData.bahasaSehariHari}</p>
+                                    </div>
+                                )}
+                                {registration.customData.beratBadan && (
+                                    <div>
+                                        <p className="text-xs text-gray-500 uppercase tracking-wide">Berat Badan</p>
+                                        <p className="font-medium text-gray-900">{registration.customData.beratBadan} kg</p>
+                                    </div>
+                                )}
+                                {registration.customData.tinggiBadan && (
+                                    <div>
+                                        <p className="text-xs text-gray-500 uppercase tracking-wide">Tinggi Badan</p>
+                                        <p className="font-medium text-gray-900">{registration.customData.tinggiBadan} cm</p>
+                                    </div>
+                                )}
+                                {registration.customData.golonganDarah && (
+                                    <div>
+                                        <p className="text-xs text-gray-500 uppercase tracking-wide">Golongan Darah</p>
+                                        <p className="font-medium text-gray-900">{registration.customData.golonganDarah}</p>
+                                    </div>
+                                )}
+                                {registration.customData.jumlahSaudaraTiri && (
+                                    <div>
+                                        <p className="text-xs text-gray-500 uppercase tracking-wide">Jumlah Saudara Tiri</p>
+                                        <p className="font-medium text-gray-900">{registration.customData.jumlahSaudaraTiri}</p>
+                                    </div>
+                                )}
+                                {registration.customData.statusMasuk && (
+                                    <div>
+                                        <p className="text-xs text-gray-500 uppercase tracking-wide">Status Masuk</p>
+                                        <p className="font-medium text-gray-900">{registration.customData.statusMasuk}</p>
+                                    </div>
+                                )}
+                                {registration.customData.tanggalDiterima && (
+                                    <div>
+                                        <p className="text-xs text-gray-500 uppercase tracking-wide">Tanggal Diterima</p>
+                                        <p className="font-medium text-gray-900">{registration.customData.tanggalDiterima}</p>
+                                    </div>
+                                )}
+                                {registration.customData.imunisasi && (
+                                    <div className="sm:col-span-2">
+                                        <p className="text-xs text-gray-500 uppercase tracking-wide">Imunisasi yang Pernah Diberikan</p>
+                                        <p className="font-medium text-gray-900">{registration.customData.imunisasi}</p>
+                                    </div>
+                                )}
+                                {registration.customData.riwayatPenyakit && (
+                                    <div className="sm:col-span-2">
+                                        <p className="text-xs text-gray-500 uppercase tracking-wide">Riwayat Penyakit / Alergi</p>
+                                        <p className="font-medium text-gray-900">{registration.customData.riwayatPenyakit}</p>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Data Orang Tua Khusus PAUD */}
+                            {(registration.customData.ttlAyah || registration.customData.ttlIbu) && (
+                                <div className="mt-4 pt-4 border-t">
+                                    <h3 className="text-sm font-medium text-gray-700 mb-3">Data Tambahan Orang Tua</h3>
+                                    <div className="grid sm:grid-cols-2 gap-4">
+                                        {registration.customData.ttlAyah && (
+                                            <div>
+                                                <p className="text-xs text-gray-500 uppercase tracking-wide">TTL Ayah</p>
+                                                <p className="font-medium text-gray-900">{registration.customData.ttlAyah}</p>
+                                            </div>
+                                        )}
+                                        {registration.customData.kewarganegaraanAyah && (
+                                            <div>
+                                                <p className="text-xs text-gray-500 uppercase tracking-wide">Kewarganegaraan Ayah</p>
+                                                <p className="font-medium text-gray-900">{registration.customData.kewarganegaraanAyah}</p>
+                                            </div>
+                                        )}
+                                        {registration.customData.alamatAyah && (
+                                            <div className="sm:col-span-2">
+                                                <p className="text-xs text-gray-500 uppercase tracking-wide">Alamat Ayah</p>
+                                                <p className="font-medium text-gray-900">{registration.customData.alamatAyah}</p>
+                                            </div>
+                                        )}
+                                        {registration.customData.jumlahTanggunganAyah && (
+                                            <div>
+                                                <p className="text-xs text-gray-500 uppercase tracking-wide">Jumlah Tanggungan Ayah</p>
+                                                <p className="font-medium text-gray-900">{registration.customData.jumlahTanggunganAyah}</p>
+                                            </div>
+                                        )}
+                                        {registration.customData.ttlIbu && (
+                                            <div>
+                                                <p className="text-xs text-gray-500 uppercase tracking-wide">TTL Ibu</p>
+                                                <p className="font-medium text-gray-900">{registration.customData.ttlIbu}</p>
+                                            </div>
+                                        )}
+                                        {registration.customData.kewarganegaraanIbu && (
+                                            <div>
+                                                <p className="text-xs text-gray-500 uppercase tracking-wide">Kewarganegaraan Ibu</p>
+                                                <p className="font-medium text-gray-900">{registration.customData.kewarganegaraanIbu}</p>
+                                            </div>
+                                        )}
+                                        {registration.customData.alamatIbu && (
+                                            <div className="sm:col-span-2">
+                                                <p className="text-xs text-gray-500 uppercase tracking-wide">Alamat Ibu</p>
+                                                <p className="font-medium text-gray-900">{registration.customData.alamatIbu}</p>
+                                            </div>
+                                        )}
+                                        {registration.customData.jumlahTanggunganIbu && (
+                                            <div>
+                                                <p className="text-xs text-gray-500 uppercase tracking-wide">Jumlah Tanggungan Ibu</p>
+                                                <p className="font-medium text-gray-900">{registration.customData.jumlahTanggunganIbu}</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
                     <div className="bg-white rounded-xl border p-6">
                         <h2 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
                             <Phone className="w-5 h-5 text-emerald-600" />

@@ -330,6 +330,27 @@ export default function PSBForm({
                 // Program Spesial
                 grade: formData.grade,
                 jenisSantri: formData.jenisSantri,
+                // PAUD Specific Fields
+                namaPanggilan: formData.namaPanggilan,
+                kewarganegaraan: formData.kewarganegaraan,
+                jumlahSaudaraTiri: formData.jumlahSaudaraTiri,
+                bahasaSehariHari: formData.bahasaSehariHari,
+                beratBadan: formData.beratBadan,
+                tinggiBadan: formData.tinggiBadan,
+                golonganDarah: formData.golonganDarah,
+                imunisasi: formData.imunisasi,
+                riwayatPenyakit: formData.riwayatPenyakit,
+                usia: formData.usia,
+                ttlAyah: formData.ttlAyah,
+                kewarganegaraanAyah: formData.kewarganegaraanAyah,
+                alamatAyah: formData.alamatAyah,
+                jumlahTanggunganAyah: formData.jumlahTanggunganAyah,
+                ttlIbu: formData.ttlIbu,
+                kewarganegaraanIbu: formData.kewarganegaraanIbu,
+                alamatIbu: formData.alamatIbu,
+                jumlahTanggunganIbu: formData.jumlahTanggunganIbu,
+                statusMasuk: formData.statusMasuk,
+                tanggalDiterima: formData.tanggalDiterima,
             };
 
 

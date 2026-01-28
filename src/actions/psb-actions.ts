@@ -53,11 +53,17 @@ export interface PSBFormData {
     beratBadan?: string;
     tinggiBadan?: string;
     golonganDarah?: string;
+    imunisasi?: string;
     riwayatPenyakit?: string;
+    usia?: string;
     ttlAyah?: string;
     kewarganegaraanAyah?: string;
+    alamatAyah?: string;
+    jumlahTanggunganAyah?: string;
     ttlIbu?: string;
     kewarganegaraanIbu?: string;
+    alamatIbu?: string;
+    jumlahTanggunganIbu?: string;
     statusMasuk?: string;
     tanggalDiterima?: string;
     // Legacy fields for backward compatibility
@@ -167,11 +173,17 @@ export async function submitPSBRegistration(
                     beratBadan: formData.beratBadan,
                     tinggiBadan: formData.tinggiBadan,
                     golonganDarah: formData.golonganDarah,
+                    imunisasi: formData.imunisasi,
                     riwayatPenyakit: formData.riwayatPenyakit,
+                    usia: formData.usia,
                     ttlAyah: formData.ttlAyah,
                     kewarganegaraanAyah: formData.kewarganegaraanAyah,
+                    alamatAyah: formData.alamatAyah,
+                    jumlahTanggunganAyah: formData.jumlahTanggunganAyah,
                     ttlIbu: formData.ttlIbu,
                     kewarganegaraanIbu: formData.kewarganegaraanIbu,
+                    alamatIbu: formData.alamatIbu,
+                    jumlahTanggunganIbu: formData.jumlahTanggunganIbu,
                     statusMasuk: formData.statusMasuk,
                     tanggalDiterima: formData.tanggalDiterima,
                 },

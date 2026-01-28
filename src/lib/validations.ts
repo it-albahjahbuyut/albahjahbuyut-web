@@ -389,16 +389,18 @@ export const psbFormSchema = z.object({
         ),
     nik: z
         .string()
-        .length(16, "NIK harus 16 digit")
+        .max(16, "NIK maksimal 16 digit")
+        .optional()
         .refine(
-            (val) => NIK_REGEX.test(val),
+            (val) => !val || NIK_REGEX.test(val),
             "NIK harus berupa 16 digit angka"
         ),
     noKK: z
         .string()
-        .length(16, "Nomor KK harus 16 digit")
+        .max(16, "Nomor KK maksimal 16 digit")
+        .optional()
         .refine(
-            (val) => /^[0-9]{16}$/.test(val),
+            (val) => !val || /^[0-9]{16}$/.test(val),
             "Nomor KK harus berupa 16 digit angka"
         ),
     jenisKelamin: z.enum(["L", "P"], {
@@ -418,9 +420,10 @@ export const psbFormSchema = z.object({
         ),
     asalSekolah: z
         .string()
-        .min(3, "Asal sekolah diperlukan")
         .max(200, "Nama sekolah terlalu panjang")
-        .trim(),
+        .optional()
+        .default("")
+        .transform(val => val?.trim() || "Belum Sekolah"),
     alamatSekolahAsal: z
         .string()
         .max(500, "Alamat sekolah terlalu panjang")
@@ -475,10 +478,10 @@ export const psbFormSchema = z.object({
         ),
     jumlahTanggungan: z
         .string()
-        .min(1, "Jumlah tanggungan diperlukan")
         .max(10)
+        .optional()
         .refine(
-            (val) => /^[0-9]+$/.test(val),
+            (val) => !val || /^[0-9]+$/.test(val),
             "Jumlah tanggungan harus berupa angka"
         ),
     alamatLengkap: z
@@ -521,13 +524,19 @@ export const psbFormSchema = z.object({
     beratBadan: z.string().max(10).optional(),
     tinggiBadan: z.string().max(10).optional(),
     golonganDarah: z.string().max(5).optional(),
+    imunisasi: z.string().max(1000).optional(),
     riwayatPenyakit: z.string().max(1000).optional(),
+    usia: z.string().max(3).optional(),
 
     // Parent Extra Info for PAUD
     ttlAyah: z.string().max(100).optional(),
     kewarganegaraanAyah: z.string().max(50).optional(),
+    alamatAyah: z.string().max(500).optional(),
+    jumlahTanggunganAyah: z.string().max(10).optional(),
     ttlIbu: z.string().max(100).optional(),
     kewarganegaraanIbu: z.string().max(50).optional(),
+    alamatIbu: z.string().max(500).optional(),
+    jumlahTanggunganIbu: z.string().max(10).optional(),
 
     // School History for PAUD
     statusMasuk: z.string().max(50).optional(),
@@ -562,7 +571,11 @@ export const psbDocumentSchema = z.object({
         "IJAZAH_SD",
         "IJAZAH_SMP",
         "IJAZAH_TK",
-        "BUKTI_PEMBAYARAN"
+        "BUKTI_PEMBAYARAN",
+        // Dokumen PAUD spesifik
+        "FOTO_KELUARGA",
+        "KTP_IBU",
+        "KTP_AYAH"
     ], {
         message: "Tipe dokumen tidak valid",
     }),
