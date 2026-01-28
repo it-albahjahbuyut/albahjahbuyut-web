@@ -74,6 +74,15 @@ async function main() {
             registrationLink: "",
             order: 4,
         },
+        {
+            name: "PAUDQu Al-Bahjah",
+            slug: "paudqu",
+            description: "<p>PAUDQu Al-Bahjah Buyut adalah jenjang pendidikan anak usia dini yang berfokus pada pembentukan karakter Qur'ani sejak dini.</p>",
+            curriculum: "<p>Kurikulum bermain sambil belajar dengan pengenalan huruf hijaiyah, hafalan surat pendek, dan adab Islami.</p>",
+            facilities: "Ruang kelas bermain\nArea bermain outdoor yang aman\nMedia pembelajaran interaktif",
+            registrationLink: "",
+            order: 5,
+        },
     ];
 
     for (const unit of units) {
@@ -85,187 +94,7 @@ async function main() {
         console.log("✅ Created unit:", created.name);
     }
 
-    // Create sample donation program
-    const donation = await prisma.donationProgram.upsert({
-        where: { slug: "infaq-pembangunan-masjid" },
-        update: {},
-        create: {
-            title: "Infaq Pembangunan Masjid",
-            slug: "infaq-pembangunan-masjid",
-            description: "Program infaq untuk pembangunan dan renovasi masjid pesantren sebagai pusat ibadah dan kegiatan santri.",
-            targetAmount: 500000000,
-            currentAmount: 125000000,
-            bankName: "Bank Syariah Indonesia",
-            accountNumber: "1234567890",
-            accountName: "Yayasan Al-Bahjah Buyut",
-            isActive: true,
-        },
-    });
-    console.log("✅ Created donation program:", donation.title);
-
-    // Create sample settings
-    const settings = [
-        { key: "site_name", value: "Pondok Pesantren Al-Bahjah Buyut" },
-        { key: "site_description", value: "Portal resmi Pondok Pesantren Al-Bahjah Buyut" },
-        { key: "contact_email", value: "info@albahjahbuyut.com" },
-        { key: "contact_phone", value: "+62 123 456 7890" },
-        { key: "address", value: "Jl. Pesantren No. 1, Cirebon, Jawa Barat" },
-    ];
-
-    for (const setting of settings) {
-        await prisma.setting.upsert({
-            where: { key: setting.key },
-            update: { value: setting.value },
-            create: setting,
-        });
-    }
-    console.log("✅ Created settings");
-
-    // Create sample posts
-    const posts = [
-        {
-            title: "Penerimaan Santri Baru Tahun Ajaran 2026/2027 Telah Dibuka",
-            slug: "penerimaan-santri-baru-2026",
-            excerpt: "Pondok Pesantren Al-Bahjah Buyut kembali membuka pendaftaran santri baru untuk jenjang SMP, SMA, dan Tahfidz. Segera daftarkan putra-putri Anda.",
-            content: "<p>Assalamu'alaikum Warahmatullahi Wabarakatuh...</p><p>Pondok Pesantren Al-Bahjah Buyut dengan bangga mengumumkan pembukaan pendaftaran santri baru...</p>",
-            image: "https://images.unsplash.com/photo-1510590337019-5ef2d3977e2e?q=80&w=2070&auto=format&fit=crop",
-            category: PostCategory.PENGUMUMAN,
-            status: PostStatus.PUBLISHED,
-            publishedAt: new Date(),
-        },
-        {
-            title: "Kajian Bulanan Bersama Buya Yahya",
-            slug: "kajian-bulanan-buya-yahya-januari-2026",
-            excerpt: "Ikuti kajian rutin bulanan bersama Buya Yahya di Masjid Al-Bahjah Buyut. Terbuka untuk umum.",
-            content: "<p>Mari hadiri kajian rutin bulanan...</p>",
-            image: "https://images.unsplash.com/photo-1606233400587-c1dcb8dc2286?q=80&w=2070&auto=format&fit=crop",
-            category: PostCategory.KEGIATAN,
-            status: PostStatus.PUBLISHED,
-            publishedAt: new Date(),
-        },
-        {
-            title: "Prestasi Santri: Juara 1 Lomba Tahfidz Tingkat Kabupaten",
-            slug: "prestasi-santri-tahfidz-2026",
-            excerpt: "Alhamdulillah, ananda Fulan bin Fulan berhasil meraih juara 1 dalam Musabaqah Hifdzil Quran tingkat Kabupaten Cirebon.",
-            content: "<p>Kabar gembira datang dari santri Al-Bahjah Buyut...</p>",
-            image: "https://images.unsplash.com/photo-1629814407873-670dc402d20e?q=80&w=2070&auto=format&fit=crop",
-            category: PostCategory.PRESTASI,
-            status: PostStatus.PUBLISHED,
-            publishedAt: new Date(),
-        }
-    ];
-
-    for (const post of posts) {
-        // @ts-ignore
-        await prisma.post.upsert({
-            where: { slug: post.slug },
-            update: {},
-            create: post
-        });
-    }
-    console.log("✅ Created sample posts");
-
-    // Create sample galleries
-    const galleries = [
-        {
-            title: "Kegiatan Belajar Mengajar",
-            imageUrl: "https://images.unsplash.com/photo-1427504746074-9471b90d4c84?q=80&w=2070&auto=format&fit=crop",
-            description: "Suasana belajar santri di kelas yang kondusif.",
-            order: 1,
-        },
-        {
-            title: "Sholat Berjamaah",
-            imageUrl: "https://images.unsplash.com/photo-1564121211835-e88c852648ab?q=80&w=2070&auto=format&fit=crop",
-            description: "Kegiatan sholat berjamaah di masjid pesantren.",
-            order: 2,
-        },
-        {
-            title: "Ekstrakurikuler Memanah",
-            imageUrl: "https://images.unsplash.com/photo-1511267503926-d62153eb3c48?q=80&w=2070&auto=format&fit=crop",
-            description: "Santri sedang berlatih memanah sebagai sunnah Rasulullah.",
-            order: 3,
-        },
-        {
-            title: "Wisuda Tahfidz",
-            imageUrl: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=2070&auto=format&fit=crop",
-            description: "Momen haru wisuda tahfidz 30 juz.",
-            order: 4,
-        },
-        {
-            title: "Gotong Royong",
-            imageUrl: "https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?q=80&w=2070&auto=format&fit=crop",
-            description: "Kegiatan kebersihan lingkungan pesantren.",
-            order: 5,
-        },
-        {
-            title: "Makan Bersama",
-            imageUrl: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?q=80&w=2070&auto=format&fit=crop",
-            description: "Kebersamaan santri saat makan bersama.",
-            order: 6,
-        }
-    ];
-
-    for (const gallery of galleries) {
-        await prisma.gallery.create({
-            data: {
-                ...gallery,
-                isActive: true
-            }
-        });
-    }
-    console.log("✅ Created sample galleries");
-
-    // Create sample Majelis
-    const majelisList = [
-        {
-            title: "Kajian Akhlak",
-            subtitle: "Kajian Kitab Akhlaqul Banin",
-            teacher: "Abah Sayf Abu Hanifah",
-            schedule: "Rabu Pagi",
-            time: "05.30 WIB - Selesai",
-            location: "LPD Al Bahjah Buyut",
-            order: 1,
-        },
-        {
-            title: "Kajian Kitab Al-Hikam",
-            subtitle: "Kitab Al-Hikam",
-            teacher: "Abah Sayf Abu Hanifah",
-            schedule: "Setiap Ahad Sore",
-            time: "16.00 WIB - Selesai",
-            location: "LPD Al-Bahjah Buyut",
-            order: 2,
-        },
-        {
-            title: "Majelis Keliling",
-            subtitle: "Majelis Keliling di Cirebon",
-            teacher: "Abah Sayf Abu Hanifah",
-            schedule: "Setiap Sabtu Malam Ahad",
-            time: "20.00 WIB (Ba'da Isha)",
-            location: "Masjid di Cirebon",
-            order: 3,
-        }
-    ];
-
-    for (const majelis of majelisList) {
-        await prisma.majelis.upsert({
-            where: { id: `seed-majelis-${majelis.order}` }, // Assuming we can use ID or find a unique way. Wait, ID is cuid.
-            // Upsert by title is safer for seeding if title is unique enough, but better to use findFirst or just create if blank.
-            // Since we don't have a unique slug, let's just use createMany or check existence.
-            // For simplicity in this seed file which seems destructive/idempotent:
-            // We'll use a specific ID for seed items if possible, or search by title.
-            update: {
-                ...majelis
-            },
-            create: {
-                // We can manually specify ID to ensure idempotency
-                id: `seed-majelis-${majelis.order}`,
-                ...majelis
-            }
-        });
-    }
-    console.log("✅ Created sample majelis");
-
-    console.log("🎉 Seeding complete!");
+    console.log("✅ Created/Updated units");
 }
 
 main()

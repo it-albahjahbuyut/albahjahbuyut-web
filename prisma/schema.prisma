@@ -15,8 +15,11 @@ datasource db {
 // ============================================
 
 enum UserRole {
-  ADMIN
-  SUPER_ADMIN
+  SUPER_ADMIN       // Full access - can manage users
+  ADMIN             // Full access - standard admin
+  ADMIN_INFAQ       // Donations/Infaq only
+  ADMIN_PSB_PAUD    // PSB PAUD only
+  ADMIN_PSB_SMP_SMA // PSB SMP & SMA only
 }
 
 model User {
@@ -321,6 +324,9 @@ model PSBRegistration {
   
   // Spreadsheet Sync Tracking
   spreadsheetSynced Boolean   @default(false) // Apakah sudah sync ke Google Spreadsheet
+
+  // Flexible Data for Custom Units (PAUD, etc)
+  customData        Json?     // Field dinamis untuk data spesifik unit (berat badan, gol darah, dsb)
   
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt

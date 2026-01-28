@@ -51,6 +51,12 @@ export const PAYMENT_INFO = {
         accountNumber: '7459910020100186',
         accountName: 'SDIQU AL BAHJAH BUYUT'
     } as BankInfo,
+    PAUD: {
+        bankName: 'MUAMALAT',
+        accountNumber: '7459910020100186',
+        accountName: 'PAUDQU AL BAHJAH BUYUT'
+    } as BankInfo,
+
     DEFAULT: {
         bankName: 'MUAMALAT',
         accountNumber: '7459910020100186',
@@ -67,6 +73,8 @@ export function getPaymentInfo(unitSlug: string): BankInfo {
         return PAYMENT_INFO.SMP;
     } else if (slug.includes('sd')) {
         return PAYMENT_INFO.SD;
+    } else if (slug.includes('paud')) {
+        return PAYMENT_INFO.PAUD;
     }
     return PAYMENT_INFO.DEFAULT;
 }
@@ -502,8 +510,361 @@ export const PESANTREN_DOCUMENTS: DocumentRequirement[] = [
     },
 ];
 
+
+// Dokumen standar untuk PAUD
+export const PAUD_DOCUMENTS: DocumentRequirement[] = [
+    {
+        type: 'PAS_FOTO',
+        label: 'Pas Foto 3x4 (Latar Merah)',
+        description: 'Upload pas foto ukuran 3x4 dengan background MERAH (Wajib)',
+        acceptedFormats: ['.jpg', '.jpeg', '.png'],
+        maxSizeMB: 2,
+        required: true,
+    },
+    {
+        type: 'FOTO_KELUARGA',
+        label: 'Foto Keluarga Bebas',
+        description: 'Upload foto keluarga (bebas)',
+        acceptedFormats: ['.jpg', '.jpeg', '.png'],
+        maxSizeMB: 10,
+        required: true,
+    },
+    {
+        type: 'KTP_IBU',
+        label: 'Foto KTP Ibu',
+        description: 'Upload foto KTP Ibu',
+        acceptedFormats: ['.jpg', '.jpeg', '.png', '.pdf'],
+        maxSizeMB: 10,
+        required: true,
+    },
+    {
+        type: 'KTP_AYAH',
+        label: 'Foto KTP Ayah',
+        description: 'Upload foto KTP Ayah',
+        acceptedFormats: ['.jpg', '.jpeg', '.png', '.pdf'],
+        maxSizeMB: 10,
+        required: true,
+    },
+    {
+        type: 'KARTU_KELUARGA',
+        label: 'Foto Kartu Keluarga (KK)',
+        description: 'Upload foto Kartu Keluarga (KK)',
+        acceptedFormats: ['.jpg', '.jpeg', '.png', '.pdf'],
+        maxSizeMB: 10,
+        required: true,
+    },
+    {
+        type: 'AKTA_KELAHIRAN',
+        label: 'Foto Akta Kelahiran',
+        description: 'Upload foto Akta Kelahiran (Optional jika belum ada)',
+        acceptedFormats: ['.jpg', '.jpeg', '.png', '.pdf'],
+        maxSizeMB: 10,
+        required: false,
+    },
+    {
+        type: 'BUKTI_PEMBAYARAN',
+        label: 'Bukti Pembayaran',
+        description: 'Upload bukti transfer biaya pendaftaran',
+        acceptedFormats: ['.jpg', '.jpeg', '.png', '.pdf'],
+        maxSizeMB: 2,
+        required: true,
+    },
+];
+
+// Field formulir khusus PAUD (Beda dari yang lain)
+export const PAUD_FORM_FIELDS: FormField[] = [
+    // A. Identitas Anak
+    {
+        name: 'namaLengkap',
+        label: 'Nama Lengkap',
+        type: 'text',
+        placeholder: 'Nama lengkap anak',
+        required: true,
+    },
+    {
+        name: 'namaPanggilan',
+        label: 'Nama Panggilan',
+        type: 'text',
+        placeholder: 'Nama panggilan anak',
+        required: true,
+    },
+    {
+        name: 'tempatLahir',
+        label: 'Tempat Lahir',
+        type: 'text',
+        placeholder: 'Kota tempat lahir',
+        required: true,
+    },
+    {
+        name: 'tanggalLahir',
+        label: 'Tanggal Lahir',
+        type: 'date',
+        required: true,
+    },
+    {
+        name: 'usia',
+        label: 'Usia (Tahun)',
+        type: 'number',
+        placeholder: 'Contoh: 4',
+        required: true,
+    },
+    {
+        name: 'jenisKelamin',
+        label: 'Jenis Kelamin',
+        type: 'select',
+        required: true,
+        options: [
+            { value: 'L', label: 'Laki-laki' },
+            { value: 'P', label: 'Perempuan' },
+        ],
+    },
+    {
+        name: 'alamatLengkap',
+        label: 'Alamat Lengkap',
+        type: 'textarea',
+        placeholder: 'Alamat lengkap tempat tinggal',
+        required: true,
+        fullWidth: true,
+    },
+    {
+        name: 'kewarganegaraan',
+        label: 'Status Kewarganegaraan',
+        type: 'select',
+        required: true,
+        options: [
+            { value: 'Indonesia', label: 'Indonesia' },
+            { value: 'Luar Negeri', label: 'Luar Negeri' },
+        ],
+    },
+    {
+        name: 'anakKe',
+        label: 'Anak Nomor Ke',
+        type: 'number',
+        placeholder: '1',
+        required: true,
+    },
+    {
+        name: 'dariSaudara',
+        label: 'Dari Berapa Saudara Kandung',
+        type: 'number',
+        placeholder: '3',
+        required: true,
+    },
+    {
+        name: 'jumlahSaudaraTiri',
+        label: 'Banyak Saudara Tiri',
+        type: 'number',
+        placeholder: '0 (jika tidak ada)',
+        required: false,
+    },
+    {
+        name: 'bahasaSehariHari',
+        label: 'Bahasa Sehari-hari',
+        type: 'text',
+        placeholder: 'Contoh: Indonesia, Jawa',
+        required: true,
+    },
+    {
+        name: 'beratBadan',
+        label: 'Berat Badan (kg)',
+        type: 'number',
+        placeholder: 'Contoh: 15',
+        required: true,
+    },
+    {
+        name: 'tinggiBadan',
+        label: 'Tinggi Badan (cm)',
+        type: 'number',
+        placeholder: 'Contoh: 100',
+        required: true,
+    },
+    {
+        name: 'golonganDarah',
+        label: 'Gol. Darah',
+        type: 'select',
+        required: false,
+        options: [
+            { value: 'A', label: 'A' },
+            { value: 'B', label: 'B' },
+            { value: 'O', label: 'O' },
+            { value: 'AB', label: 'AB' },
+            { value: '-', label: 'Tidak Tahu' },
+        ],
+    },
+    {
+        name: 'riwayatPenyakit',
+        label: 'Riwayat Kesehatan / Penyakit',
+        type: 'textarea',
+        placeholder: 'Penyakit yang pernah diderita / Alergi (kosongkan jika tidak ada)',
+        required: false,
+        fullWidth: true,
+    },
+
+    // B. Identitas Orang Tua - Ayah
+    {
+        name: 'namaAyah',
+        label: 'Nama Ayah Kandung',
+        type: 'text',
+        placeholder: 'Nama lengkap ayah',
+        required: true,
+    },
+    {
+        name: 'ttlAyah',
+        label: 'Tempat, Tanggal Lahir Ayah',
+        type: 'text',
+        placeholder: 'Contoh: Cirebon, 12 Januari 1980',
+        required: true,
+    },
+    {
+        name: 'kewarganegaraanAyah',
+        label: 'Kewarganegaraan Ayah',
+        type: 'select',
+        required: true,
+        options: [
+            { value: 'Indonesia', label: 'Indonesia' },
+            { value: 'Luar Negeri', label: 'Luar Negeri' },
+        ],
+    },
+    {
+        name: 'pendidikanAyah',
+        label: 'Pendidikan Terakhir Ayah',
+        type: 'select',
+        required: true,
+        options: PENDIDIKAN_OPTIONS,
+    },
+    {
+        name: 'pekerjaanAyah',
+        label: 'Pekerjaan Ayah',
+        type: 'select',
+        required: true,
+        options: PEKERJAAN_OPTIONS,
+    },
+    {
+        name: 'penghasilanAyah',
+        label: 'Penghasilan Ayah Perbulan',
+        type: 'select',
+        required: true,
+        options: [
+            { value: '< 1 Juta', label: '< 1 Juta' },
+            { value: '1-2 Juta', label: '1-2 Juta' },
+            { value: '2-2.5 Juta', label: '2-2.5 Juta' },
+            { value: '3 Juta', label: '3 Juta' },
+            { value: '3-4 Juta', label: '3-4 Juta' },
+            { value: '> 4 Juta', label: '> 4 Juta' },
+        ],
+    },
+    {
+        name: 'noWaAyah',
+        label: 'No. Telp/WA Ayah',
+        type: 'tel',
+        placeholder: '08123456789',
+        required: true,
+    },
+
+    // B. Identitas Orang Tua - Ibu
+    {
+        name: 'namaIbu',
+        label: 'Nama Ibu Kandung',
+        type: 'text',
+        placeholder: 'Nama lengkap ibu',
+        required: true,
+    },
+    {
+        name: 'ttlIbu',
+        label: 'Tempat, Tanggal Lahir Ibu',
+        type: 'text',
+        placeholder: 'Contoh: Cirebon, 12 Januari 1985',
+        required: true,
+    },
+    {
+        name: 'kewarganegaraanIbu',
+        label: 'Kewarganegaraan Ibu',
+        type: 'select',
+        required: true,
+        options: [
+            { value: 'Indonesia', label: 'Indonesia' },
+            { value: 'Luar Negeri', label: 'Luar Negeri' },
+        ],
+    },
+    {
+        name: 'pendidikanIbu',
+        label: 'Pendidikan Terakhir Ibu',
+        type: 'select',
+        required: true,
+        options: PENDIDIKAN_OPTIONS,
+    },
+    {
+        name: 'pekerjaanIbu',
+        label: 'Pekerjaan Ibu',
+        type: 'select',
+        required: true,
+        options: PEKERJAAN_OPTIONS,
+    },
+    {
+        name: 'penghasilanIbu',
+        label: 'Penghasilan Ibu Perbulan',
+        type: 'select',
+        required: true,
+        options: [
+            { value: '< 1 Juta', label: '< 1 Juta' },
+            { value: '1-2 Juta', label: '1-2 Juta' },
+            { value: '2-2.5 Juta', label: '2-2.5 Juta' },
+            { value: '3 Juta', label: '3 Juta' },
+            { value: '3-4 Juta', label: '3-4 Juta' },
+            { value: '> 4 Juta', label: '> 4 Juta' },
+        ],
+    },
+    {
+        name: 'noWaIbu',
+        label: 'No. Telp/WA Ibu',
+        type: 'tel',
+        placeholder: '08123456789',
+        required: true,
+    },
+    {
+        name: 'jumlahTanggungan',
+        label: 'Jumlah Tanggungan',
+        type: 'number',
+        placeholder: 'Jumlah anak/tanggungan',
+        required: true,
+    },
+
+    // C. Riwayat Sekolah Anak
+    {
+        name: 'statusMasuk',
+        label: 'Masuk ke Sekolah Ini Sebagai',
+        type: 'select',
+        required: true,
+        options: [
+            { value: 'Murid Baru', label: 'Murid Baru / Kelompok A' },
+            { value: 'Pindahan', label: 'Pindahan' },
+        ],
+    },
+    {
+        name: 'asalSekolah',
+        label: 'Pindahan Dari Sekolah (Jika Pindahan)',
+        type: 'text',
+        placeholder: 'Nama sekolah sebelumnya (kosongkan jika murid baru)',
+        required: false,
+    },
+    {
+        name: 'tanggalDiterima',
+        label: 'Diterima Di Sekolah Ini pada tanggal',
+        type: 'date',
+        required: false,
+    },
+    {
+        name: 'sumberInfo',
+        label: 'Tau Info PAUD dari mana?',
+        type: 'select',
+        required: true,
+        options: SUMBER_INFO_OPTIONS,
+    },
+];
+
 // Dokumen standar untuk SD
 export const SD_DOCUMENTS: DocumentRequirement[] = [
+
     {
         type: 'PAS_FOTO',
         label: 'Pas Foto 3x4',
@@ -570,6 +931,9 @@ export function getFormConfig(unitSlug: string): { fields: FormField[]; document
         documents = SMA_DOCUMENTS;
     } else if (slug.includes('sd')) {
         documents = SD_DOCUMENTS;
+    } else if (slug.includes('paud')) {
+        // PAUD has totally different fields and documents
+        return { fields: PAUD_FORM_FIELDS, documents: PAUD_DOCUMENTS };
     } else {
         // Tahfidz, Tafaqquh, atau unit lainnya
         documents = PESANTREN_DOCUMENTS;

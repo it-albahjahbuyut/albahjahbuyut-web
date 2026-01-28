@@ -76,6 +76,21 @@ export interface PSBSpreadsheetData {
     driveFolderUrl: string;
     status: string;
     createdAt: string;
+    // PAUD Fields (Optional)
+    namaPanggilan?: string;
+    beratBadan?: string;
+    tinggiBadan?: string;
+    golonganDarah?: string;
+    kewarganegaraan?: string;
+    riwayatPenyakit?: string;
+    bahasaSehariHari?: string;
+    jumlahSaudaraTiri?: string;
+    ttlAyah?: string;
+    ttlIbu?: string;
+    kewarganegaraanAyah?: string;
+    kewarganegaraanIbu?: string;
+    statusMasuk?: string;
+    tanggalDiterima?: string;
 }
 
 
@@ -117,7 +132,8 @@ function getSheetNameFromUnit(unitName: string): string {
 async function ensureSheetHeaders(sheetName: string): Promise<string> {
     if (!sheets) return sheetName;
 
-    const headerRow = [
+    // Standard Headers (for SD, SMP, SMA, etc)
+    const baseHeaders = [
         'Nomor Pendaftaran',
         'Nama Lengkap',
         'NISN',
@@ -150,6 +166,29 @@ async function ensureSheetHeaders(sheetName: string): Promise<string> {
         'Status',
         'Tanggal Daftar'
     ];
+
+    let headerRow = [...baseHeaders];
+
+    // If PAUD, append specific headers
+    if (sheetName === 'PAUD') {
+        const paudHeaders = [
+            'Nama Panggilan',
+            'Berat Badan',
+            'Tinggi Badan',
+            'Gol. Darah',
+            'Kewarganegaraan Anak',
+            'Riwayat Penyakit',
+            'Bahasa Sehari-hari',
+            'Jumlah Saudara Tiri',
+            'TTL Ayah',
+            'TTL Ibu',
+            'Kewarganegaraan Ayah',
+            'Kewarganegaraan Ibu',
+            'Status Masuk',
+            'Tanggal Diterima'
+        ];
+        headerRow = [...baseHeaders, ...paudHeaders];
+    }
 
     try {
         // Cek apakah sheet sudah ada
@@ -188,7 +227,7 @@ async function ensureSheetHeaders(sheetName: string): Promise<string> {
                                 title: sheetName,
                                 gridProperties: {
                                     rowCount: 1000,
-                                    columnCount: 30
+                                    columnCount: headerRow.length + 5 // Add buffer columns
                                 }
                             }
                         }
@@ -242,8 +281,8 @@ export async function appendToSpreadsheet(data: PSBSpreadsheetData): Promise<{ s
             minute: '2-digit'
         });
 
-        // Prepare row data sesuai formulir PSB TP. 2026/2027
-        const rowData = [
+        // Prepare base row data
+        let rowData = [
             data.registrationNumber,
             data.namaLengkap,
             data.nisn || '-',
@@ -276,6 +315,27 @@ export async function appendToSpreadsheet(data: PSBSpreadsheetData): Promise<{ s
             data.status,
             formattedDate
         ];
+
+        // Append PAUD specific data if needed
+        if (sheetName === 'PAUD') {
+            const paudData = [
+                data.namaPanggilan || '-',
+                data.beratBadan || '-',
+                data.tinggiBadan || '-',
+                data.golonganDarah || '-',
+                data.kewarganegaraan || '-',
+                data.riwayatPenyakit || '-',
+                data.bahasaSehariHari || '-',
+                data.jumlahSaudaraTiri || '-',
+                data.ttlAyah || '-',
+                data.ttlIbu || '-',
+                data.kewarganegaraanAyah || '-',
+                data.kewarganegaraanIbu || '-',
+                data.statusMasuk || '-',
+                data.tanggalDiterima || '-'
+            ];
+            rowData = [...rowData, ...paudData];
+        }
 
         // Check if registration already exists
         const existingRowIndex = await findRowIndex(sheetName, data.registrationNumber);

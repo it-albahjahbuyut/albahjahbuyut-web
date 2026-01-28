@@ -113,10 +113,10 @@ export default function PSBForm({
 
                 case 'noWaIbu':
                 case 'noWaAyah':
-                    // Indonesian phone number: 08xx, 62xx, or +62xx formats
-                    const phoneClean = value.replace(/[\s-]/g, '');
-                    if (!/^(\+62|62|0)8[1-9][0-9]{7,11}$/.test(phoneClean)) {
-                        newErrors[field.name] = 'Format nomor WA tidak valid (contoh: 08123456789)';
+                    // International phone number format (allow +, -, spaces, parentheses, and digits)
+                    const phoneClean = value.replace(/[\s\-()]/g, '');
+                    if (!/^\+?[0-9]{8,15}$/.test(phoneClean)) {
+                        newErrors[field.name] = 'Format nomor telepon tidak valid (contoh: +628123456789 atau 08123456789)';
                     }
                     break;
 
@@ -598,7 +598,11 @@ export default function PSBForm({
                         ))}
                     </div>
 
-                    <div className="flex justify-end mt-6 sm:mt-8">
+                    <p className="text-xs text-slate-500 mt-6">
+                        <span className="text-red-500">*</span> Wajib diisi
+                    </p>
+
+                    <div className="flex justify-end mt-4">
                         <button
                             onClick={handleNext}
                             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3 bg-emerald-600 text-white font-semibold rounded-lg hover:bg-emerald-700 transition-colors"
@@ -633,11 +637,11 @@ export default function PSBForm({
                                 </h3>
                                 <div className="bg-white rounded-lg p-4 border border-amber-100">
                                     <div className="space-y-3">
-                                        <div className="flex justify-between items-center">
+                                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-0">
                                             <span className="text-sm text-slate-600">Bank</span>
                                             <span className="font-bold text-slate-900">{paymentInfo.bankName}</span>
                                         </div>
-                                        <div className="flex justify-between items-center">
+                                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-0">
                                             <span className="text-sm text-slate-600">No. Rekening</span>
                                             <div className="flex items-center gap-2">
                                                 <span className="font-mono font-bold text-emerald-700 text-lg">{paymentInfo.accountNumber}</span>
@@ -651,9 +655,9 @@ export default function PSBForm({
                                                 </button>
                                             </div>
                                         </div>
-                                        <div className="flex justify-between items-center">
+                                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-0">
                                             <span className="text-sm text-slate-600">Atas Nama</span>
-                                            <span className="font-bold text-slate-900">{paymentInfo.accountName}</span>
+                                            <span className="font-bold text-slate-900 break-words">{paymentInfo.accountName}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -745,7 +749,11 @@ export default function PSBForm({
                         })}
                     </div>
 
-                    <div className="flex flex-col-reverse sm:flex-row justify-between gap-3 mt-6 sm:mt-8">
+                    <p className="text-xs text-slate-500 mt-6">
+                        <span className="text-red-500">*</span> Wajib diupload
+                    </p>
+
+                    <div className="flex flex-col-reverse sm:flex-row justify-between gap-3 mt-4">
                         <button
                             onClick={() => {
                                 setStep(1);

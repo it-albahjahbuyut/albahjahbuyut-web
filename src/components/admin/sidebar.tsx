@@ -18,68 +18,105 @@ import {
     Store,
     Loader2,
     Mail,
+    Users,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import type { UserRole } from "@prisma/client";
+import { canAccessPath, isSuperAdmin } from "@/lib/permissions";
 
+// Define nav items with required permission paths
 const navItems = [
     {
         title: "Dashboard",
         href: "/admin",
         icon: LayoutDashboard,
+        permission: "/admin",
     },
     {
         title: "Unit Pendidikan",
         href: "/admin/units",
         icon: GraduationCap,
+        permission: "/admin/units",
     },
     {
         title: "Berita",
         href: "/admin/posts",
         icon: Newspaper,
+        permission: "/admin/posts",
     },
     {
         title: "Donasi",
         href: "/admin/donations",
         icon: Heart,
+        permission: "/admin/donations",
     },
     {
         title: "Galeri",
         href: "/admin/galleries",
         icon: Image,
+        permission: "/admin/galleries",
     },
     {
         title: "Majelis Rutin",
         href: "/admin/majelis",
         icon: CalendarDays,
+        permission: "/admin/majelis",
     },
     {
         title: "Unit Usaha",
         href: "/admin/business-units",
         icon: Store,
+        permission: "/admin/business-units",
     },
     {
         title: "Pendaftaran PSB",
         href: "/admin/psb",
         icon: UserPlus,
+        permission: "/admin/psb",
     },
     {
         title: "Newsletter",
         href: "/admin/newsletter",
         icon: Mail,
+        permission: "/admin/newsletter",
     },
     {
         title: "Pengaturan",
         href: "/admin/settings",
         icon: Settings,
+        permission: "/admin/settings",
     },
 ];
 
-export function AdminSidebar() {
+interface AdminSidebarProps {
+    userRole: UserRole;
+}
+
+export function AdminSidebar({ userRole }: AdminSidebarProps) {
     const pathname = usePathname();
     const [isOpen, setIsOpen] = useState(false);
     const [loadingHref, setLoadingHref] = useState<string | null>(null);
+
+    // Filter nav items based on user role
+    const filteredNavItems = navItems.filter((item) =>
+        canAccessPath(userRole, item.permission)
+    );
+
+    // Add user management for super admin
+    const superAdminItems = isSuperAdmin(userRole)
+        ? [
+            {
+                title: "Kelola User",
+                href: "/admin/users",
+                icon: Users,
+                permission: "/admin/users",
+            },
+        ]
+        : [];
+
+    const allNavItems = [...filteredNavItems, ...superAdminItems];
 
     const handleNavigation = (href: string) => {
         // Don't set loading if already on this page
@@ -132,7 +169,7 @@ export function AdminSidebar() {
 
                 {/* Navigation */}
                 <nav className="flex-1 p-4 space-y-2">
-                    {navItems.map((item) => {
+                    {allNavItems.map((item) => {
                         const isActive =
                             pathname === item.href ||
                             (item.href !== "/admin" && pathname.startsWith(item.href));

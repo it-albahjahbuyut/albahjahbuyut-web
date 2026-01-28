@@ -45,6 +45,21 @@ export interface PSBFormData {
     // Program Spesial fields
     grade?: string;
     jenisSantri?: string;
+    // PAUD Specific Fields
+    namaPanggilan?: string;
+    kewarganegaraan?: string;
+    jumlahSaudaraTiri?: string;
+    bahasaSehariHari?: string;
+    beratBadan?: string;
+    tinggiBadan?: string;
+    golonganDarah?: string;
+    riwayatPenyakit?: string;
+    ttlAyah?: string;
+    kewarganegaraanAyah?: string;
+    ttlIbu?: string;
+    kewarganegaraanIbu?: string;
+    statusMasuk?: string;
+    tanggalDiterima?: string;
     // Legacy fields for backward compatibility
     namaOrangTua?: string;
     noHpOrangTua?: string;
@@ -144,6 +159,22 @@ export async function submitPSBRegistration(
                 driveFolderId: null,
                 driveFolderUrl: null,
                 unitId: formData.unitId,
+                customData: {
+                    namaPanggilan: formData.namaPanggilan,
+                    kewarganegaraan: formData.kewarganegaraan,
+                    jumlahSaudaraTiri: formData.jumlahSaudaraTiri,
+                    bahasaSehariHari: formData.bahasaSehariHari,
+                    beratBadan: formData.beratBadan,
+                    tinggiBadan: formData.tinggiBadan,
+                    golonganDarah: formData.golonganDarah,
+                    riwayatPenyakit: formData.riwayatPenyakit,
+                    ttlAyah: formData.ttlAyah,
+                    kewarganegaraanAyah: formData.kewarganegaraanAyah,
+                    ttlIbu: formData.ttlIbu,
+                    kewarganegaraanIbu: formData.kewarganegaraanIbu,
+                    statusMasuk: formData.statusMasuk,
+                    tanggalDiterima: formData.tanggalDiterima,
+                },
             },
         });
 
@@ -335,6 +366,21 @@ async function processUploadsInBackground(
                 driveFolderUrl: folderResult.folderUrl,
                 status: 'PENDING',
                 createdAt: new Date().toISOString(),
+                // PAUD Fields
+                namaPanggilan: formData.namaPanggilan,
+                beratBadan: formData.beratBadan,
+                tinggiBadan: formData.tinggiBadan,
+                golonganDarah: formData.golonganDarah,
+                kewarganegaraan: formData.kewarganegaraan,
+                riwayatPenyakit: formData.riwayatPenyakit,
+                bahasaSehariHari: formData.bahasaSehariHari,
+                jumlahSaudaraTiri: formData.jumlahSaudaraTiri,
+                ttlAyah: formData.ttlAyah,
+                ttlIbu: formData.ttlIbu,
+                kewarganegaraanAyah: formData.kewarganegaraanAyah,
+                kewarganegaraanIbu: formData.kewarganegaraanIbu,
+                statusMasuk: formData.statusMasuk,
+                tanggalDiterima: formData.tanggalDiterima,
             });
 
             if (sheetResult.success) {

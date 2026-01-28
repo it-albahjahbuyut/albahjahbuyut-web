@@ -15,8 +15,9 @@ export default async function AdminLayout({
 
     return (
         <div className="h-screen bg-gray-50 overflow-hidden">
-            <AdminSidebar />
+            <AdminSidebar userRole={session.user.role} />
             <main className="md:ml-64 h-full overflow-y-auto">{children}</main>
         </div>
     );
 }
+

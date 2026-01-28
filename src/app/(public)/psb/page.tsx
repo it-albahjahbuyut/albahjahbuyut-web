@@ -31,7 +31,8 @@ export default async function PSBPage() {
             OR: [
                 { slug: { contains: "sd" } },
                 { slug: { contains: "smp" } },
-                { slug: { contains: "sma" } }
+                { slug: { contains: "sma" } },
+                { slug: { contains: "paud" } }
             ]
         },
         orderBy: { order: "asc" },

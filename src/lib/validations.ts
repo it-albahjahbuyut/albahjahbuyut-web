@@ -346,7 +346,7 @@ export type SettingInput = z.infer<typeof settingSchema>;
 
 // Regex patterns for Indonesian data validation
 const NIK_REGEX = /^[0-9]{16}$/; // NIK 16 digit
-const PHONE_REGEX = /^(\+62|62|0)8[1-9][0-9]{7,10}$/; // Indonesian phone number
+const PHONE_REGEX = /^[0-9+\-\s()]+$/; // International phone number (digits, +, -, spaces, parentheses)
 const SAFE_NAME_REGEX = /^[a-zA-Z\s'.,-]+$/; // Only letters, spaces, and common name punctuation
 
 // Helper to sanitize and validate Indonesian names (allow Indonesian characters)
@@ -360,15 +360,15 @@ const indonesianNameSchema = z
         "Nama tidak boleh mengandung karakter khusus"
     );
 
-// Helper for phone number validation
+// Helper for phone number validation (international format)
 const phoneSchema = z
     .string()
-    .min(10, "Nomor telepon minimal 10 digit")
-    .max(15, "Nomor telepon maksimal 15 digit")
+    .min(8, "Nomor telepon minimal 8 digit")
+    .max(20, "Nomor telepon maksimal 20 digit")
     .trim()
     .refine(
-        (val) => /^[0-9+\-\s]+$/.test(val),
-        "Nomor telepon hanya boleh berisi angka, +, atau -"
+        (val) => /^[0-9+\-\s()]+$/.test(val),
+        "Nomor telepon hanya boleh berisi angka, +, -, spasi, atau tanda kurung"
     );
 
 export const psbFormSchema = z.object({
@@ -493,11 +493,11 @@ export const psbFormSchema = z.object({
     noWaIbu: phoneSchema,
     noWaAyah: z
         .string()
-        .max(15, "Nomor telepon maksimal 15 digit")
+        .max(20, "Nomor telepon maksimal 20 digit")
         .optional()
         .refine(
-            (val) => !val || /^[0-9+\-\s]+$/.test(val),
-            "Nomor telepon hanya boleh berisi angka"
+            (val) => !val || /^[0-9+\-\s()]+$/.test(val),
+            "Nomor telepon hanya boleh berisi angka, +, -, spasi, atau tanda kurung"
         ),
     sumberInfo: z
         .string()
@@ -512,6 +512,26 @@ export const psbFormSchema = z.object({
     jenisSantri: z.enum(["Umum", "Lanjutan"], {
         message: "Pilih Jenis Santri",
     }).optional(),
+
+    // PAUD Specific Fields (Optional, stored in customData)
+    namaPanggilan: z.string().max(100).optional(),
+    kewarganegaraan: z.string().max(50).optional(),
+    jumlahSaudaraTiri: z.string().max(10).optional(),
+    bahasaSehariHari: z.string().max(100).optional(),
+    beratBadan: z.string().max(10).optional(),
+    tinggiBadan: z.string().max(10).optional(),
+    golonganDarah: z.string().max(5).optional(),
+    riwayatPenyakit: z.string().max(1000).optional(),
+
+    // Parent Extra Info for PAUD
+    ttlAyah: z.string().max(100).optional(),
+    kewarganegaraanAyah: z.string().max(50).optional(),
+    ttlIbu: z.string().max(100).optional(),
+    kewarganegaraanIbu: z.string().max(50).optional(),
+
+    // School History for PAUD
+    statusMasuk: z.string().max(50).optional(),
+    tanggalDiterima: z.string().optional(),
 
     // Legacy fields (optional, for backward compatibility)
     namaOrangTua: z.string().max(100).optional(),

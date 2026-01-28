@@ -72,6 +72,7 @@ export default function RegistrationCard({
         if (unitLower.includes('smp')) return '#2563eb'; // blue-600
         if (unitLower.includes('sma')) return '#059669'; // emerald-600
         if (unitLower.includes('sd')) return '#f97316'; // orange-500
+        if (unitLower.includes('paud')) return '#ec4899'; // pink-500
         if (unitLower.includes('tahfidz')) return '#9333ea'; // purple-600
         if (unitLower.includes('tafaqquh')) return '#0d9488'; // teal-600
         return '#4b5563'; // gray-600

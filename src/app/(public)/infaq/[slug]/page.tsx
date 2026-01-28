@@ -100,34 +100,32 @@ export default async function DonationDetailPage({ params }: PageProps) {
 
                 {/* Hero Content */}
                 <div className="relative z-10 container mx-auto px-4 lg:px-8 pb-12">
-                    <FadeIn>
-                        <Link
-                            href="/infaq"
-                            className="inline-flex items-center gap-2 text-white/90 hover:text-white transition-colors bg-white/10 hover:bg-white/20 backdrop-blur-md px-4 py-2 rounded-full text-sm font-medium border border-white/10 mb-8"
-                        >
-                            <ArrowRight className="w-4 h-4 rotate-180" />
-                            Kembali
-                        </Link>
-                        <div className="max-w-4xl">
-                            <div className="flex flex-wrap gap-3 mb-6">
-                                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-gold-500 text-emerald-950 text-xs font-bold uppercase tracking-wider rounded-full">
-                                    <Target className="w-3.5 h-3.5" />
-                                    Program Infaq
-                                </span>
-                                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/10 border border-white/20 text-white/90 text-xs font-medium rounded-full backdrop-blur-sm">
-                                    <Calendar className="w-3.5 h-3.5" />
-                                    {program.createdAt.toLocaleDateString("id-ID", {
-                                        day: "numeric",
-                                        month: "long",
-                                        year: "numeric"
-                                    })}
-                                </span>
-                            </div>
-                            <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight tracking-tight">
-                                {program.title}
-                            </h1>
+                    <Link
+                        href="/infaq"
+                        className="inline-flex items-center gap-2 text-white/90 hover:text-white transition-colors bg-white/10 hover:bg-white/20 backdrop-blur-md px-4 py-2 rounded-full text-sm font-medium border border-white/10 mb-8"
+                    >
+                        <ArrowRight className="w-4 h-4 rotate-180" />
+                        Kembali
+                    </Link>
+                    <div className="max-w-4xl">
+                        <div className="flex flex-wrap gap-3 mb-6">
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-gold-500 text-emerald-950 text-xs font-bold uppercase tracking-wider rounded-full">
+                                <Target className="w-3.5 h-3.5" />
+                                Program Infaq
+                            </span>
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/10 border border-white/20 text-white/90 text-xs font-medium rounded-full backdrop-blur-sm">
+                                <Calendar className="w-3.5 h-3.5" />
+                                {program.createdAt.toLocaleDateString("id-ID", {
+                                    day: "numeric",
+                                    month: "long",
+                                    year: "numeric"
+                                })}
+                            </span>
                         </div>
-                    </FadeIn>
+                        <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight tracking-tight">
+                            {program.title}
+                        </h1>
+                    </div>
                 </div>
             </div>
 
