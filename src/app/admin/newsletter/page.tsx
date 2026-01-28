@@ -83,7 +83,14 @@ export default async function NewsletterPage() {
                                     <span className="bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-full font-medium">
                                         {item.recipientCount} penerima
                                     </span>
-                                    <span>{new Date(item.sentAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
+                                    <span>{new Date(item.sentAt).toLocaleDateString('id-ID', {
+                                        day: 'numeric',
+                                        month: 'short',
+                                        year: 'numeric',
+                                        hour: '2-digit',
+                                        minute: '2-digit',
+                                        timeZone: 'Asia/Jakarta'
+                                    })}</span>
                                 </div>
                             </div>
                         ))}

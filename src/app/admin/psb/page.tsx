@@ -363,6 +363,7 @@ async function PSBTableContent({ params }: { params: { status?: string; unit?: s
                                                     day: 'numeric',
                                                     month: 'short',
                                                     year: 'numeric',
+                                                    timeZone: 'Asia/Jakarta'
                                                 })}
                                             </td>
                                             <td className="px-4 py-4">

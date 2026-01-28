@@ -139,7 +139,7 @@ export default function NewsletterActions({ subscribers }: NewsletterActionsProp
             <div style="font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #f3f4f6; padding: 40px 20px;">
                 <!-- Logo -->
                 <div style="text-align: center; margin-bottom: 32px;">
-                    <img src="${baseUrl}/logo-buyut.png" alt="Al-Bahjah Buyut" style="height: 52px; width: auto;" />
+                    <img src="${baseUrl}/logo-buyut.png" alt="Al-Bahjah Buyut" width="64" height="64" style="height: 64px; width: 64px; object-fit: contain; display: inline-block;" />
                 </div>
                 
                 <!-- Main Card -->
@@ -154,7 +154,7 @@ export default function NewsletterActions({ subscribers }: NewsletterActionsProp
                     <div style="padding: 0 40px 48px;">
                         <div style="height: 1px; background-color: #f1f5f9; margin-bottom: 32px;"></div>
                         <p style="margin: 0; font-size: 14px; color: #64748b; font-style: italic;">
-                            Semoga warta ini bermanfaat untuk mempererat ukhuwah kita semua.
+                            Semoga pesan singkat ini bermanfaat untuk mempererat ukhuwah kita semua.
                         </p>
                     </div>
                 </div>

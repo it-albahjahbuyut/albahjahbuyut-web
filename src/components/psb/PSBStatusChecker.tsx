@@ -181,6 +181,7 @@ export default function PSBStatusChecker({ initialNumber }: PSBStatusCheckerProp
                                                 day: 'numeric',
                                                 month: 'long',
                                                 year: 'numeric',
+                                                timeZone: 'Asia/Jakarta'
                                             })}
                                         </p>
                                     </div>

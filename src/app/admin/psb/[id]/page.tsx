@@ -206,6 +206,7 @@ export default async function AdminPSBDetailPage({ params }: PageProps) {
                                         day: 'numeric',
                                         month: 'long',
                                         year: 'numeric',
+                                        timeZone: 'Asia/Jakarta'
                                     })}
                                 </p>
                             </div>
@@ -453,6 +454,7 @@ export default async function AdminPSBDetailPage({ params }: PageProps) {
                                         year: 'numeric',
                                         hour: '2-digit',
                                         minute: '2-digit',
+                                        timeZone: 'Asia/Jakarta'
                                     })}
                                 </p>
                             </div>
@@ -465,6 +467,7 @@ export default async function AdminPSBDetailPage({ params }: PageProps) {
                                         year: 'numeric',
                                         hour: '2-digit',
                                         minute: '2-digit',
+                                        timeZone: 'Asia/Jakarta'
                                     })}
                                 </p>
                             </div>
