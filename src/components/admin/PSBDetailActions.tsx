@@ -271,22 +271,32 @@ export default function PSBDetailActions({
                 <h3 className="font-semibold text-gray-900 mb-4">Update Status</h3>
 
                 <div className="space-y-4">
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <div className="grid grid-cols-1 gap-2">
                         {statusOptions.map((opt) => {
                             const Icon = opt.icon;
+                            const isActive = status === opt.value;
                             return (
                                 <button
                                     key={opt.value}
                                     onClick={() => setStatus(opt.value)}
                                     className={`
-                    flex flex-col items-center gap-2 p-4 rounded-lg border-2 transition-all
-                    ${status === opt.value
-                                            ? `border-gray-900 ${opt.color} text-white`
-                                            : 'border-gray-200 bg-white text-gray-600 hover:border-gray-400'}
-                  `}
+                                        flex items-center gap-3 p-3 rounded-lg border transition-all w-full text-left group
+                                        ${isActive
+                                            ? `${opt.color} border-transparent text-white shadow-sm`
+                                            : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300 hover:bg-gray-50'
+                                        }
+                                    `}
                                 >
-                                    <Icon className="w-5 h-5" />
+                                    <div className={`
+                                        p-1.5 rounded-full
+                                        ${isActive ? 'bg-white/20' : 'bg-gray-100 group-hover:bg-white'}
+                                    `}>
+                                        <Icon className="w-4 h-4" />
+                                    </div>
                                     <span className="text-sm font-medium">{opt.label}</span>
+                                    {isActive && (
+                                        <CheckCircle2 className="w-4 h-4 ml-auto text-white/90" />
+                                    )}
                                 </button>
                             );
                         })}
@@ -452,11 +462,11 @@ export default function PSBDetailActions({
                     </div>
                 )}
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="flex flex-col gap-3">
                     <button
                         onClick={handleSyncDocs}
                         disabled={isSyncingDocs || !hasDriveFolder}
-                        className="px-4 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                        className="w-full py-2.5 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm"
                     >
                         {isSyncingDocs ? (
                             <>
@@ -466,7 +476,7 @@ export default function PSBDetailActions({
                         ) : (
                             <>
                                 <Database className="w-4 h-4" />
-                                Sync Dokumen dari Drive
+                                Sync Dokumen
                             </>
                         )}
                     </button>
@@ -474,7 +484,7 @@ export default function PSBDetailActions({
                     <button
                         onClick={handleSyncSheet}
                         disabled={isSyncingSheet}
-                        className="px-4 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                        className="w-full py-2.5 bg-emerald-600 text-white font-medium rounded-lg hover:bg-emerald-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm"
                     >
                         {isSyncingSheet ? (
                             <>
@@ -484,7 +494,7 @@ export default function PSBDetailActions({
                         ) : (
                             <>
                                 <FileSpreadsheet className="w-4 h-4" />
-                                Sync ke Spreadsheet
+                                Sync Spreadsheet
                             </>
                         )}
                     </button>

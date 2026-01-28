@@ -273,9 +273,9 @@ function getStatusEmailContent(data: StatusEmailData): { subject: string; html: 
     `;
 
     const subjectMap = {
-        VERIFIED: `[Lengkap] Berkas Pendaftaran Terverifikasi - ${registrationNumber}`,
-        ACCEPTED: `[PENTING] Hasil Seleksi PSB: DITERIMA - ${registrationNumber}`,
-        REJECTED: `Informasi Hasil Seleksi PSB - ${registrationNumber}`,
+        VERIFIED: `✔ Berkas Pendaftaran Telah Terverifikasi - PSB Al-Bahjah Buyut`,
+        ACCEPTED: `🎉 Selamat! Ananda Diterima di Al-Bahjah Buyut`,
+        REJECTED: `Pengumuman Hasil Seleksi PSB Al-Bahjah Buyut`,
     };
 
     return {

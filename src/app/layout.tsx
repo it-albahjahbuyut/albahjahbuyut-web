@@ -4,6 +4,7 @@ import "./globals.css";
 import { Providers } from "@/components/providers";
 import Script from "next/script";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Agentation } from "agentation";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   variable: "--font-plus-jakarta",
@@ -160,6 +161,7 @@ export default function RootLayout({
         <Providers>
           {children}
           <SpeedInsights />
+          {process.env.NODE_ENV === "development" && <Agentation />}
         </Providers>
       </body>
     </html>
