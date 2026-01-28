@@ -16,6 +16,9 @@ import PSBUnitFilter from '@/components/admin/PSBUnitFilter';
 import PSBBulkActions from '@/components/admin/PSBBulkActions';
 import PSBSyncActions from '@/components/admin/PSBSyncActions';
 import { Skeleton } from '@/components/ui/skeleton';
+import { auth } from '@/lib/auth';
+import { getAllowedPSBUnitSlugs } from '@/lib/permissions';
+import { redirect } from 'next/navigation';
 
 export const metadata: Metadata = {
     title: 'Kelola Pendaftaran PSB | Admin Al-Bahjah Buyut',
@@ -103,15 +106,22 @@ function TableSkeleton() {
 }
 
 // Async component for stats
-async function PSBStats() {
+async function PSBStats({ allowedSlugs }: { allowedSlugs: string[] | null }) {
+    // If allowedSlugs is not null, only count registrations from those units
+    const whereClause = allowedSlugs
+        ? { unit: { slug: { in: allowedSlugs } } }
+        : {};
+
     const [globalStats, missingDocsCount] = await Promise.all([
         db.pSBRegistration.groupBy({
             by: ['status'],
             _count: true,
+            where: whereClause
         }) as unknown as Promise<StatItem[]>,
         // Count registrations with Drive folder but no documents
         db.pSBRegistration.count({
             where: {
+                ...whereClause,
                 driveFolderId: { not: null },
                 documents: { none: {} },
             },
@@ -161,13 +171,54 @@ async function PSBStats() {
 }
 
 // Async component for table content
-async function PSBTableContent({ params }: { params: { status?: string; unit?: string } }) {
-    const [registrations, units, globalStats, filteredStats] = await Promise.all([
+async function PSBTableContent({
+    params,
+    allowedSlugs
+}: {
+    params: { status?: string; unit?: string },
+    allowedSlugs: string[] | null
+}) {
+    // Determine the effective unit filter
+    // If allowedSlugs is set, we must restrict queries to those units
+    const unitFilter = allowedSlugs
+        ? { slug: { in: allowedSlugs } }
+        : {};
+
+    // If unit param is provided, it must be within allowedSlugs (if restricted)
+    // We handle valid units in the query logic below
+
+    // Filter units dropdown to only show allowed units
+    const units = await db.unit.findMany({
+        where: {
+            isActive: true,
+            ...unitFilter
+        },
+        orderBy: { order: 'asc' },
+    });
+
+    // Effective unit ID for query
+    let effectiveUnitId = params.unit;
+
+    // Security check: if user manually enters a unit ID they don't have access to
+    if (params.unit && allowedSlugs) {
+        const selectedUnit = units.find(u => u.id === params.unit);
+        if (!selectedUnit) {
+            // If the selected unit is not in the allowed list, remove the filter (show all allowed)
+            // or we could error out. For now, let's just ignore the param.
+            effectiveUnitId = undefined;
+        }
+    }
+
+    const whereClause = {
+        ...(params.status && { status: params.status as PSBStatus }),
+        ...(effectiveUnitId && { unitId: effectiveUnitId }),
+        // If no specific unit selected, and user is restricted, filter by allowed units relation
+        ...((!effectiveUnitId && allowedSlugs) ? { unit: { slug: { in: allowedSlugs } } } : {})
+    };
+
+    const [registrations, globalStats, filteredStats] = await Promise.all([
         db.pSBRegistration.findMany({
-            where: {
-                ...(params.status && { status: params.status as PSBStatus }),
-                ...(params.unit && { unitId: params.unit }),
-            },
+            where: whereClause,
             include: {
                 unit: true,
                 documents: true,
@@ -176,18 +227,17 @@ async function PSBTableContent({ params }: { params: { status?: string; unit?: s
                 createdAt: 'desc',
             },
         }) as unknown as Promise<PSBRegistrationWithRelations[]>,
-        db.unit.findMany({
-            where: { isActive: true },
-            orderBy: { order: 'asc' },
-        }),
+        // Global stats (within allowed units)
         db.pSBRegistration.groupBy({
             by: ['status'],
             _count: true,
+            where: allowedSlugs ? { unit: { slug: { in: allowedSlugs } } } : {}
         }) as unknown as Promise<StatItem[]>,
-        params.unit
+        // Specific unit stats (if filtered)
+        effectiveUnitId
             ? db.pSBRegistration.groupBy({
                 by: ['status'],
-                where: { unitId: params.unit },
+                where: { unitId: effectiveUnitId },
                 _count: true,
             }) as unknown as Promise<StatItem[]>
             : Promise.resolve(null),
@@ -201,8 +251,8 @@ async function PSBTableContent({ params }: { params: { status?: string; unit?: s
         REJECTED: actualFilteredStats.find((s: StatItem) => s.status === 'REJECTED')?._count || 0,
     };
 
-    const currentUnitName = params.unit
-        ? units.find(u => u.id === params.unit)?.name
+    const currentUnitName = effectiveUnitId
+        ? units.find(u => u.id === effectiveUnitId)?.name
         : undefined;
 
     return (
@@ -229,7 +279,7 @@ async function PSBTableContent({ params }: { params: { status?: string; unit?: s
                         {(Object.entries(statusConfig) as [PSBStatus, typeof statusConfig[PSBStatus]][]).map(([key, config]) => (
                             <Link
                                 key={key}
-                                href={`/admin/psb?status=${key}${params.unit ? `&unit=${params.unit}` : ''}`}
+                                href={`/admin/psb?status=${key}${effectiveUnitId ? `&unit=${effectiveUnitId}` : ''}`}
                                 className={`px-3 py-1.5 text-sm rounded-lg border transition-colors ${params.status === key
                                     ? config.color
                                     : 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50'
@@ -241,14 +291,14 @@ async function PSBTableContent({ params }: { params: { status?: string; unit?: s
                     </div>
 
                     {/* Unit filter */}
-                    <PSBUnitFilter units={units} currentUnit={params.unit} />
+                    <PSBUnitFilter units={units} currentUnit={effectiveUnitId} />
                 </div>
             </div>
 
             {/* Bulk Actions */}
             <PSBBulkActions
                 currentFilter={{
-                    unitId: params.unit,
+                    unitId: effectiveUnitId,
                     status: params.status as PSBStatus | undefined,
                 }}
                 counts={filteredCounts}
@@ -391,7 +441,15 @@ export default async function AdminPSBPage({
 }: {
     searchParams: Promise<{ status?: string; unit?: string }>;
 }) {
+    const session = await auth();
+    if (!session || !session.user) {
+        redirect("/login");
+    }
+
     const params = await searchParams;
+
+    // Get allowed unit slugs for this user
+    const allowedSlugs = getAllowedPSBUnitSlugs(session.user.role);
 
     return (
         <div className="p-6 lg:p-8">
@@ -408,12 +466,12 @@ export default async function AdminPSBPage({
 
             {/* Stats - Streams in */}
             <Suspense fallback={<StatsSkeleton />}>
-                <PSBStats />
+                <PSBStats allowedSlugs={allowedSlugs} />
             </Suspense>
 
             {/* Filters and Table - Streams in */}
             <Suspense fallback={<TableSkeleton />}>
-                <PSBTableContent params={params} />
+                <PSBTableContent params={params} allowedSlugs={allowedSlugs} />
             </Suspense>
         </div>
     );

@@ -156,7 +156,7 @@ export default async function AdminDashboard() {
                 description="Ringkasan aktivitas pesantren hari ini"
             />
 
-            <div className="px-6">
+            <div className="px-4 md:px-6">
                 {/* Database Error Banner */}
                 {stats.error && (
                     <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">

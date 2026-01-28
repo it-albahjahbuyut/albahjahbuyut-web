@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { signIn } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -63,9 +64,9 @@ export default function LoginPage() {
             <Card className="w-full max-w-md">
                 <CardHeader className="space-y-1 text-center">
                     <div className="mx-auto mb-4 h-16 w-16 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
-                        <span className="text-2xl font-bold text-white">AB</span>
+                        <Image src="/favicon.png" alt="Logo" width={64} height={64} />
                     </div>
-                    <CardTitle className="text-2xl font-bold">Admin Login</CardTitle>
+                    <CardTitle className="text-2xl font-bold">Halo Admin!👋</CardTitle>
                     <CardDescription>
                         Masuk ke dashboard Al-Bahjah Buyut
                     </CardDescription>
