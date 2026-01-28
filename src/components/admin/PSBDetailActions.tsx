@@ -11,15 +11,28 @@ import {
     Trash2,
     AlertTriangle,
     Upload,
-    FileText
+    FileText,
+    RefreshCw,
+    Database,
+    FileSpreadsheet,
+    Link2
 } from 'lucide-react';
-import { updatePSBStatus, deletePSBRegistration, adminUploadDocument, PSBStatus } from '@/actions/psb-actions';
+import {
+    updatePSBStatus,
+    deletePSBRegistration,
+    adminUploadDocument,
+    syncDocumentsFromDrive,
+    syncRegistrationToSpreadsheet,
+    updateDriveFolderUrl,
+    PSBStatus
+} from '@/actions/psb-actions';
 
 interface PSBDetailActionsProps {
     registrationId: string;
     currentStatus: PSBStatus;
     notes?: string | null;
     driveFolderId?: string | null;
+    driveFolderUrl?: string | null;
 }
 
 const statusOptions = [
@@ -46,10 +59,14 @@ export default function PSBDetailActions({
     registrationId,
     currentStatus,
     notes: initialNotes,
-    driveFolderId
+    driveFolderId,
+    driveFolderUrl
 }: PSBDetailActionsProps) {
     const router = useRouter();
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    // Check if we have a Drive folder (either from ID or URL)
+    const hasDriveFolder = !!(driveFolderId || driveFolderUrl);
 
     // Status update state
     const [status, setStatus] = useState<PSBStatus>(currentStatus);
@@ -64,6 +81,15 @@ export default function PSBDetailActions({
     const [selectedDocType, setSelectedDocType] = useState('PAS_FOTO');
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [isUploading, setIsUploading] = useState(false);
+
+    // Sync state
+    const [isSyncingDocs, setIsSyncingDocs] = useState(false);
+    const [isSyncingSheet, setIsSyncingSheet] = useState(false);
+    const [syncMessage, setSyncMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
+    // Drive URL input state
+    const [driveUrlInput, setDriveUrlInput] = useState('');
+    const [isSavingDriveUrl, setIsSavingDriveUrl] = useState(false);
 
     // Message state
     const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
@@ -158,6 +184,84 @@ export default function PSBDetailActions({
         }
 
         setIsUploading(false);
+    };
+
+    const handleSyncDocs = async () => {
+        if (!hasDriveFolder) {
+            setSyncMessage({ type: 'error', text: 'Tidak ada folder Drive terhubung' });
+            return;
+        }
+
+        setIsSyncingDocs(true);
+        setSyncMessage(null);
+
+        try {
+            const result = await syncDocumentsFromDrive(registrationId);
+            setSyncMessage({
+                type: result.success ? 'success' : 'error',
+                text: result.message
+            });
+            if (result.success && result.synced > 0) {
+                router.refresh();
+            }
+        } catch (error) {
+            setSyncMessage({
+                type: 'error',
+                text: error instanceof Error ? error.message : 'Terjadi kesalahan'
+            });
+        }
+
+        setIsSyncingDocs(false);
+    };
+
+    const handleSyncSheet = async () => {
+        setIsSyncingSheet(true);
+        setSyncMessage(null);
+
+        try {
+            // Force sync when triggered manually from UI
+            const result = await syncRegistrationToSpreadsheet(registrationId, true);
+            setSyncMessage({
+                type: result.success ? 'success' : 'error',
+                text: result.message
+            });
+        } catch (error) {
+            setSyncMessage({
+                type: 'error',
+                text: error instanceof Error ? error.message : 'Terjadi kesalahan'
+            });
+        }
+
+        setIsSyncingSheet(false);
+    };
+
+    const handleSaveDriveUrl = async () => {
+        if (!driveUrlInput.trim()) {
+            setSyncMessage({ type: 'error', text: 'Masukkan URL folder Drive' });
+            return;
+        }
+
+        setIsSavingDriveUrl(true);
+        setSyncMessage(null);
+
+        try {
+            const result = await updateDriveFolderUrl(registrationId, driveUrlInput.trim());
+            setSyncMessage({
+                type: result.success ? 'success' : 'error',
+                text: result.message
+            });
+            if (result.success) {
+                setDriveUrlInput('');
+                router.refresh();
+            }
+        } catch (error) {
+            setSyncMessage({
+                type: 'error',
+                text: error instanceof Error ? error.message : 'Terjadi kesalahan'
+            });
+        }
+
+        setIsSavingDriveUrl(false);
     };
 
     return (
@@ -326,6 +430,99 @@ export default function PSBDetailActions({
                         )}
                     </button>
                 </div>
+            </div>
+
+            {/* Sync Data */}
+            <div className="bg-blue-50 rounded-xl border border-blue-200 p-6">
+                <h3 className="font-semibold text-blue-800 mb-4 flex items-center gap-2">
+                    <RefreshCw className="w-5 h-5" />
+                    Sinkronisasi Data
+                </h3>
+
+                <p className="text-sm text-blue-700 mb-4">
+                    Gunakan opsi ini jika data tidak sinkron antara sistem, Google Drive, atau Spreadsheet.
+                </p>
+
+                {syncMessage && (
+                    <div className={`p-3 rounded-lg text-sm mb-4 ${syncMessage.type === 'success'
+                        ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                        : 'bg-red-50 text-red-800 border border-red-200'
+                        }`}>
+                        {syncMessage.text}
+                    </div>
+                )}
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <button
+                        onClick={handleSyncDocs}
+                        disabled={isSyncingDocs || !hasDriveFolder}
+                        className="px-4 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    >
+                        {isSyncingDocs ? (
+                            <>
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                                Syncing...
+                            </>
+                        ) : (
+                            <>
+                                <Database className="w-4 h-4" />
+                                Sync Dokumen dari Drive
+                            </>
+                        )}
+                    </button>
+
+                    <button
+                        onClick={handleSyncSheet}
+                        disabled={isSyncingSheet}
+                        className="px-4 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    >
+                        {isSyncingSheet ? (
+                            <>
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                                Syncing...
+                            </>
+                        ) : (
+                            <>
+                                <FileSpreadsheet className="w-4 h-4" />
+                                Sync ke Spreadsheet
+                            </>
+                        )}
+                    </button>
+                </div>
+
+                {!hasDriveFolder && (
+                    <div className="mt-4 p-4 bg-amber-50 rounded-lg border border-amber-200">
+                        <div className="flex items-start gap-2 mb-3">
+                            <Link2 className="w-4 h-4 text-amber-600 mt-0.5" />
+                            <div>
+                                <p className="text-sm font-medium text-amber-800">Hubungkan Folder Drive</p>
+                                <p className="text-xs text-amber-700">
+                                    Paste URL folder Google Drive untuk menghubungkan dokumen
+                                </p>
+                            </div>
+                        </div>
+                        <div className="flex gap-2">
+                            <input
+                                type="url"
+                                value={driveUrlInput}
+                                onChange={(e) => setDriveUrlInput(e.target.value)}
+                                placeholder="https://drive.google.com/drive/folders/..."
+                                className="flex-1 px-3 py-2 text-sm border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            />
+                            <button
+                                onClick={handleSaveDriveUrl}
+                                disabled={isSavingDriveUrl || !driveUrlInput.trim()}
+                                className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                            >
+                                {isSavingDriveUrl ? (
+                                    <Loader2 className="w-4 h-4 animate-spin" />
+                                ) : (
+                                    'Simpan'
+                                )}
+                            </button>
+                        </div>
+                    </div>
+                )}
             </div>
 
             {/* Danger Zone */}

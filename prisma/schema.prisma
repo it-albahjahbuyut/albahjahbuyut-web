@@ -319,6 +319,9 @@ model PSBRegistration {
   lastEmailId       String?   // ID email terakhir dari Resend
   emailStatus       String?   // sent, delivered, opened, clicked, bounced
   
+  // Spreadsheet Sync Tracking
+  spreadsheetSynced Boolean   @default(false) // Apakah sudah sync ke Google Spreadsheet
+  
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
   
@@ -414,4 +417,35 @@ model BusinessUnitImage {
 
   @@index([businessUnitId])
   @@map("business_unit_images")
+}
+
+// ============================================
+// NEWSLETTER SUBSCRIBER
+// ============================================
+
+model NewsletterSubscriber {
+  id             String    @id @default(cuid())
+  email          String    @unique
+  name           String?   // Nama opsional
+  isActive       Boolean   @default(true)
+  subscribedAt   DateTime  @default(now())
+  unsubscribedAt DateTime?
+  source         String?   // homepage, footer, popup
+  
+  @@map("newsletter_subscribers")
+}
+
+// ============================================
+// NEWSLETTER HISTORY (Riwayat Pengiriman)
+// ============================================
+
+model NewsletterHistory {
+  id             String   @id @default(cuid())
+  subject        String   // Judul newsletter
+  contentPreview String   @db.Text // Preview konten (disimpan sebagai plain text)
+  recipientCount Int      // Jumlah penerima
+  sentAt         DateTime @default(now())
+  sentBy         String?  // ID admin yang mengirim (opsional)
+
+  @@map("newsletter_history")
 }

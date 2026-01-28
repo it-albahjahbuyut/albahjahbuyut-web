@@ -14,6 +14,7 @@ import {
 import type { PSBStatus } from '@/actions/psb-actions';
 import PSBUnitFilter from '@/components/admin/PSBUnitFilter';
 import PSBBulkActions from '@/components/admin/PSBBulkActions';
+import PSBSyncActions from '@/components/admin/PSBSyncActions';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export const metadata: Metadata = {
@@ -48,7 +49,7 @@ interface PSBRegistrationWithRelations {
     id: string;
     registrationNumber: string;
     namaLengkap: string;
-    noHpOrangTua: string;
+    noHpOrangTua: string | null;
     status: PSBStatus;
     driveFolderUrl: string | null;
     createdAt: Date;
@@ -103,10 +104,19 @@ function TableSkeleton() {
 
 // Async component for stats
 async function PSBStats() {
-    const globalStats = await db.pSBRegistration.groupBy({
-        by: ['status'],
-        _count: true,
-    }) as unknown as StatItem[];
+    const [globalStats, missingDocsCount] = await Promise.all([
+        db.pSBRegistration.groupBy({
+            by: ['status'],
+            _count: true,
+        }) as unknown as Promise<StatItem[]>,
+        // Count registrations with Drive folder but no documents
+        db.pSBRegistration.count({
+            where: {
+                driveFolderId: { not: null },
+                documents: { none: {} },
+            },
+        }),
+    ]);
 
     const statCounts = {
         PENDING: globalStats.find((s: StatItem) => s.status === 'PENDING')?._count || 0,
@@ -117,28 +127,36 @@ async function PSBStats() {
     };
 
     return (
-        <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
-            <div className="bg-white rounded-xl border p-5">
-                <p className="text-sm text-gray-500">Total Pendaftar</p>
-                <p className="text-3xl font-bold text-gray-900">{statCounts.total}</p>
+        <>
+            {/* Sync Actions - Only shows if there are issues */}
+            <PSBSyncActions
+                missingDocsCount={missingDocsCount}
+                unsyncedSpreadsheetCount={0}
+            />
+
+            <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+                <div className="bg-white rounded-xl border p-5">
+                    <p className="text-sm text-gray-500">Total Pendaftar</p>
+                    <p className="text-3xl font-bold text-gray-900">{statCounts.total}</p>
+                </div>
+                <div className="bg-amber-50 rounded-xl border border-amber-200 p-5">
+                    <p className="text-sm text-amber-700">Menunggu</p>
+                    <p className="text-3xl font-bold text-amber-800">{statCounts.PENDING}</p>
+                </div>
+                <div className="bg-blue-50 rounded-xl border border-blue-200 p-5">
+                    <p className="text-sm text-blue-700">Terverifikasi</p>
+                    <p className="text-3xl font-bold text-blue-800">{statCounts.VERIFIED}</p>
+                </div>
+                <div className="bg-emerald-50 rounded-xl border border-emerald-200 p-5">
+                    <p className="text-sm text-emerald-700">Diterima</p>
+                    <p className="text-3xl font-bold text-emerald-800">{statCounts.ACCEPTED}</p>
+                </div>
+                <div className="bg-red-50 rounded-xl border border-red-200 p-5">
+                    <p className="text-sm text-red-700">Ditolak</p>
+                    <p className="text-3xl font-bold text-red-800">{statCounts.REJECTED}</p>
+                </div>
             </div>
-            <div className="bg-amber-50 rounded-xl border border-amber-200 p-5">
-                <p className="text-sm text-amber-700">Menunggu</p>
-                <p className="text-3xl font-bold text-amber-800">{statCounts.PENDING}</p>
-            </div>
-            <div className="bg-blue-50 rounded-xl border border-blue-200 p-5">
-                <p className="text-sm text-blue-700">Terverifikasi</p>
-                <p className="text-3xl font-bold text-blue-800">{statCounts.VERIFIED}</p>
-            </div>
-            <div className="bg-emerald-50 rounded-xl border border-emerald-200 p-5">
-                <p className="text-sm text-emerald-700">Diterima</p>
-                <p className="text-3xl font-bold text-emerald-800">{statCounts.ACCEPTED}</p>
-            </div>
-            <div className="bg-red-50 rounded-xl border border-red-200 p-5">
-                <p className="text-sm text-red-700">Ditolak</p>
-                <p className="text-3xl font-bold text-red-800">{statCounts.REJECTED}</p>
-            </div>
-        </div>
+        </>
     );
 }
 

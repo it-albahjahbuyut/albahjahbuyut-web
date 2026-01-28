@@ -2,7 +2,7 @@
 
 import { db } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
-import { createRegistrationFolder, uploadToDrive, deleteDriveFolder } from '@/lib/google-drive';
+import { createRegistrationFolder, uploadToDrive, deleteDriveFolder, deleteFromDrive, listFilesInFolder } from '@/lib/google-drive';
 import { appendToSpreadsheet, updateSpreadsheetStatus } from '@/lib/google-sheets';
 import { uploadQueue } from '@/lib/upload-queue';
 import { generateRegistrationNumber } from '@/lib/psb-config';
@@ -218,14 +218,27 @@ async function processUploadsInBackground(
         console.log(`[Background] Starting upload for ${registrationNumber}...`);
 
         // Create folder di Google Drive
-        const folderResult = await createRegistrationFolder(
-            formData.unitName,
-            formData.namaLengkap,
-            registrationNumber,
-            formData.unitSlug
-        );
+        let folderResult: { folderId: string; folderUrl: string } | null = null;
+        try {
+            folderResult = await createRegistrationFolder(
+                formData.unitName,
+                formData.namaLengkap,
+                registrationNumber,
+                formData.unitSlug
+            );
+        } catch (folderError) {
+            console.error(`[Background] Failed to create folder for ${registrationNumber}:`, folderError);
+            // We cannot proceed with uploads if folder creation fails completely
+            await db.pSBRegistration.update({
+                where: { id: registrationId },
+                data: {
+                    notes: `System Error: Gagal membuat folder penyimpanan. Dokumen tidak dapat diupload.`,
+                },
+            });
+            return;
+        }
 
-        // Upload semua dokumen PARALLEL
+        // Upload semua dokumen PARALLEL dengan Promise.allSettled agar satu gagal tidak membatalkan yang lain
         const uploadPromises = documents.map(async (doc) => {
             const buffer = Buffer.from(doc.base64Data, 'base64');
 
@@ -233,7 +246,7 @@ async function processUploadsInBackground(
                 buffer,
                 doc.fileName,
                 doc.mimeType,
-                folderResult.folderId
+                folderResult!.folderId
             );
 
             return {
@@ -246,11 +259,31 @@ async function processUploadsInBackground(
             };
         });
 
-        const uploadedDocuments = await Promise.all(uploadPromises);
+        const uploadResults = await Promise.allSettled(uploadPromises);
+
+        // Filter successful uploads
+        const uploadedDocuments: any[] = [];
+        const failedUploads: string[] = [];
+
+        uploadResults.forEach((result, index) => {
+            if (result.status === 'fulfilled') {
+                uploadedDocuments.push(result.value);
+            } else {
+                const docName = documents[index].fileName;
+                console.error(`[Background] Failed to upload ${docName}:`, result.reason);
+                failedUploads.push(docName);
+            }
+        });
 
         // Extract pas foto URL for registration card
         const pasFotoDoc = uploadedDocuments.find(doc => doc.documentType === 'PAS_FOTO');
         const pasFotoUrl = pasFotoDoc?.driveFileUrl || null;
+
+        // Prepare notes if there are failures
+        let statusNotes: string | null = null;
+        if (failedUploads.length > 0) {
+            statusNotes = `Upload sebagian gagal (${failedUploads.length} file): ${failedUploads.join(', ')}. Harap upload ulang manual.`;
+        }
 
         // Update registration dengan folder info dan documents
         await db.pSBRegistration.update({
@@ -259,17 +292,18 @@ async function processUploadsInBackground(
                 driveFolderId: folderResult.folderId,
                 driveFolderUrl: folderResult.folderUrl,
                 pasFotoUrl: pasFotoUrl,
+                notes: statusNotes, // Will be null if no errors, or contain error message
                 documents: {
                     create: uploadedDocuments,
                 },
             },
         });
 
-        console.log(`[Background] Upload complete for ${registrationNumber}`);
+        console.log(`[Background] Upload complete for ${registrationNumber}. Success: ${uploadedDocuments.length}, Failed: ${failedUploads.length}`);
 
         // Backup ke Spreadsheet (juga background)
         try {
-            await appendToSpreadsheet({
+            const sheetResult = await appendToSpreadsheet({
                 registrationNumber,
                 namaLengkap: formData.namaLengkap,
                 nisn: formData.nisn || '',
@@ -303,13 +337,20 @@ async function processUploadsInBackground(
                 createdAt: new Date().toISOString(),
             });
 
-            console.log(`[Background] Spreadsheet backup complete for ${registrationNumber}`);
+            if (sheetResult.success) {
+                // Mark as synced in database
+                await db.pSBRegistration.update({
+                    where: { id: registrationId },
+                    data: { spreadsheetSynced: true },
+                });
+                console.log(`[Background] Spreadsheet backup complete for ${registrationNumber}`);
+            } else {
+                console.error(`[Background] Spreadsheet sync failed for ${registrationNumber}:`, sheetResult.message);
+            }
         } catch (sheetError) {
             console.error('[Background] Spreadsheet error:', sheetError);
+            // spreadsheetSynced remains false, can be retried later
         }
-
-        // Note: revalidatePath cannot be called in background/render context
-        // Cache is already revalidated in the main submitPSBRegistration function
 
     } catch (error) {
         console.error(`[Background] Upload failed for ${registrationNumber}:`, error);
@@ -328,10 +369,8 @@ async function processUploadsInBackground(
     }
 }
 
-
 /**
  * Update status pendaftaran (admin only)
- * Sends email notification if parent email is provided
  */
 export async function updatePSBStatus(
     registrationId: string,
@@ -465,6 +504,29 @@ export async function adminUploadDocument(
                     driveFolderId: folderId,
                     driveFolderUrl: folderUrl,
                 },
+            });
+        }
+
+        // Check for existing document of the same type and remove it
+        // This prevents duplicate files in Drive and DB
+        const existingDoc = await db.pSBDocument.findFirst({
+            where: {
+                registrationId: registrationId,
+                documentType: documentType
+            }
+        });
+
+        if (existingDoc) {
+            console.log(`[Admin Upload] Replacing existing ${documentType} document...`);
+
+            // Delete from Drive
+            if (existingDoc.driveFileId) {
+                await deleteFromDrive(existingDoc.driveFileId);
+            }
+
+            // Delete from DB
+            await db.pSBDocument.delete({
+                where: { id: existingDoc.id }
             });
         }
 
@@ -749,5 +811,403 @@ export async function getPSBRegistrationByNumber(registrationNumber: string) {
     } catch (error) {
         console.error('Error fetching PSB registration by number:', error);
         return null;
+    }
+}
+
+/**
+ * Get count of registrations not synced to spreadsheet
+ */
+export async function getUnsyncedCount(): Promise<number> {
+    try {
+        const count = await db.pSBRegistration.count({
+            where: { spreadsheetSynced: false },
+        });
+        return count;
+    } catch (error) {
+        console.error('Error getting unsynced count:', error);
+        return 0;
+    }
+}
+
+/**
+ * Update Drive folder URL for a registration
+ * This also extracts and saves the folder ID from the URL
+ */
+export async function updateDriveFolderUrl(
+    registrationId: string,
+    driveUrl: string
+): Promise<{ success: boolean; message: string }> {
+    try {
+        // Validate URL format
+        const urlMatch = driveUrl.match(/folders\/([a-zA-Z0-9_-]+)/);
+        if (!urlMatch) {
+            return {
+                success: false,
+                message: 'URL tidak valid. Gunakan format: https://drive.google.com/drive/folders/FOLDER_ID'
+            };
+        }
+
+        const folderId = urlMatch[1];
+
+        await db.pSBRegistration.update({
+            where: { id: registrationId },
+            data: {
+                driveFolderUrl: driveUrl,
+                driveFolderId: folderId
+            },
+        });
+
+        revalidatePath(`/admin/psb/${registrationId}`);
+        revalidatePath('/admin/psb');
+
+        return {
+            success: true,
+            message: `Berhasil menyimpan folder Drive (ID: ${folderId.substring(0, 10)}...)`
+        };
+    } catch (error) {
+        console.error('Error updating Drive folder URL:', error);
+        return {
+            success: false,
+            message: error instanceof Error ? error.message : 'Unknown error',
+        };
+    }
+}
+
+/**
+ * Sync a single registration to spreadsheet
+ * @param registrationId - The ID of the registration to sync
+ * @param force - If true, sync even if already marked as synced
+ */
+export async function syncRegistrationToSpreadsheet(
+    registrationId: string,
+    force: boolean = false
+): Promise<{ success: boolean; message: string }> {
+    try {
+        const registration = await db.pSBRegistration.findUnique({
+            where: { id: registrationId },
+            include: { unit: true },
+        });
+
+        if (!registration) {
+            return { success: false, message: 'Pendaftaran tidak ditemukan' };
+        }
+
+        // Skip if already synced and not forcing
+        if (registration.spreadsheetSynced && !force) {
+            return { success: true, message: 'Sudah tersinkronisasi' };
+        }
+
+        console.log(`[Sync] Syncing ${registration.registrationNumber} to spreadsheet (force: ${force})`);
+
+        const result = await appendToSpreadsheet({
+            registrationNumber: registration.registrationNumber,
+            namaLengkap: registration.namaLengkap,
+            nisn: registration.nisn || '',
+            nik: registration.nik || '',
+            noKK: registration.noKK || '',
+            jenisKelamin: registration.jenisKelamin,
+            tempatLahir: registration.tempatLahir,
+            tanggalLahir: registration.tanggalLahir.toISOString().split('T')[0],
+            asalSekolah: registration.asalSekolah,
+            alamatSekolahAsal: registration.alamatSekolahAsal || '',
+            namaAyah: registration.namaAyah || '',
+            namaIbu: registration.namaIbu || '',
+            pekerjaanAyah: registration.pekerjaanAyah || '',
+            pekerjaanIbu: registration.pekerjaanIbu || '',
+            penghasilanAyah: registration.penghasilanAyah || '',
+            penghasilanIbu: registration.penghasilanIbu || '',
+            pendidikanAyah: registration.pendidikanAyah || '',
+            pendidikanIbu: registration.pendidikanIbu || '',
+            anakKe: registration.anakKe || '',
+            dariSaudara: registration.dariSaudara || '',
+            jumlahTanggungan: registration.jumlahTanggungan || '',
+            alamatLengkap: registration.alamatLengkap,
+            noWaIbu: registration.noWaIbu || '',
+            noWaAyah: registration.noWaAyah || '',
+            sumberInfo: registration.sumberInfo || '',
+            grade: registration.grade || '',
+            jenisSantri: registration.jenisSantri || '',
+            unitName: registration.unit.name,
+            driveFolderUrl: registration.driveFolderUrl || '',
+            status: registration.status,
+            createdAt: registration.createdAt.toISOString(),
+        });
+
+        if (result.success) {
+            await db.pSBRegistration.update({
+                where: { id: registrationId },
+                data: { spreadsheetSynced: true },
+            });
+            return { success: true, message: `Berhasil sync: ${registration.registrationNumber}` };
+        }
+
+        // If failed, mark as not synced so it can be retried
+        await db.pSBRegistration.update({
+            where: { id: registrationId },
+            data: { spreadsheetSynced: false },
+        });
+
+        return { success: false, message: result.message };
+    } catch (error) {
+        console.error('Error syncing registration to spreadsheet:', error);
+        return {
+            success: false,
+            message: error instanceof Error ? error.message : 'Unknown error',
+        };
+    }
+}
+
+/**
+ * Sync all unsynced registrations to spreadsheet
+ * Process in batches to avoid Vercel timeout (default max 10s on hobby)
+ */
+export async function syncAllUnsyncedToSpreadsheet(batchSize = 10): Promise<{
+    success: boolean;
+    message: string;
+    synced: number;
+    failed: number;
+    remaining: number;
+}> {
+    try {
+        const unsynced = await db.pSBRegistration.findMany({
+            where: { spreadsheetSynced: false },
+            select: { id: true, registrationNumber: true },
+            take: batchSize, // LIMIT batch size
+        });
+
+        const totalUnsynced = await db.pSBRegistration.count({
+            where: { spreadsheetSynced: false },
+        });
+
+        if (unsynced.length === 0) {
+            return {
+                success: true,
+                message: 'Semua data sudah tersinkronisasi',
+                synced: 0,
+                failed: 0,
+                remaining: 0,
+            };
+        }
+
+        let synced = 0;
+        let failed = 0;
+
+        for (const registration of unsynced) {
+            const result = await syncRegistrationToSpreadsheet(registration.id);
+            if (result.success) {
+                synced++;
+            } else {
+                failed++;
+                console.error(`Failed to sync ${registration.registrationNumber}: ${result.message}`);
+            }
+
+            // Small delay to avoid rate limiting
+            await new Promise(resolve => setTimeout(resolve, 500));
+        }
+
+        revalidatePath('/admin/psb');
+
+        const remaining = totalUnsynced - synced; // Estimation
+
+        return {
+            success: true,
+            message: `Batch selesai: ${synced} berhasil, ${failed} gagal. ${remaining > 0 ? `Masih ada ${remaining} data.` : 'Semua selesai.'}`,
+            synced,
+            failed,
+            remaining,
+        };
+    } catch (error) {
+        console.error('Error syncing all unsynced to spreadsheet:', error);
+        return {
+            success: false,
+            message: error instanceof Error ? error.message : 'Unknown error',
+            synced: 0,
+            failed: 0,
+            remaining: 0,
+        };
+    }
+}
+
+/**
+ * Sync documents from Google Drive folder to database
+ * This is useful when files are in Drive but not recorded in database
+ */
+export async function syncDocumentsFromDrive(
+    registrationId: string
+): Promise<{ success: boolean; message: string; synced: number }> {
+    try {
+        const registration = await db.pSBRegistration.findUnique({
+            where: { id: registrationId },
+            include: { documents: true },
+        });
+
+        if (!registration) {
+            return { success: false, message: 'Pendaftaran tidak ditemukan', synced: 0 };
+        }
+
+        // Try to get folder ID from driveFolderId or extract from driveFolderUrl
+        let folderId = registration.driveFolderId;
+
+        if (!folderId && registration.driveFolderUrl) {
+            // Extract folder ID from URL like: 
+            // https://drive.google.com/drive/folders/14RynWwDJOHbYbnhpGADDbLYBgozsARI
+            const urlMatch = registration.driveFolderUrl.match(/folders\/([a-zA-Z0-9_-]+)/);
+            if (urlMatch) {
+                folderId = urlMatch[1];
+                console.log(`[Sync] Extracted folder ID from URL: ${folderId}`);
+
+                // Update the database with the extracted folder ID
+                await db.pSBRegistration.update({
+                    where: { id: registrationId },
+                    data: { driveFolderId: folderId },
+                });
+            }
+        }
+
+        if (!folderId) {
+            return { success: false, message: 'Tidak ada folder Drive terhubung', synced: 0 };
+        }
+
+        // Get files from Drive
+        const driveFiles = await listFilesInFolder(folderId);
+
+        if (driveFiles.length === 0) {
+            return { success: true, message: 'Tidak ada file di Drive', synced: 0 };
+        }
+
+        // Get existing document file IDs
+        const existingFileIds = new Set(registration.documents.map(doc => doc.driveFileId));
+
+        let synced = 0;
+        let pasFotoUrl: string | null = null;
+
+        for (const file of driveFiles) {
+            // Skip if already in database
+            if (existingFileIds.has(file.id)) {
+                continue;
+            }
+
+            // Detect document type from filename
+            const fileName = file.name.toUpperCase();
+            let documentType = 'LAINNYA';
+
+            if (fileName.includes('IJAZAH') || fileName.includes('RAPORT') || fileName.includes('RAPOR')) {
+                documentType = 'IJAZAH';
+            } else if (fileName.includes('AKTA') || fileName.includes('AKTE')) {
+                documentType = 'AKTA_KELAHIRAN';
+            } else if (fileName.includes('KK') || fileName.includes('KARTU_KELUARGA') || fileName.includes('KARTU KELUARGA')) {
+                documentType = 'KARTU_KELUARGA';
+            } else if (fileName.includes('FOTO') || fileName.includes('PHOTO') || fileName.includes('PAS_FOTO') || fileName.includes('PASFOTO')) {
+                documentType = 'PAS_FOTO';
+                pasFotoUrl = file.webViewLink;
+            } else if (fileName.includes('KTP')) {
+                documentType = 'KTP_ORTU';
+            } else if (fileName.includes('BUKTI') || fileName.includes('TRANSFER') || fileName.includes('TRANSAKSI') || fileName.includes('DAFTAR')) {
+                documentType = 'BUKTI_PEMBAYARAN';
+            }
+
+            // Create document record
+            await db.pSBDocument.create({
+                data: {
+                    registrationId: registration.id,
+                    documentType,
+                    fileName: file.name,
+                    fileSize: file.size,
+                    mimeType: file.mimeType,
+                    driveFileId: file.id,
+                    driveFileUrl: file.webViewLink,
+                },
+            });
+
+            synced++;
+            console.log(`[Sync] Added document: ${file.name} as ${documentType}`);
+        }
+
+        // Update pasFotoUrl if found
+        if (pasFotoUrl && !registration.pasFotoUrl) {
+            await db.pSBRegistration.update({
+                where: { id: registrationId },
+                data: { pasFotoUrl },
+            });
+        }
+
+        revalidatePath(`/admin/psb/${registrationId}`);
+        revalidatePath('/admin/psb');
+
+        return {
+            success: true,
+            message: `Berhasil sync ${synced} dokumen dari Drive`,
+            synced,
+        };
+    } catch (error) {
+        console.error('Error syncing documents from Drive:', error);
+        return {
+            success: false,
+            message: error instanceof Error ? error.message : 'Unknown error',
+            synced: 0,
+        };
+    }
+}
+
+/**
+ * Sync all registrations that have Drive folder but no documents
+ */
+export async function syncAllMissingDocuments(): Promise<{
+    success: boolean;
+    message: string;
+    totalSynced: number;
+    registrationsProcessed: number;
+}> {
+    try {
+        // Find registrations with Drive folder but no documents
+        const registrations = await db.pSBRegistration.findMany({
+            where: {
+                driveFolderId: { not: null },
+            },
+            include: {
+                documents: true,
+            },
+        });
+
+        // Filter only those with zero documents
+        const missingDocs = registrations.filter(r => r.documents.length === 0);
+
+        if (missingDocs.length === 0) {
+            return {
+                success: true,
+                message: 'Semua pendaftaran sudah memiliki dokumen',
+                totalSynced: 0,
+                registrationsProcessed: 0,
+            };
+        }
+
+        let totalSynced = 0;
+        let registrationsProcessed = 0;
+
+        for (const reg of missingDocs) {
+            const result = await syncDocumentsFromDrive(reg.id);
+            if (result.synced > 0) {
+                totalSynced += result.synced;
+                registrationsProcessed++;
+            }
+
+            // Small delay to avoid rate limiting
+            await new Promise(resolve => setTimeout(resolve, 500));
+        }
+
+        return {
+            success: true,
+            message: `Sync selesai: ${totalSynced} dokumen dari ${registrationsProcessed} pendaftaran`,
+            totalSynced,
+            registrationsProcessed,
+        };
+    } catch (error) {
+        console.error('Error syncing all missing documents:', error);
+        return {
+            success: false,
+            message: error instanceof Error ? error.message : 'Unknown error',
+            totalSynced: 0,
+            registrationsProcessed: 0,
+        };
     }
 }

@@ -216,6 +216,7 @@ async function ensureSheetHeaders(sheetName: string): Promise<string> {
 
 /**
  * Append a new registration to the spreadsheet
+ * Automatically handles Insert (if new) or Update (if exists)
  */
 export async function appendToSpreadsheet(data: PSBSpreadsheetData): Promise<{ success: boolean; message: string }> {
     if (!initGoogleSheets()) {
@@ -276,32 +277,156 @@ export async function appendToSpreadsheet(data: PSBSpreadsheetData): Promise<{ s
             formattedDate
         ];
 
-        // Append to spreadsheet using dynamic sheet name with quotes for safety
-        const range = `'${sheetName}'!A:O`;
-        console.log(`[Spreadsheet] Appending to ${GOOGLE_SPREADSHEET_ID} range ${range}`);
+        // Check if registration already exists
+        const existingRowIndex = await findRowIndex(sheetName, data.registrationNumber);
+        let targetRowIndex: number;
+        let actionMessage: string;
 
-        await sheets!.spreadsheets.values.append({
-            spreadsheetId: GOOGLE_SPREADSHEET_ID,
-            range: range,
-            valueInputOption: 'RAW',
-            insertDataOption: 'INSERT_ROWS',
-            requestBody: {
-                values: [rowData]
+        if (existingRowIndex !== -1) {
+            // UPDATE existing row
+            console.log(`[Spreadsheet] Updating existing registration ${data.registrationNumber} at row ${existingRowIndex}`);
+
+            await sheets!.spreadsheets.values.update({
+                spreadsheetId: GOOGLE_SPREADSHEET_ID,
+                range: `'${sheetName}'!A${existingRowIndex}`,
+                valueInputOption: 'RAW',
+                requestBody: {
+                    values: [rowData]
+                }
+            });
+
+            targetRowIndex = existingRowIndex;
+            actionMessage = 'Data berhasil diupdate di spreadsheet';
+        } else {
+            // APPEND new row
+            const range = `'${sheetName}'!A1`;
+            console.log(`[Spreadsheet] Appending to ${GOOGLE_SPREADSHEET_ID} range ${range}`);
+
+            const appendResult = await sheets!.spreadsheets.values.append({
+                spreadsheetId: GOOGLE_SPREADSHEET_ID,
+                range: range,
+                valueInputOption: 'RAW',
+                insertDataOption: 'INSERT_ROWS',
+                requestBody: {
+                    values: [rowData]
+                }
+            });
+
+            // Parse row number from updatedRange (e.g., "'SMP'!A2:AE2" -> row 2)
+            const updatedRange = appendResult.data.updates?.updatedRange;
+            if (updatedRange) {
+                const rowMatch = updatedRange.match(/!A(\d+):/);
+                targetRowIndex = rowMatch ? parseInt(rowMatch[1], 10) : -1;
+            } else {
+                targetRowIndex = -1;
             }
-        });
 
-        console.log(`Registration ${data.registrationNumber} added to spreadsheet`);
+            actionMessage = 'Data berhasil ditambahkan ke spreadsheet';
+        }
+
+        // Format the row (border & clean style)
+        if (targetRowIndex !== -1) {
+            try {
+                // Get sheet ID for formatting
+                const spreadsheetInfo = await sheets!.spreadsheets.get({
+                    spreadsheetId: GOOGLE_SPREADSHEET_ID,
+                    fields: 'sheets.properties'
+                });
+
+                const targetSheet = spreadsheetInfo.data.sheets?.find(
+                    s => s.properties?.title === sheetName
+                );
+
+                if (targetSheet?.properties?.sheetId !== undefined) {
+                    const sheetId = targetSheet.properties.sheetId;
+                    const numCols = 31; // Columns A to AE
+
+                    // Border style
+                    const borderStyle = {
+                        style: 'SOLID',
+                        width: 1,
+                        color: { red: 0, green: 0, blue: 0 }
+                    };
+
+                    await sheets!.spreadsheets.batchUpdate({
+                        spreadsheetId: GOOGLE_SPREADSHEET_ID,
+                        requestBody: {
+                            requests: [
+                                {
+                                    repeatCell: {
+                                        range: {
+                                            sheetId: sheetId,
+                                            startRowIndex: targetRowIndex - 1, // 0-indexed
+                                            endRowIndex: targetRowIndex,
+                                            startColumnIndex: 0,
+                                            endColumnIndex: numCols,
+                                        },
+                                        cell: {
+                                            userEnteredFormat: {
+                                                backgroundColor: { red: 1, green: 1, blue: 1 }, // White
+                                                textFormat: {
+                                                    bold: false,
+                                                    fontSize: 10,
+                                                },
+                                                borders: {
+                                                    top: borderStyle,
+                                                    bottom: borderStyle,
+                                                    left: borderStyle,
+                                                    right: borderStyle
+                                                }
+                                            },
+                                        },
+                                        fields: 'userEnteredFormat(backgroundColor,textFormat,borders)',
+                                    },
+                                },
+                            ],
+                        },
+                    });
+                }
+            } catch (formatError) {
+                console.error('[Spreadsheet] Error formatting row (non-blocking):', formatError);
+            }
+        }
+
+        console.log(`Registration ${data.registrationNumber} sync completed`);
 
         return {
             success: true,
-            message: 'Data berhasil disimpan ke spreadsheet'
+            message: actionMessage
         };
     } catch (error) {
-        console.error('Error appending to spreadsheet:', error);
+        console.error('Error syncing to spreadsheet:', error);
         return {
             success: false,
             message: error instanceof Error ? error.message : 'Unknown error'
         };
+    }
+}
+
+/**
+ * Find row index by registration number
+ */
+async function findRowIndex(sheetName: string, registrationNumber: string): Promise<number> {
+    if (!sheets) return -1;
+
+    try {
+        const response = await sheets.spreadsheets.values.get({
+            spreadsheetId: GOOGLE_SPREADSHEET_ID,
+            range: `'${sheetName}'!A:A`,
+        });
+
+        const rows = response.data.values;
+        if (!rows) return -1;
+
+        for (let i = 0; i < rows.length; i++) {
+            if (rows[i][0] === registrationNumber) {
+                return i + 1; // 1-indexed
+            }
+        }
+        return -1;
+    } catch (error) {
+        // console.error('Error finding row index:', error); // Silent error if not found
+        return -1;
     }
 }
 
@@ -321,31 +446,8 @@ export async function updateSpreadsheetStatus(
     }
 
     try {
-        // Tentukan nama sheet berdasarkan Unit
         const sheetName = getSheetNameFromUnit(unitName);
-
-        // Get all data to find the row (Only need Column A for registration numbers)
-        const response = await sheets!.spreadsheets.values.get({
-            spreadsheetId: GOOGLE_SPREADSHEET_ID,
-            range: `'${sheetName}'!A:A`,
-        });
-
-        const rows = response.data.values;
-        if (!rows) {
-            return {
-                success: false,
-                message: `No data found in sheet ${sheetName}`
-            };
-        }
-
-        // Find the row with matching registration number
-        let rowIndex = -1;
-        for (let i = 0; i < rows.length; i++) {
-            if (rows[i][0] === registrationNumber) {
-                rowIndex = i + 1; // Sheets is 1-indexed
-                break;
-            }
-        }
+        const rowIndex = await findRowIndex(sheetName, registrationNumber);
 
         if (rowIndex === -1) {
             return {
@@ -355,7 +457,6 @@ export async function updateSpreadsheetStatus(
         }
 
         // Update the status column (Column AD is index 29)
-        // A=0, ..., Z=25, AA=26, AB=27, AC=28, AD=29
         await sheets!.spreadsheets.values.update({
             spreadsheetId: GOOGLE_SPREADSHEET_ID,
             range: `'${sheetName}'!AD${rowIndex}`,

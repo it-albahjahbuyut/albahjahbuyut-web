@@ -424,3 +424,52 @@ export async function deleteDriveFolder(folderId: string): Promise<void> {
         }
     }
 }
+
+export interface DriveFileInfo {
+    id: string;
+    name: string;
+    mimeType: string;
+    size: number;
+    webViewLink: string;
+}
+
+/**
+ * List all files in a Google Drive folder
+ */
+export async function listFilesInFolder(folderId: string): Promise<DriveFileInfo[]> {
+    // Skip if local or supabase folder
+    if (folderId.startsWith('local_') || folderId.startsWith('supabase_')) {
+        console.log('Cannot list files for non-Drive folder:', folderId);
+        return [];
+    }
+
+    if (!initGoogleDrive() || !drive) {
+        console.error('Google Drive not initialized');
+        return [];
+    }
+
+    try {
+        const response = await drive.files.list({
+            q: `'${folderId}' in parents and trashed = false`,
+            fields: 'files(id, name, mimeType, size, webViewLink)',
+            supportsAllDrives: true,
+            includeItemsFromAllDrives: true,
+        });
+
+        if (!response.data.files) {
+            return [];
+        }
+
+        return response.data.files.map(file => ({
+            id: file.id!,
+            name: file.name!,
+            mimeType: file.mimeType!,
+            size: parseInt(file.size || '0', 10),
+            webViewLink: file.webViewLink!,
+        }));
+    } catch (error) {
+        console.error('Error listing files in Drive folder:', error);
+        return [];
+    }
+}
+

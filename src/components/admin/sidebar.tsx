@@ -17,6 +17,7 @@ import {
     CalendarDays,
     Store,
     Loader2,
+    Mail,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { useState } from "react";
@@ -62,6 +63,11 @@ const navItems = [
         title: "Pendaftaran PSB",
         href: "/admin/psb",
         icon: UserPlus,
+    },
+    {
+        title: "Newsletter",
+        href: "/admin/newsletter",
+        icon: Mail,
     },
     {
         title: "Pengaturan",

@@ -486,6 +486,7 @@ export default async function AdminPSBDetailPage({ params }: PageProps) {
                         currentStatus={registration.status}
                         notes={registration.notes}
                         driveFolderId={registration.driveFolderId}
+                        driveFolderUrl={registration.driveFolderUrl}
                     />
                 </div>
             </div>

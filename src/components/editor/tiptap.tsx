@@ -97,7 +97,20 @@ export function TiptapEditor({
     const addImage = () => {
         const url = window.prompt("Masukkan URL gambar:");
         if (url) {
+            const widthInput = window.prompt("Ukuran gambar (dalam %, misal: 50, 75, 100):", "100");
+            const width = widthInput ? `${parseInt(widthInput, 10)}%` : '100%';
+            // Insert image with custom width via style
             editor.chain().focus().setImage({ src: url }).run();
+            // After inserting, we need to update the image's attributes
+            // TipTap's Image extension needs to be configured to support style attribute
+            // For now, we'll use a workaround by injecting HTML directly
+            const currentHTML = editor.getHTML();
+            // Find the last inserted image and add width style
+            const updatedHTML = currentHTML.replace(
+                new RegExp(`<img src="${url.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"([^>]*)>`),
+                `<img src="${url}" style="width: ${width}; max-width: 100%; height: auto; display: block; margin: 0 auto; border-radius: 8px;"$1>`
+            );
+            editor.commands.setContent(updatedHTML);
         }
     };
 

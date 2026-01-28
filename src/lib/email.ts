@@ -138,7 +138,7 @@ function getStatusEmailContent(data: StatusEmailData): { subject: string; html: 
                     <tr>
                         <td class="content-padding" style="padding: 40px 48px 20px 48px; text-align: center;">
                             <!-- Logo -->
-                            <img src="https://albahjahbuyut.com/favicon.png" alt="Logo Al-Bahjah" width="64" height="64" style="margin-bottom: 16px; width: 64px; height: 64px; object-fit: contain;">
+                            <img src="https://albahjahbuyut.com/logo-buyut.png" alt="Logo Al-Bahjah" width="64" height="64" style="margin-bottom: 16px; width: 64px; height: 64px; object-fit: contain;">
                             
                             <!-- Hospital Name -->
                             <h1 style="margin: 0 0 8px 0; font-family: 'Plus Jakarta Sans', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 800; color: #0f172a; letter-spacing: -0.5px;">
