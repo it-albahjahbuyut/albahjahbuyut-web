@@ -4,7 +4,7 @@ import { db } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
 import { createRegistrationFolder, uploadToDrive, deleteDriveFolder, deleteFromDrive, listFilesInFolder } from '@/lib/google-drive';
 import { appendToSpreadsheet, updateSpreadsheetStatus } from '@/lib/google-sheets';
-import { uploadQueue } from '@/lib/upload-queue';
+import { after } from 'next/server';
 import { generateRegistrationNumber } from '@/lib/psb-config';
 import { psbFormSchema, psbDocumentSchema } from '@/lib/validations';
 import { ZodError } from 'zod';
@@ -194,16 +194,16 @@ export async function submitPSBRegistration(
 
         console.log(`Registration ${registrationNumber} saved to database`);
 
-        // STEP 2: Add to queue for background processing
-        // Queue limits concurrent uploads to prevent overload
-        uploadQueue.add(registrationNumber, () =>
-            processUploadsInBackground(
+        // STEP 2: Use Vercel's after() for background processing
+        // This ensures the upload runs AFTER response is sent, but Vercel keeps it alive
+        after(async () => {
+            await processUploadsInBackground(
                 registration.id,
                 registrationNumber,
                 formData,
                 documents
-            )
-        );
+            );
+        });
 
         revalidatePath('/admin/psb');
 
