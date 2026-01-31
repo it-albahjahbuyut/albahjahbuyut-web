@@ -50,24 +50,28 @@ async function getHomePageData() {
 
 export default async function HomePage() {
   // Check maintenance mode first
+  // Skip maintenance mode check in development environment
   let isMaintenanceMode = false;
+  const isDevelopment = process.env.NODE_ENV === 'development';
 
-  try {
-    const maintenanceSetting = await db.siteSetting.findUnique({
-      where: { key: "maintenance_mode" },
-    });
+  if (!isDevelopment) {
+    try {
+      const maintenanceSetting = await db.siteSetting.findUnique({
+        where: { key: "maintenance_mode" },
+      });
 
-    if (maintenanceSetting) {
-      const value = JSON.parse(maintenanceSetting.value);
-      isMaintenanceMode = value.enabled === true;
+      if (maintenanceSetting) {
+        const value = JSON.parse(maintenanceSetting.value);
+        isMaintenanceMode = value.enabled === true;
+      }
+    } catch (error) {
+      console.error("Failed to check maintenance mode:", error);
     }
-  } catch (error) {
-    console.error("Failed to check maintenance mode:", error);
-  }
 
-  // Redirect after try-catch to avoid catching NEXT_REDIRECT
-  if (isMaintenanceMode) {
-    redirect("/maintenance");
+    // Redirect after try-catch to avoid catching NEXT_REDIRECT
+    if (isMaintenanceMode) {
+      redirect("/maintenance");
+    }
   }
 
   const { units, featuredDonation, latestNews, navUnits } = await getHomePageData();

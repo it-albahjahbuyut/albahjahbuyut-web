@@ -78,15 +78,21 @@ export interface PSBSpreadsheetData {
     createdAt: string;
     // PAUD Fields (Optional)
     namaPanggilan?: string;
+    usia?: string;
     beratBadan?: string;
     tinggiBadan?: string;
     golonganDarah?: string;
     kewarganegaraan?: string;
+    imunisasi?: string;
     riwayatPenyakit?: string;
     bahasaSehariHari?: string;
     jumlahSaudaraTiri?: string;
     ttlAyah?: string;
+    alamatAyah?: string;
+    jumlahTanggunganAyah?: string;
     ttlIbu?: string;
+    alamatIbu?: string;
+    jumlahTanggunganIbu?: string;
     kewarganegaraanAyah?: string;
     kewarganegaraanIbu?: string;
     statusMasuk?: string;
@@ -173,15 +179,21 @@ async function ensureSheetHeaders(sheetName: string): Promise<string> {
     if (sheetName === 'PAUD') {
         const paudHeaders = [
             'Nama Panggilan',
+            'Usia',
             'Berat Badan',
             'Tinggi Badan',
             'Gol. Darah',
             'Kewarganegaraan Anak',
+            'Imunisasi',
             'Riwayat Penyakit',
             'Bahasa Sehari-hari',
             'Jumlah Saudara Tiri',
             'TTL Ayah',
+            'Alamat Ayah',
+            'Jumlah Tanggungan Ayah',
             'TTL Ibu',
+            'Alamat Ibu',
+            'Jumlah Tanggungan Ibu',
             'Kewarganegaraan Ayah',
             'Kewarganegaraan Ibu',
             'Status Masuk',
@@ -192,6 +204,8 @@ async function ensureSheetHeaders(sheetName: string): Promise<string> {
 
     try {
         // Cek apakah sheet sudah ada
+        let sheetId: number | undefined;
+
         try {
             await sheets.spreadsheets.values.get({
                 spreadsheetId: GOOGLE_SPREADSHEET_ID,
@@ -203,6 +217,16 @@ async function ensureSheetHeaders(sheetName: string): Promise<string> {
                 range: `'${sheetName}'!A1:A1`,
             });
 
+            // Get sheet ID for formatting
+            const spreadsheetInfo = await sheets.spreadsheets.get({
+                spreadsheetId: GOOGLE_SPREADSHEET_ID,
+                fields: 'sheets.properties'
+            });
+            const targetSheet = spreadsheetInfo.data.sheets?.find(
+                s => s.properties?.title === sheetName
+            );
+            sheetId = targetSheet?.properties?.sheetId ?? undefined;
+
             // Jika A1 kosong, isi header
             if (!headerCheck.data.values || headerCheck.data.values.length === 0) {
                 await sheets.spreadsheets.values.update({
@@ -212,13 +236,18 @@ async function ensureSheetHeaders(sheetName: string): Promise<string> {
                     requestBody: { values: [headerRow] }
                 });
                 console.log(`Headers created in existing sheet: ${sheetName}`);
+
+                // Format header row
+                if (sheetId !== undefined) {
+                    await formatHeaderRow(sheetId, headerRow.length);
+                }
             }
 
         } catch (error) {
             // Jika error, asumsikan sheet belum ada, maka buat sheet baru
             console.log(`Sheet '${sheetName}' not found, creating new sheet...`);
 
-            await sheets.spreadsheets.batchUpdate({
+            const createResult = await sheets.spreadsheets.batchUpdate({
                 spreadsheetId: GOOGLE_SPREADSHEET_ID,
                 requestBody: {
                     requests: [{
@@ -235,6 +264,9 @@ async function ensureSheetHeaders(sheetName: string): Promise<string> {
                 }
             });
 
+            // Get the new sheet ID
+            sheetId = createResult.data.replies?.[0]?.addSheet?.properties?.sheetId ?? undefined;
+
             // Isi header untuk sheet baru
             await sheets.spreadsheets.values.update({
                 spreadsheetId: GOOGLE_SPREADSHEET_ID,
@@ -243,6 +275,11 @@ async function ensureSheetHeaders(sheetName: string): Promise<string> {
                 requestBody: { values: [headerRow] }
             });
             console.log(`Sheet '${sheetName}' created with headers`);
+
+            // Format header row
+            if (sheetId !== undefined) {
+                await formatHeaderRow(sheetId, headerRow.length);
+            }
         }
 
         return sheetName;
@@ -250,6 +287,75 @@ async function ensureSheetHeaders(sheetName: string): Promise<string> {
         console.error(`Error ensuring headers for ${sheetName}:`, error);
         // Fallback ke sheet pertama jika gagal total (jarang terjadi)
         return 'Sheet1';
+    }
+}
+
+/**
+ * Format header row with borders, bold text, and background color
+ */
+async function formatHeaderRow(sheetId: number, numCols: number): Promise<void> {
+    if (!sheets) return;
+
+    try {
+        const borderStyle = {
+            style: 'SOLID',
+            width: 1,
+            color: { red: 0, green: 0, blue: 0 }
+        };
+
+        await sheets.spreadsheets.batchUpdate({
+            spreadsheetId: GOOGLE_SPREADSHEET_ID,
+            requestBody: {
+                requests: [
+                    // Format header cells
+                    {
+                        repeatCell: {
+                            range: {
+                                sheetId: sheetId,
+                                startRowIndex: 0,
+                                endRowIndex: 1,
+                                startColumnIndex: 0,
+                                endColumnIndex: numCols,
+                            },
+                            cell: {
+                                userEnteredFormat: {
+                                    backgroundColor: { red: 1, green: 0.85, blue: 0 }, // Yellow background
+                                    textFormat: {
+                                        bold: true,
+                                        fontSize: 10,
+                                    },
+                                    horizontalAlignment: 'CENTER',
+                                    verticalAlignment: 'MIDDLE',
+                                    borders: {
+                                        top: borderStyle,
+                                        bottom: borderStyle,
+                                        left: borderStyle,
+                                        right: borderStyle
+                                    }
+                                },
+                            },
+                            fields: 'userEnteredFormat(backgroundColor,textFormat,horizontalAlignment,verticalAlignment,borders)',
+                        },
+                    },
+                    // Freeze header row
+                    {
+                        updateSheetProperties: {
+                            properties: {
+                                sheetId: sheetId,
+                                gridProperties: {
+                                    frozenRowCount: 1
+                                }
+                            },
+                            fields: 'gridProperties.frozenRowCount'
+                        }
+                    }
+                ],
+            },
+        });
+        console.log(`Header row formatted for sheet ID: ${sheetId}`);
+    } catch (error) {
+        console.error('Error formatting header row:', error);
+        // Non-blocking error, continue without formatting
     }
 }
 
@@ -311,7 +417,7 @@ export async function appendToSpreadsheet(data: PSBSpreadsheetData): Promise<{ s
             data.grade ? `Grade ${data.grade}` : '-',
             data.jenisSantri ? `Santri ${data.jenisSantri}` : '-',
             data.unitName,
-            data.driveFolderUrl,
+            data.driveFolderUrl ? `=HYPERLINK("${data.driveFolderUrl}","Buka Drive")` : '-',
             data.status,
             formattedDate
         ];
@@ -320,15 +426,21 @@ export async function appendToSpreadsheet(data: PSBSpreadsheetData): Promise<{ s
         if (sheetName === 'PAUD') {
             const paudData = [
                 data.namaPanggilan || '-',
+                data.usia || '-',
                 data.beratBadan || '-',
                 data.tinggiBadan || '-',
                 data.golonganDarah || '-',
                 data.kewarganegaraan || '-',
+                data.imunisasi || '-',
                 data.riwayatPenyakit || '-',
                 data.bahasaSehariHari || '-',
                 data.jumlahSaudaraTiri || '-',
                 data.ttlAyah || '-',
+                data.alamatAyah || '-',
+                data.jumlahTanggunganAyah || '-',
                 data.ttlIbu || '-',
+                data.alamatIbu || '-',
+                data.jumlahTanggunganIbu || '-',
                 data.kewarganegaraanAyah || '-',
                 data.kewarganegaraanIbu || '-',
                 data.statusMasuk || '-',
@@ -349,7 +461,7 @@ export async function appendToSpreadsheet(data: PSBSpreadsheetData): Promise<{ s
             await sheets!.spreadsheets.values.update({
                 spreadsheetId: GOOGLE_SPREADSHEET_ID,
                 range: `'${sheetName}'!A${existingRowIndex}`,
-                valueInputOption: 'RAW',
+                valueInputOption: 'USER_ENTERED',
                 requestBody: {
                     values: [rowData]
                 }
@@ -365,8 +477,8 @@ export async function appendToSpreadsheet(data: PSBSpreadsheetData): Promise<{ s
             const appendResult = await sheets!.spreadsheets.values.append({
                 spreadsheetId: GOOGLE_SPREADSHEET_ID,
                 range: range,
-                valueInputOption: 'RAW',
-                insertDataOption: 'INSERT_ROWS',
+                valueInputOption: 'USER_ENTERED',
+                insertDataOption: 'OVERWRITE',
                 requestBody: {
                     values: [rowData]
                 }

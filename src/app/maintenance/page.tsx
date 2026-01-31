@@ -11,7 +11,7 @@ export default function MaintenancePage() {
         try {
             const res = await fetch("/api/maintenance", { cache: "no-store" });
             const data = await res.json();
-            
+
             if (!data.enabled) {
                 router.replace("/");
             }
@@ -43,12 +43,12 @@ export default function MaintenancePage() {
 
                 {/* Title */}
                 <h1 className="text-2xl font-semibold text-white mb-3">
-                    Sedang Maintenance
+                    Sedang Perbaikan
                 </h1>
 
                 {/* Description */}
                 <p className="text-emerald-200/70 mb-8">
-                    Kami sedang melakukan pemeliharaan. Silakan kembali beberapa saat lagi.
+                    Mohon Maaf, kami sedang melakukan perbaikan. Silakan kembali beberapa saat lagi.
                 </p>
 
                 {/* Divider */}
@@ -56,7 +56,7 @@ export default function MaintenancePage() {
 
                 {/* Contact */}
                 <p className="text-sm text-emerald-300/50">
-                    Pertanyaan? <a href="mailto:info@albahjahbuyut.com" className="text-emerald-400 hover:underline">info@albahjahbuyut.com</a>
+                    Pertanyaan tentang PSB? <a href="https://wa.me/+6289676539390" className="text-emerald-400 hover:underline">Hubungi Kami</a>
                 </p>
             </div>
         </div>
