@@ -20,8 +20,9 @@ export default function MaintenancePage() {
         }
     }, [router]);
 
-    // Auto-check every 30 seconds
+    // Check immediately on mount and auto-check every 30 seconds
     useEffect(() => {
+        checkMaintenance(); // Check immediately on mount/reload
         const interval = setInterval(checkMaintenance, 30000);
         return () => clearInterval(interval);
     }, [checkMaintenance]);

@@ -3,6 +3,9 @@ import { Navbar } from "@/components/public/Navbar";
 import { Footer } from "@/components/public/Footer";
 import { redirect } from "next/navigation";
 
+// Force dynamic to ensure maintenance check is always fresh
+export const dynamic = "force-dynamic";
+
 export default async function PublicLayout({
     children,
 }: {

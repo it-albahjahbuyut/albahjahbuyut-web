@@ -13,8 +13,8 @@ import { YouTubeLiveSection } from "@/components/home/YouTubeLiveSection";
 import { LatestVideosSection } from "@/components/home/LatestVideosSection";
 import NewsletterSection from "@/components/home/NewsletterSection";
 
-// Revalidate every 60 seconds to reduce database load
-export const revalidate = 60;
+// Force dynamic to ensure maintenance check is always fresh
+export const dynamic = "force-dynamic";
 
 async function getHomePageData() {
   try {
