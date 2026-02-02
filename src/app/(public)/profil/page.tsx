@@ -35,7 +35,7 @@ export default async function ProfilePage() {
         {
             name: "Dr. Fidya Ari Pratama, S.Pd., M.Pd.",
             role: "Kadiv Pendidikan Al-Bahjah Buyut",
-            image: null,
+            image: "https://res.cloudinary.com/dand8rpbb/image/upload/v1770033168/WhatsApp_Image_2026-01-28_at_6.45.40_PM_nwmxak.jpg",
         },
         {
             name: "Isro Muwafiq",
