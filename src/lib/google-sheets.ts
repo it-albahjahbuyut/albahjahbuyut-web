@@ -417,7 +417,9 @@ export async function appendToSpreadsheet(data: PSBSpreadsheetData): Promise<{ s
             data.grade ? `Grade ${data.grade}` : '-',
             data.jenisSantri ? `Santri ${data.jenisSantri}` : '-',
             data.unitName,
-            data.driveFolderUrl ? `=HYPERLINK("${data.driveFolderUrl}","Buka Drive")` : '-',
+            // Use plain URL - Google Sheets auto-detects and makes it clickable
+            // Avoid HYPERLINK formula to prevent parsing issues with special characters
+            (data.driveFolderUrl || '-').trim(),
             data.status,
             formattedDate
         ];

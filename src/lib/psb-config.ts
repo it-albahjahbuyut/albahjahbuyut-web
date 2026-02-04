@@ -512,6 +512,7 @@ export const PESANTREN_DOCUMENTS: DocumentRequirement[] = [
 
 
 // Dokumen standar untuk PAUD
+// Note: Keep file sizes reasonable to avoid exceeding server body size limit
 export const PAUD_DOCUMENTS: DocumentRequirement[] = [
     {
         type: 'PAS_FOTO',
@@ -524,41 +525,41 @@ export const PAUD_DOCUMENTS: DocumentRequirement[] = [
     {
         type: 'FOTO_KELUARGA',
         label: 'Foto Keluarga Bebas',
-        description: 'Upload foto keluarga (bebas)',
+        description: 'Upload foto keluarga (bebas, maks 5MB)',
         acceptedFormats: ['.jpg', '.jpeg', '.png'],
-        maxSizeMB: 10,
+        maxSizeMB: 5,
         required: true,
     },
     {
         type: 'KTP_IBU',
         label: 'Foto KTP Ibu',
-        description: 'Upload foto KTP Ibu',
+        description: 'Upload foto KTP Ibu (maks 5MB)',
         acceptedFormats: ['.jpg', '.jpeg', '.png', '.pdf'],
-        maxSizeMB: 10,
+        maxSizeMB: 5,
         required: true,
     },
     {
         type: 'KTP_AYAH',
         label: 'Foto KTP Ayah',
-        description: 'Upload foto KTP Ayah',
+        description: 'Upload foto KTP Ayah (maks 5MB)',
         acceptedFormats: ['.jpg', '.jpeg', '.png', '.pdf'],
-        maxSizeMB: 10,
+        maxSizeMB: 5,
         required: true,
     },
     {
         type: 'KARTU_KELUARGA',
         label: 'Foto Kartu Keluarga (KK)',
-        description: 'Upload foto Kartu Keluarga (KK)',
+        description: 'Upload foto Kartu Keluarga (maks 5MB)',
         acceptedFormats: ['.jpg', '.jpeg', '.png', '.pdf'],
-        maxSizeMB: 10,
+        maxSizeMB: 5,
         required: true,
     },
     {
         type: 'AKTA_KELAHIRAN',
         label: 'Foto Akta Kelahiran',
-        description: 'Upload foto Akta Kelahiran (Optional jika belum ada)',
+        description: 'Upload foto Akta Kelahiran (Optional jika belum ada, maks 5MB)',
         acceptedFormats: ['.jpg', '.jpeg', '.png', '.pdf'],
-        maxSizeMB: 10,
+        maxSizeMB: 5,
         required: false,
     },
     {

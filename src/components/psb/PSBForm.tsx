@@ -354,28 +354,41 @@ export default function PSBForm({
             };
 
 
-            // Convert files to base64 (browser-compatible)
+            // Convert files to base64 using efficient FileReader API
+            // More memory-friendly for low-spec phones
             const documentUploads: DocumentUpload[] = await Promise.all(
                 uploadedFiles.map(async (uf) => {
-                    const arrayBuffer = await uf.file.arrayBuffer();
-                    const uint8Array = new Uint8Array(arrayBuffer);
+                    return new Promise<DocumentUpload>((resolve, reject) => {
+                        const reader = new FileReader();
 
-                    // Convert to base64 in browser-compatible way
-                    let binary = '';
-                    uint8Array.forEach((byte) => {
-                        binary += String.fromCharCode(byte);
+                        reader.onload = () => {
+                            try {
+                                // Result is "data:mime/type;base64,XXXXX"
+                                const result = reader.result as string;
+                                // Extract base64 data after the comma
+                                const base64 = result.split(',')[1] || '';
+
+                                console.log(`Converted ${uf.file.name}: ${uf.file.size} bytes -> ${base64.length} base64 chars`);
+
+                                resolve({
+                                    documentType: uf.documentType,
+                                    fileName: uf.file.name,
+                                    fileSize: uf.file.size,
+                                    mimeType: uf.file.type,
+                                    base64Data: base64,
+                                });
+                            } catch (err) {
+                                reject(new Error(`Gagal memproses file ${uf.file.name}`));
+                            }
+                        };
+
+                        reader.onerror = () => {
+                            reject(new Error(`Gagal membaca file ${uf.file.name}. Pastikan file tidak corrupt.`));
+                        };
+
+                        // Read file as data URL (more efficient than arrayBuffer + manual conversion)
+                        reader.readAsDataURL(uf.file);
                     });
-                    const base64 = btoa(binary);
-
-                    console.log(`Converted ${uf.file.name}: ${uf.file.size} bytes -> ${base64.length} base64 chars`);
-
-                    return {
-                        documentType: uf.documentType,
-                        fileName: uf.file.name,
-                        fileSize: uf.file.size,
-                        mimeType: uf.file.type,
-                        base64Data: base64,
-                    };
                 })
             );
 
@@ -395,9 +408,14 @@ export default function PSBForm({
 
         } catch (error) {
             console.error('Submit error:', error);
+            // Provide more detailed error message for debugging
+            let errorMessage = 'Terjadi kesalahan saat mengirim pendaftaran. Silakan coba lagi.';
+            if (error instanceof Error) {
+                errorMessage = `Kesalahan: ${error.message}`;
+            }
             setSubmitResult({
                 success: false,
-                message: 'Terjadi kesalahan saat mengirim pendaftaran. Silakan coba lagi.',
+                message: errorMessage,
             });
         } finally {
             setIsSubmitting(false);

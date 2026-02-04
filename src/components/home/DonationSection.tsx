@@ -114,16 +114,28 @@ export function DonationSection({ program }: { program: DonationProgram | null }
                         </div>
 
                         {/* Right Column: Image & Stats */}
-                        <div className="relative h-[300px] lg:h-full bg-slate-100 order-1 lg:order-2">
+                        <div className="relative h-[300px] lg:h-full bg-slate-100 order-1 lg:order-2 overflow-hidden">
                             {program.image ? (
-                                <Image
-                                    src={program.image}
-                                    alt={program.title}
-                                    fill
-                                    sizes="(max-width: 1024px) 100vw, 50vw"
-                                    className="object-cover"
-                                    priority
-                                />
+                                <>
+                                    {/* Blurred Background */}
+                                    <Image
+                                        src={program.image}
+                                        alt={program.title}
+                                        fill
+                                        sizes="(max-width: 1024px) 100vw, 50vw"
+                                        className="object-cover blur-xl scale-110 opacity-50"
+                                        priority
+                                    />
+                                    {/* Main Image */}
+                                    <Image
+                                        src={program.image}
+                                        alt={program.title}
+                                        fill
+                                        sizes="(max-width: 1024px) 100vw, 50vw"
+                                        className="object-contain z-10 relative"
+                                        priority
+                                    />
+                                </>
                             ) : (
                                 <div className="absolute inset-0 flex items-center justify-center text-slate-300">
                                     <Heart className="w-20 h-20" />

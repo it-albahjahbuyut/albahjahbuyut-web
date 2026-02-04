@@ -4,9 +4,10 @@ const nextConfig: NextConfig = {
   /* config options here */
   reactCompiler: true,
   // Increase body size limit for Server Actions (file uploads)
+  // PAUD form has multiple documents (up to 7 files x 10MB each after base64 encoding)
   experimental: {
     serverActions: {
-      bodySizeLimit: '10mb',
+      bodySizeLimit: '50mb',
     },
   },
   images: {
