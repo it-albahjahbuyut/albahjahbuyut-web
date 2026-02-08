@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import {
     Loader2,
@@ -176,6 +176,9 @@ export default function PSBForm({
                 const uploaded = uploadedFiles.find(f => f.documentType === doc.type);
                 if (!uploaded) {
                     newErrors[doc.type] = `${doc.label} wajib diupload`;
+                } else if (!uploaded.base64Data) {
+                    // File is still being processed or failed to convert
+                    newErrors[doc.type] = `${doc.label} masih diproses, tunggu sebentar atau upload ulang`;
                 }
             }
         });
@@ -285,10 +288,32 @@ export default function PSBForm({
         reader.readAsDataURL(file);
     };
 
-    // Remove uploaded file
+    // Remove uploaded file and cleanup preview URL
     const removeFile = (documentType: string) => {
+        // Find the file and revoke its preview URL to prevent memory leak
+        const fileToRemove = uploadedFiles.find(f => f.documentType === documentType);
+        if (fileToRemove?.preview) {
+            URL.revokeObjectURL(fileToRemove.preview);
+        }
+
+        // Also clear pasFotoPreview if removing PAS_FOTO
+        if (documentType === 'PAS_FOTO') {
+            setPasFotoPreview(null);
+        }
+
         setUploadedFiles(prev => prev.filter(f => f.documentType !== documentType));
     };
+
+    // Cleanup object URLs on unmount to prevent memory leaks
+    useEffect(() => {
+        return () => {
+            uploadedFiles.forEach(file => {
+                if (file.preview) {
+                    URL.revokeObjectURL(file.preview);
+                }
+            });
+        };
+    }, [uploadedFiles]);
 
     // Scroll to first error
     const scrollToFirstError = () => {

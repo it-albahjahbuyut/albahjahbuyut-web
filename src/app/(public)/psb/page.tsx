@@ -23,6 +23,9 @@ export const metadata = {
     description: "Informasi lengkap pendaftaran santri baru Pondok Pesantren Al-Bahjah Buyut. Jadilah bagian dari kami.",
 };
 
+// Enable ISR caching for better performance
+export const revalidate = 60;
+
 export default async function PSBPage() {
     const units = await db.unit.findMany({
         where: {

@@ -19,8 +19,8 @@ import { FadeIn, FadeInStagger } from "@/components/animations/FadeIn";
 import { Button } from "@/components/ui/button";
 import { OptimizedImage } from "@/components/ui/OptimizedImage";
 
-// Revalidate on every request to ensure data is always fresh after updates
-export const revalidate = 0;
+// Enable ISR caching with 60 second revalidation for better performance
+export const revalidate = 60;
 
 interface BusinessUnitDetailPageProps {
     params: Promise<{ slug: string }>;

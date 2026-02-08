@@ -11,6 +11,9 @@ interface PageProps {
     params: Promise<{ unit: string }>;
 }
 
+// Enable ISR caching for better performance
+export const revalidate = 60;
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
     const { unit: unitSlug } = await params;
     const unit = await db.unit.findUnique({

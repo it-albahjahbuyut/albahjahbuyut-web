@@ -6,8 +6,8 @@ import { FadeIn, FadeInStagger } from "@/components/animations/FadeIn";
 import type { Metadata } from "next";
 import { OptimizedImage } from "@/components/ui/OptimizedImage";
 
-// Revalidate on every request to ensure data is always fresh after updates
-export const revalidate = 0;
+// Enable ISR caching with 60 second revalidation for better performance
+export const revalidate = 60;
 
 export const metadata: Metadata = {
     title: "Unit Usaha | Pondok Pesantren Al-Bahjah Buyut",
