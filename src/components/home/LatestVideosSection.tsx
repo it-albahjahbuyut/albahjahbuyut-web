@@ -10,12 +10,25 @@ interface YouTubeVideo {
         title: string;
         description: string;
         publishedAt: string;
+        liveBroadcastContent: 'live' | 'upcoming' | 'none';
         thumbnails: {
             high: {
                 url: string;
             };
         };
     };
+}
+
+// Decode HTML entities from YouTube API response
+function decodeHtmlEntities(text: string): string {
+    return text
+        .replace(/&#39;/g, "'")
+        .replace(/&quot;/g, '"')
+        .replace(/&amp;/g, '&')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&#x27;/g, "'")
+        .replace(/&#x2F;/g, '/');
 }
 
 async function getLatestVideos(): Promise<YouTubeVideo[]> {
@@ -28,7 +41,7 @@ async function getLatestVideos(): Promise<YouTubeVideo[]> {
         // Fetch latest 4 videos using Search API sorted by date
         const response = await fetch(
             `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=${channelId}&part=snippet,id&order=date&maxResults=4&type=video`,
-            { next: { revalidate: 86400 } }
+            { cache: 'no-store' } // Always fetch fresh data
         );
 
         if (!response.ok) return [];
@@ -103,7 +116,13 @@ export async function LatestVideosSection() {
                             </div>
                             <div className="p-6">
                                 <div className="text-xs text-slate-500 mb-3 flex items-center gap-2">
-                                    <span className="bg-red-50 text-red-600 px-2 py-0.5 rounded font-medium">Video</span>
+                                    {video.snippet.liveBroadcastContent === 'live' ? (
+                                        <span className="bg-red-600 text-white px-2 py-0.5 rounded font-medium animate-pulse">Live</span>
+                                    ) : video.snippet.liveBroadcastContent === 'upcoming' ? (
+                                        <span className="bg-amber-100 text-amber-700 px-2 py-0.5 rounded font-medium">Upcoming</span>
+                                    ) : (
+                                        <span className="bg-red-50 text-red-600 px-2 py-0.5 rounded font-medium">Video</span>
+                                    )}
                                     <span>
                                         {new Date(video.snippet.publishedAt).toLocaleDateString('id-ID', {
                                             day: 'numeric',
@@ -113,10 +132,10 @@ export async function LatestVideosSection() {
                                     </span>
                                 </div>
                                 <h3 className="text-lg font-bold text-slate-900 leading-snug line-clamp-2 group-hover:text-red-600 transition-colors mb-2">
-                                    {video.snippet.title}
+                                    {decodeHtmlEntities(video.snippet.title)}
                                 </h3>
                                 <p className="text-slate-500 text-sm line-clamp-2 leading-relaxed">
-                                    {video.snippet.description}
+                                    {decodeHtmlEntities(video.snippet.description)}
                                 </p>
                             </div>
                         </Link>
