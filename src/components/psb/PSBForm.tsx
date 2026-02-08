@@ -31,6 +31,8 @@ interface UploadedFile {
     documentType: string;
     file: File;
     preview?: string;
+    base64Data?: string; // Store base64 data at upload time to prevent stale file issues
+    mimeType?: string;
 }
 
 export default function PSBForm({
@@ -233,22 +235,54 @@ export default function PSBForm({
         let preview: string | undefined;
         if (file.type.startsWith('image/')) {
             preview = URL.createObjectURL(file);
-
-            // If this is pas foto, also save as base64 for RegistrationCard
-            if (documentType === 'PAS_FOTO') {
-                const reader = new FileReader();
-                reader.onloadend = () => {
-                    setPasFotoPreview(reader.result as string);
-                };
-                reader.readAsDataURL(file);
-            }
         }
 
-        // Update uploaded files
-        setUploadedFiles(prev => {
-            const filtered = prev.filter(f => f.documentType !== documentType);
-            return [...filtered, { documentType, file, preview }];
-        });
+        // Convert file to base64 immediately to prevent stale file reference issues
+        // This is crucial for mobile devices where file references can become stale
+        const reader = new FileReader();
+        reader.onload = () => {
+            try {
+                const result = reader.result as string;
+                // Extract base64 data after the comma
+                const base64 = result.split(',')[1] || '';
+
+                console.log(`Converted ${file.name}: ${file.size} bytes -> ${base64.length} base64 chars`);
+
+                // If this is pas foto, also save for RegistrationCard
+                if (documentType === 'PAS_FOTO') {
+                    setPasFotoPreview(result);
+                }
+
+                // Update uploaded files with base64 data
+                setUploadedFiles(prev => {
+                    const filtered = prev.filter(f => f.documentType !== documentType);
+                    return [...filtered, {
+                        documentType,
+                        file,
+                        preview,
+                        base64Data: base64,
+                        mimeType: file.type
+                    }];
+                });
+            } catch (err) {
+                console.error(`Error processing file ${file.name}:`, err);
+                setErrors(prev => ({
+                    ...prev,
+                    [documentType]: `Gagal memproses file. Silakan upload ulang.`
+                }));
+            }
+        };
+
+        reader.onerror = () => {
+            console.error(`Error reading file ${file.name}`);
+            setErrors(prev => ({
+                ...prev,
+                [documentType]: `Gagal membaca file. Pastikan file tidak corrupt dan coba lagi.`
+            }));
+        };
+
+        // Read file as data URL
+        reader.readAsDataURL(file);
     };
 
     // Remove uploaded file
@@ -354,43 +388,37 @@ export default function PSBForm({
             };
 
 
-            // Convert files to base64 using efficient FileReader API
-            // More memory-friendly for low-spec phones
-            const documentUploads: DocumentUpload[] = await Promise.all(
-                uploadedFiles.map(async (uf) => {
-                    return new Promise<DocumentUpload>((resolve, reject) => {
-                        const reader = new FileReader();
+            // Use pre-converted base64 data from upload time
+            // This prevents stale file reference issues on mobile devices
+            const documentUploads: DocumentUpload[] = [];
+            const missingFiles: string[] = [];
 
-                        reader.onload = () => {
-                            try {
-                                // Result is "data:mime/type;base64,XXXXX"
-                                const result = reader.result as string;
-                                // Extract base64 data after the comma
-                                const base64 = result.split(',')[1] || '';
+            for (const uf of uploadedFiles) {
+                if (!uf.base64Data) {
+                    // File was not properly converted, track for error message
+                    const docInfo = documents.find(d => d.type === uf.documentType);
+                    missingFiles.push(docInfo?.label || uf.documentType);
+                    continue;
+                }
 
-                                console.log(`Converted ${uf.file.name}: ${uf.file.size} bytes -> ${base64.length} base64 chars`);
+                documentUploads.push({
+                    documentType: uf.documentType,
+                    fileName: uf.file.name,
+                    fileSize: uf.file.size,
+                    mimeType: uf.mimeType || uf.file.type,
+                    base64Data: uf.base64Data,
+                });
+            }
 
-                                resolve({
-                                    documentType: uf.documentType,
-                                    fileName: uf.file.name,
-                                    fileSize: uf.file.size,
-                                    mimeType: uf.file.type,
-                                    base64Data: base64,
-                                });
-                            } catch (err) {
-                                reject(new Error(`Gagal memproses file ${uf.file.name}`));
-                            }
-                        };
-
-                        reader.onerror = () => {
-                            reject(new Error(`Gagal membaca file ${uf.file.name}. Pastikan file tidak corrupt.`));
-                        };
-
-                        // Read file as data URL (more efficient than arrayBuffer + manual conversion)
-                        reader.readAsDataURL(uf.file);
-                    });
-                })
-            );
+            // Check if any files are missing base64 data
+            if (missingFiles.length > 0) {
+                setSubmitResult({
+                    success: false,
+                    message: `Beberapa file tidak dapat diproses: ${missingFiles.join(', ')}. Silakan kembali ke step Upload dan upload ulang file tersebut.`
+                });
+                setIsSubmitting(false);
+                return;
+            }
 
             // Submit
             const result = await submitPSBRegistration(psbFormData, documentUploads);
