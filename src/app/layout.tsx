@@ -102,7 +102,15 @@ export default function RootLayout({
     "@type": "WebSite",
     "name": "LPD Al-Bahjah Buyut",
     "alternateName": ["Lembaga Pengembangan Dakwah Al-Bahjah Buyut", "Pondok Pesantren Al-Bahjah Buyut", "Al-Bahjah Buyut"],
-    "url": "https://albahjahbuyut.com"
+    "url": "https://albahjahbuyut.com",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": "https://albahjahbuyut.com/berita?q={search_term_string}"
+      },
+      "query-input": "required name=search_term_string"
+    }
   };
 
   // JSON-LD for Organization
@@ -116,15 +124,80 @@ export default function RootLayout({
     "description": "Lembaga Pengembangan Dakwah Al-Bahjah Buyut",
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "Jl. Revolusi No.45",
+      "streetAddress": "Jl. Revolusi No.45, Desa Buyut",
       "addressLocality": "Gunungjati",
-      "addressRegion": "Cirebon",
+      "addressRegion": "Cirebon, Jawa Barat",
       "postalCode": "45151",
       "addressCountry": "ID"
     },
+    "telephone": "+62898-3338-300",
     "sameAs": [
       "https://www.instagram.com/abahsayfabuhanifah",
       "https://www.youtube.com/@ASAHTVOFFICIAL"
+    ]
+  };
+
+  // SiteNavigationElement for Sitelinks
+  const siteNavigationJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "itemListElement": [
+      {
+        "@type": "SiteNavigationElement",
+        "position": 1,
+        "name": "SMPIQu Al-Bahjah Buyut",
+        "description": "Sekolah Menengah Pertama Islam Qurani Al-Bahjah Buyut Cirebon",
+        "url": "https://albahjahbuyut.com/pendidikan/smpiqu"
+      },
+      {
+        "@type": "SiteNavigationElement",
+        "position": 2,
+        "name": "SMAIQu Al-Bahjah Buyut",
+        "description": "Sekolah Menengah Atas Islam Qurani Al-Bahjah Buyut Cirebon",
+        "url": "https://albahjahbuyut.com/pendidikan/smaiqu"
+      },
+      {
+        "@type": "SiteNavigationElement",
+        "position": 3,
+        "name": "SDIQu Al-Bahjah Buyut",
+        "description": "Sekolah Dasar Islam Qurani Al-Bahjah Buyut Cirebon",
+        "url": "https://albahjahbuyut.com/pendidikan/sdiqu"
+      },
+      {
+        "@type": "SiteNavigationElement",
+        "position": 4,
+        "name": "Pendaftaran Santri Baru (PSB)",
+        "description": "Pendaftaran Santri Baru Pondok Pesantren Al-Bahjah Buyut",
+        "url": "https://albahjahbuyut.com/psb"
+      },
+      {
+        "@type": "SiteNavigationElement",
+        "position": 5,
+        "name": "Profil",
+        "description": "Profil Lembaga Pengembangan Dakwah Al-Bahjah Buyut",
+        "url": "https://albahjahbuyut.com/profil"
+      },
+      {
+        "@type": "SiteNavigationElement",
+        "position": 6,
+        "name": "Berita & Artikel",
+        "description": "Berita dan informasi terbaru dari Al-Bahjah Buyut",
+        "url": "https://albahjahbuyut.com/berita"
+      },
+      {
+        "@type": "SiteNavigationElement",
+        "position": 7,
+        "name": "Galeri",
+        "description": "Galeri foto kegiatan Al-Bahjah Buyut",
+        "url": "https://albahjahbuyut.com/galeri"
+      },
+      {
+        "@type": "SiteNavigationElement",
+        "position": 8,
+        "name": "Infaq & Donasi",
+        "description": "Program infaq dan donasi Al-Bahjah Buyut",
+        "url": "https://albahjahbuyut.com/infaq"
+      }
     ]
   };
 
@@ -140,6 +213,11 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+        />
+        {/* SiteNavigation Structured Data for Sitelinks */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(siteNavigationJsonLd) }}
         />
       </head>
       <body className={`${plusJakartaSans.variable} antialiased font-sans overflow-x-hidden`} suppressHydrationWarning>
