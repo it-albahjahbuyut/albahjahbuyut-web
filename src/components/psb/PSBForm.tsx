@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import {
     Loader2,
@@ -43,15 +43,69 @@ export default function PSBForm({
     documents
 }: PSBFormProps) {
     const router = useRouter();
-    const [step, setStep] = useState<1 | 2 | 3>(1); // 1: Form, 2: Documents, 3: Confirmation
+    const STORAGE_KEY = `psb-form-${unitSlug}`;
+
+    // Initialize with empty defaults (must match server render)
+    const [step, setStep] = useState<1 | 2 | 3>(1);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [formData, setFormData] = useState<Record<string, string>>({});
     const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [submitResult, setSubmitResult] = useState<{ success: boolean; message: string; registrationNumber?: string } | null>(null);
     const [pasFotoPreview, setPasFotoPreview] = useState<string | null>(null);
+    const [hasRestoredData, setHasRestoredData] = useState(false);
     const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
     const formTopRef = useRef<HTMLDivElement>(null);
+
+    // Restore saved data from localStorage AFTER hydration (client-only)
+    useEffect(() => {
+        try {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                if (parsed.formData && Object.keys(parsed.formData).length > 0) {
+                    setFormData(parsed.formData);
+                    setHasRestoredData(true);
+                    if (parsed.step === 1 || parsed.step === 2) {
+                        setStep(parsed.step);
+                    }
+                }
+            }
+        } catch (e) {
+            console.warn('Failed to load saved form data:', e);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    // Auto-save form data to localStorage whenever formData or step changes
+    const saveToLocalStorage = useCallback((data: Record<string, string>, currentStep: number) => {
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify({
+                formData: data,
+                step: currentStep,
+                savedAt: new Date().toISOString(),
+            }));
+        } catch (e) {
+            console.warn('Failed to save form data:', e);
+        }
+    }, [STORAGE_KEY]);
+
+    // Clear saved data from localStorage
+    const clearSavedData = useCallback(() => {
+        try {
+            localStorage.removeItem(STORAGE_KEY);
+        } catch (e) {
+            console.warn('Failed to clear saved form data:', e);
+        }
+        setHasRestoredData(false);
+    }, [STORAGE_KEY]);
+
+    // Save to localStorage on formData or step change
+    useEffect(() => {
+        if (Object.keys(formData).length > 0 && !submitResult?.success) {
+            saveToLocalStorage(formData, step);
+        }
+    }, [formData, step, saveToLocalStorage, submitResult]);
 
     const scrollToForm = () => {
         setTimeout(() => {
@@ -450,6 +504,8 @@ export default function PSBForm({
             setSubmitResult(result);
 
             if (result.success) {
+                // Clear saved form data on successful submission
+                clearSavedData();
                 // Tunggu sebentar agar render selesai, lalu scroll ke elemen sukses
                 setTimeout(() => {
                     const successElement = document.getElementById('psb-success-message');
@@ -619,6 +675,28 @@ export default function PSBForm({
                     </div>
                 ))}
             </div>
+
+            {/* Restored data notification */}
+            {hasRestoredData && !submitResult?.success && step !== 3 && (
+                <div className="mb-4 sm:mb-6 bg-blue-50 border border-blue-200 rounded-xl p-3 sm:p-4 flex items-start sm:items-center justify-between gap-3">
+                    <div className="flex items-start sm:items-center gap-2 text-sm text-blue-700">
+                        <svg className="w-5 h-5 flex-shrink-0 mt-0.5 sm:mt-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>Data sebelumnya telah dipulihkan otomatis.</span>
+                    </div>
+                    <button
+                        onClick={() => {
+                            clearSavedData();
+                            setFormData({});
+                            setStep(1);
+                        }}
+                        className="text-xs font-medium text-blue-600 hover:text-blue-800 underline whitespace-nowrap"
+                    >
+                        Reset
+                    </button>
+                </div>
+            )}
 
             {step === 1 && (
                 <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl p-4 sm:p-8">

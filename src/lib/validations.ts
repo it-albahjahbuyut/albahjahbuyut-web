@@ -417,6 +417,14 @@ export const psbFormSchema = z.object({
         .refine(
             (val) => !isNaN(Date.parse(val)),
             "Format tanggal tidak valid"
+        )
+        .refine(
+            (val) => {
+                const date = new Date(val);
+                const year = date.getFullYear();
+                return year >= 1900 && year <= 2100;
+            },
+            "Tahun lahir tidak valid (harus antara 1900-2100)"
         ),
     asalSekolah: z
         .string()
