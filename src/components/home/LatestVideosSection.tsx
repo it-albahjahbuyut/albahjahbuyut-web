@@ -41,7 +41,7 @@ async function getLatestVideos(): Promise<YouTubeVideo[]> {
         // Fetch latest 4 videos using Search API sorted by date
         const response = await fetch(
             `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=${channelId}&part=snippet,id&order=date&maxResults=4&type=video`,
-            { cache: 'no-store' } // Always fetch fresh data
+            { next: { revalidate: 3600 } } // Revalidate every 1 hour
         );
 
         if (!response.ok) return [];
