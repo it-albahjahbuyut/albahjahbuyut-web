@@ -31,8 +31,8 @@ export default async function PendidikanPage() {
         return html.replace(/<[^>]*>?/gm, '');
     };
 
-    const formalUnits = units.filter(u => ['sdiqu', 'smpiqu', 'smaiqu'].includes(u.slug));
-    const nonFormalUnits = units.filter(u => !['sdiqu', 'smpiqu', 'smaiqu'].includes(u.slug));
+    const formalUnits = units.filter(u => ['paudqu', 'sdiqu', 'smpiqu', 'smaiqu'].includes(u.slug));
+    const nonFormalUnits = units.filter(u => !['paudqu', 'sdiqu', 'smpiqu', 'smaiqu'].includes(u.slug));
 
     return (
         <main className="bg-white min-h-screen">
