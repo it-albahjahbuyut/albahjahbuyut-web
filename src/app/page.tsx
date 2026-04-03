@@ -79,11 +79,11 @@ export default async function HomePage() {
   // Video Data for Hero Section (moved from HeroSection.tsx)
   const heroVideos = [
     {
-      src: "https://res.cloudinary.com/dand8rpbb/video/upload/q_auto/v1768020274/Untitled_Video_-_Made_With_Clipchamp_2_gvcww2.mp4",
+      src: "https://res.cloudinary.com/dand8rpbb/video/upload/f_auto,q_auto/v1768020274/Untitled_Video_-_Made_With_Clipchamp_2_gvcww2.mp4",
       poster: "https://res.cloudinary.com/dand8rpbb/video/upload/so_0,q_auto,f_auto/v1768020274/Untitled_Video_-_Made_With_Clipchamp_2_gvcww2.jpg"
     },
     {
-      src: "https://res.cloudinary.com/dand8rpbb/video/upload/v1767984439/Untitled_Video_-_Made_With_Clipchamp_rpbfw1.mp4",
+      src: "https://res.cloudinary.com/dand8rpbb/video/upload/f_auto,q_auto/v1767984439/Untitled_Video_-_Made_With_Clipchamp_rpbfw1.mp4",
       poster: "https://res.cloudinary.com/dand8rpbb/video/upload/so_0,q_auto,f_auto/v1767984439/Untitled_Video_-_Made_With_Clipchamp_rpbfw1.jpg"
     }
   ];

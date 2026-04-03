@@ -3,6 +3,7 @@
 
 
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
@@ -30,6 +31,7 @@ interface NavbarProps {
 export function Navbar({ units }: NavbarProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const pathname = usePathname();
 
     const [isScrolled, setIsScrolled] = useState(false);
 
@@ -37,6 +39,10 @@ export function Navbar({ units }: NavbarProps) {
         const handleScroll = () => {
             setIsScrolled(window.scrollY > 20);
         };
+        
+        // Cek posisi scroll saat komponen pertama kali di-load
+        handleScroll();
+        
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
@@ -50,14 +56,22 @@ export function Navbar({ units }: NavbarProps) {
         { href: "/unit-usaha", label: "Unit Usaha", icon: Store },
     ];
 
-    const headerBackground = isScrolled || isOpen
+    // Halaman-halaman ini tidak memiliki dark hero cover di paling atas.
+    // Jadi Navbar harus selalu muncul (solid bg) supaya teks tidak tercampur/hilang dengan background.
+    const isSolidPage = pathname === '/syarat-ketentuan' || 
+                        pathname === '/kebijakan-privasi' || 
+                        pathname === '/unsubscribe';
+
+    const forceSolid = isScrolled || isOpen || isSolidPage;
+
+    const headerBackground = forceSolid
         ? "bg-white/95 backdrop-blur-md border-b border-emerald-100/50 shadow-sm"
         : "bg-transparent border-transparent";
 
-    const textColor = isScrolled || isOpen ? "text-emerald-950" : "text-white";
-    const subTextColor = isScrolled || isOpen ? "text-slate-500" : "text-white/90";
-    const navTextColor = isScrolled || isOpen ? "text-slate-700 hover:bg-emerald-50" : "text-white hover:bg-white/10";
-    const mobileMenuButtonColor = isScrolled || isOpen ? "bg-slate-50 text-slate-700" : "bg-white/10 text-white hover:bg-white/20";
+    const textColor = forceSolid ? "text-emerald-950" : "text-white";
+    const subTextColor = forceSolid ? "text-slate-500" : "text-white/90";
+    const navTextColor = forceSolid ? "text-slate-700 hover:bg-emerald-50" : "text-white hover:bg-white/10";
+    const mobileMenuButtonColor = forceSolid ? "bg-slate-50 text-slate-700" : "bg-white/10 text-white hover:bg-white/20";
 
     return (
         <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${headerBackground}`}>

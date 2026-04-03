@@ -1,6 +1,7 @@
 import { Calendar, Clock, MapPin } from "lucide-react";
 import { db } from "@/lib/db";
 import { MajelisList } from "./MajelisList";
+import { FadeIn } from "@/components/animations/FadeIn";
 
 interface MajelisData {
     id: string;
@@ -73,17 +74,19 @@ export async function MajelisSection() {
         <section className="py-24 bg-white">
             <div className="container mx-auto px-4 lg:px-8">
                 {/* Header */}
-                <div className="max-w-2xl mb-16">
-                    <span className="text-gold-600 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">
-                        Jadwal Majelis
-                    </span>
-                    <h2 className="text-4xl lg:text-5xl font-bold text-emerald-950 mb-6 tracking-tight leading-[1.1]">
-                        Majelis Rutin <br /> <span className="text-emerald-600 font-light">Mingguan</span>
-                    </h2>
-                    <p className="text-slate-500 text-lg leading-relaxed font-light">
-                        Mari istiqomah menghadiri taman-taman surga di dunia melalui majelis ilmu dan dzikir untuk menutrisi hati.
-                    </p>
-                </div>
+                <FadeIn>
+                    <div className="max-w-2xl mb-16">
+                        <span className="text-gold-600 font-bold tracking-[0.2em] text-xs uppercase mb-4 block">
+                            Jadwal Majelis
+                        </span>
+                        <h2 className="text-4xl lg:text-5xl font-bold text-emerald-950 mb-6 tracking-tight leading-[1.1]">
+                            Majelis Rutin <br /> <span className="text-emerald-600 font-light">Mingguan</span>
+                        </h2>
+                        <p className="text-slate-500 text-lg leading-relaxed font-light">
+                            Mari istiqomah menghadiri taman-taman surga di dunia melalui majelis ilmu dan dzikir untuk menutrisi hati.
+                        </p>
+                    </div>
+                </FadeIn>
 
                 <MajelisList activities={activities} />
             </div>
