@@ -22,6 +22,14 @@ async function getHomePageData() {
       db.unit.findMany({
         where: { isActive: true },
         orderBy: { order: "asc" },
+        // Only select fields used in ProgramsSection — exclude heavy text fields
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          description: true,
+          image: true,
+        },
       }),
       db.donationProgram.findFirst({
         where: { isActive: true },
@@ -29,11 +37,31 @@ async function getHomePageData() {
           { isFeatured: "desc" },
           { createdAt: "desc" }
         ],
+        // Only select fields used in DonationSection
+        select: {
+          id: true,
+          title: true,
+          slug: true,
+          description: true,
+          image: true,
+          targetAmount: true,
+          currentAmount: true,
+          hideProgress: true,
+        },
       }),
       db.post.findMany({
         where: { status: "PUBLISHED" },
         orderBy: { publishedAt: "desc" },
         take: 3,
+        // Exclude the large `content` field (Tiptap HTML) — not used in NewsSection
+        select: {
+          id: true,
+          title: true,
+          slug: true,
+          publishedAt: true,
+          image: true,
+          excerpt: true,
+        },
       }),
       db.unit.findMany({
         where: { isActive: true },
@@ -49,41 +77,48 @@ async function getHomePageData() {
 }
 
 export default async function HomePage() {
-  // Check maintenance mode first
-  // Skip maintenance mode check in development environment
+  // Parallelize maintenance check with homepage data fetch to save one DB round-trip
   let isMaintenanceMode = false;
   const isDevelopment = process.env.NODE_ENV === 'development';
 
-  if (!isDevelopment) {
+  const [maintenanceResult, homeData] = await Promise.all([
+    // Maintenance check (skipped in dev)
+    isDevelopment
+      ? Promise.resolve(null)
+      : db.siteSetting.findUnique({ where: { key: "maintenance_mode" } }).catch(() => null),
+    // Homepage data (always fetched)
+    getHomePageData(),
+  ]);
+
+  if (!isDevelopment && maintenanceResult) {
     try {
-      const maintenanceSetting = await db.siteSetting.findUnique({
-        where: { key: "maintenance_mode" },
-      });
-
-      if (maintenanceSetting) {
-        const value = JSON.parse(maintenanceSetting.value);
-        isMaintenanceMode = value.enabled === true;
-      }
-    } catch (error) {
-      console.error("Failed to check maintenance mode:", error);
-    }
-
-    // Redirect after try-catch to avoid catching NEXT_REDIRECT
-    if (isMaintenanceMode) {
-      redirect("/maintenance");
+      const value = JSON.parse(maintenanceResult.value);
+      isMaintenanceMode = value.enabled === true;
+    } catch {
+      // ignore parse error
     }
   }
 
-  const { units, featuredDonation, latestNews, navUnits } = await getHomePageData();
+  // Redirect after async work to avoid catching NEXT_REDIRECT
+  if (isMaintenanceMode) {
+    redirect("/maintenance");
+  }
 
-  // Video Data for Hero Section (moved from HeroSection.tsx)
+  const { units, featuredDonation, latestNews, navUnits } = homeData;
+
+  // Video Data for Hero Section
+  // Desktop: kualitas penuh (f_auto,q_auto)
+  // Mobile:  versi ringan — lebar max 640px, quality eco, bitrate max 500kbps
+  //          Cloudinary transcode otomatis — estimasi ukuran ~2–3MB (dari ~15MB)
   const heroVideos = [
     {
       src: "https://res.cloudinary.com/dand8rpbb/video/upload/f_auto,q_auto/v1768020274/Untitled_Video_-_Made_With_Clipchamp_2_gvcww2.mp4",
+      mobileSrc: "https://res.cloudinary.com/dand8rpbb/video/upload/f_auto,q_auto:eco,w_640,br_500k/v1768020274/Untitled_Video_-_Made_With_Clipchamp_2_gvcww2.mp4",
       poster: "https://res.cloudinary.com/dand8rpbb/video/upload/so_0,q_auto,f_auto/v1768020274/Untitled_Video_-_Made_With_Clipchamp_2_gvcww2.jpg"
     },
     {
       src: "https://res.cloudinary.com/dand8rpbb/video/upload/f_auto,q_auto/v1767984439/Untitled_Video_-_Made_With_Clipchamp_rpbfw1.mp4",
+      mobileSrc: "https://res.cloudinary.com/dand8rpbb/video/upload/f_auto,q_auto:eco,w_640,br_500k/v1767984439/Untitled_Video_-_Made_With_Clipchamp_rpbfw1.mp4",
       poster: "https://res.cloudinary.com/dand8rpbb/video/upload/so_0,q_auto,f_auto/v1767984439/Untitled_Video_-_Made_With_Clipchamp_rpbfw1.jpg"
     }
   ];
@@ -99,6 +134,7 @@ export default async function HomePage() {
         {/* 1. Hero Section */}
         <HeroSection
           videoSrc={selectedVideo.src}
+          mobileVideoSrc={selectedVideo.mobileSrc}
           posterSrc={selectedVideo.poster}
         />
 

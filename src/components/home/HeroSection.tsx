@@ -3,33 +3,50 @@ import { OptimizedImage } from "@/components/ui/OptimizedImage";
 
 interface HeroSectionProps {
     videoSrc: string;
+    mobileVideoSrc: string; // versi Cloudinary yang dikompres untuk mobile
     posterSrc: string;
 }
 
-export function HeroSection({ videoSrc, posterSrc }: HeroSectionProps) {
+export function HeroSection({ videoSrc, mobileVideoSrc, posterSrc }: HeroSectionProps) {
     return (
         <section className="relative h-screen flex items-center justify-center overflow-hidden bg-emerald-950">
-            {/* LCP Optimization: Prioritized Background Image */}
+            {/* LCP Optimization: Prioritized Background Image (always shown, is the LCP element) */}
             <div className="absolute inset-0 z-0">
                 <OptimizedImage
                     src={posterSrc}
                     alt="Background Al-Bahjah Buyut"
                     fill
                     priority
+                    sizes="100vw"
                     className="object-cover"
                 />
             </div>
 
-            {/* Background Video - plays over the image */}
+            {/* Background Video
+                Browser otomatis pilih source yang sesuai viewport:
+                - Mobile (< 768px) → mobileVideoSrc: ~2–3MB (Cloudinary w_640,q_auto:eco,br_500k)
+                - Desktop (≥ 768px) → videoSrc: kualitas penuh
+                preload="none" mencegah download sebelum autoplay benar-benar dibutuhkan. */}
             <video
                 autoPlay
                 loop
                 muted
                 playsInline
-                className="absolute inset-0 h-full w-full object-cover z-0 mix-blend-normal opacity-100"
+                preload="none"
+                className="absolute inset-0 h-full w-full object-cover z-0"
                 poster={posterSrc}
             >
-                <source src={videoSrc} type="video/mp4" />
+                {/* Mobile: versi ringan (640px, eco quality, 500kbps) */}
+                <source
+                    src={mobileVideoSrc}
+                    type="video/mp4"
+                    media="(max-width: 767px)"
+                />
+                {/* Desktop: kualitas penuh */}
+                <source
+                    src={videoSrc}
+                    type="video/mp4"
+                />
             </video>
 
             {/* Solid Uniform Overlay - No Gradient to ensure consistency */}

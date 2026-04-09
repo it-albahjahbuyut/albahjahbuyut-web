@@ -117,14 +117,14 @@ export function DonationSection({ program }: { program: DonationProgram | null }
                         <div className="relative h-[300px] lg:h-full bg-slate-100 order-1 lg:order-2 overflow-hidden">
                             {program.image ? (
                                 <>
-                                    {/* Blurred Background */}
+                                    {/* Blurred Background — decorative, no priority */}
                                     <Image
                                         src={program.image}
-                                        alt={program.title}
+                                        alt=""
+                                        aria-hidden="true"
                                         fill
                                         sizes="(max-width: 1024px) 100vw, 50vw"
                                         className="object-cover blur-xl scale-110 opacity-50"
-                                        priority
                                     />
                                     {/* Main Image */}
                                     <Image
@@ -133,7 +133,6 @@ export function DonationSection({ program }: { program: DonationProgram | null }
                                         fill
                                         sizes="(max-width: 1024px) 100vw, 50vw"
                                         className="object-contain z-10 relative"
-                                        priority
                                     />
                                 </>
                             ) : (
