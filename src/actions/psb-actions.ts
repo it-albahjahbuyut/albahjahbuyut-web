@@ -2,11 +2,14 @@
 
 import { db } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
-import { createRegistrationFolder, uploadToDrive, deleteDriveFolder, deleteFromDrive, listFilesInFolder } from '@/lib/google-drive';
+import { createRegistrationFolder, uploadToDrive, deleteDriveFolder, deleteFromDrive, listFilesInFolder, getDriveFileAsDataUrl } from '@/lib/google-drive';
 import { appendToSpreadsheet, updateSpreadsheetStatus } from '@/lib/google-sheets';
 import { after } from 'next/server';
 import { generateRegistrationNumber } from '@/lib/psb-config';
 import { psbFormSchema, psbDocumentSchema } from '@/lib/validations';
+import { auth } from '@/lib/auth';
+import { canAccessPSBUnit } from '@/lib/permissions';
+import { logAuditEvent } from '@/lib/audit';
 import { ZodError } from 'zod';
 
 // Define PSBStatus type locally to avoid Prisma client import issues
@@ -305,7 +308,14 @@ async function processUploadsInBackground(
         const uploadResults = await Promise.allSettled(uploadPromises);
 
         // Filter successful uploads
-        const uploadedDocuments: any[] = [];
+        const uploadedDocuments: Array<{
+            documentType: string;
+            fileName: string;
+            fileSize: number;
+            mimeType: string;
+            driveFileId: string;
+            driveFileUrl: string;
+        }> = [];
         const failedUploads: string[] = [];
 
         uploadResults.forEach((result, index) => {
@@ -839,6 +849,191 @@ export async function getPSBRegistrationById(id: string) {
     } catch (error) {
         console.error('Error fetching PSB registration:', error);
         return null;
+    }
+}
+
+export interface AdminPSBCardData {
+    registrationNumber: string;
+    namaLengkap: string;
+    unitName: string;
+    grade?: string;
+    jenisSantri?: string;
+    jenisKelamin?: string;
+    pasFotoUrl?: string;
+    tahunAjaran: string;
+}
+
+function extractDriveFileIdFromUrl(url?: string | null): string | null {
+    if (!url) return null;
+
+    const fileMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+    if (fileMatch?.[1]) return fileMatch[1];
+
+    const idParamMatch = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+    if (idParamMatch?.[1]) return idParamMatch[1];
+
+    return null;
+}
+
+function toDriveImageUrl(fileId: string): string {
+    return `https://drive.google.com/thumbnail?id=${fileId}&sz=w1000`;
+}
+
+function isGoogleDriveResource(url?: string | null): boolean {
+    return !!url && url.includes('drive.google.com');
+}
+
+/**
+ * Get registration card data for admin-side card regeneration
+ * This action enforces auth and unit-level permission checks.
+ */
+export async function getAdminCardRegenerateData(
+    registrationId: string
+): Promise<{ success: boolean; message: string; data?: AdminPSBCardData }> {
+    try {
+        if (!registrationId || !registrationId.trim()) {
+            return {
+                success: false,
+                message: 'ID pendaftaran tidak valid',
+            };
+        }
+
+        const session = await auth();
+        if (!session?.user) {
+            return {
+                success: false,
+                message: 'Anda harus login terlebih dahulu',
+            };
+        }
+
+        const registration = await db.pSBRegistration.findUnique({
+            where: { id: registrationId },
+            select: {
+                id: true,
+                registrationNumber: true,
+                namaLengkap: true,
+                grade: true,
+                jenisSantri: true,
+                jenisKelamin: true,
+                pasFotoUrl: true,
+                unit: {
+                    select: {
+                        name: true,
+                        slug: true,
+                    },
+                },
+                documents: {
+                    where: {
+                        documentType: 'PAS_FOTO',
+                    },
+                    orderBy: {
+                        createdAt: 'desc',
+                    },
+                    take: 1,
+                    select: {
+                        driveFileId: true,
+                        driveFileUrl: true,
+                        mimeType: true,
+                    },
+                },
+            },
+        });
+
+        if (!registration) {
+            return {
+                success: false,
+                message: 'Data pendaftaran tidak ditemukan',
+            };
+        }
+
+        const hasUnitAccess = canAccessPSBUnit(session.user.role, registration.unit.slug);
+
+        if (!hasUnitAccess) {
+            await logAuditEvent('REGENERATE_PSB_CARD', {
+                resourceType: 'PSBRegistration',
+                resourceId: registration.id,
+                resourceName: registration.registrationNumber,
+                details: `Akses ditolak untuk role ${session.user.role}`,
+                success: false,
+            }).catch((error) => {
+                console.error('Failed to write audit log for denied regenerate request:', error);
+            });
+
+            return {
+                success: false,
+                message: 'Anda tidak memiliki akses untuk generate ulang kartu pendaftaran ini',
+            };
+        }
+
+        const pasFotoDocument = registration.documents[0];
+        const rawPasFotoUrl = registration.pasFotoUrl || pasFotoDocument?.driveFileUrl || undefined;
+        const driveFileIdFromData =
+            (pasFotoDocument?.driveFileId &&
+                !pasFotoDocument.driveFileId.startsWith('local_') &&
+                !pasFotoDocument.driveFileId.startsWith('supabase_')
+                ? pasFotoDocument.driveFileId
+                : null) ||
+            extractDriveFileIdFromUrl(rawPasFotoUrl);
+
+        let resolvedPasFotoUrl = driveFileIdFromData && isGoogleDriveResource(rawPasFotoUrl)
+            ? toDriveImageUrl(driveFileIdFromData)
+            : rawPasFotoUrl;
+
+        // For Drive-hosted photos, prefer data URL to avoid client-side CORS issues in html2canvas.
+        if (driveFileIdFromData && isGoogleDriveResource(rawPasFotoUrl)) {
+            const dataUrl = await getDriveFileAsDataUrl(
+                driveFileIdFromData,
+                pasFotoDocument?.mimeType || undefined
+            );
+            if (dataUrl) {
+                resolvedPasFotoUrl = dataUrl;
+            }
+        }
+
+        // Keep legacy records in sync when PAS_FOTO exists in documents but registration.pasFotoUrl is empty.
+        if (!registration.pasFotoUrl && pasFotoDocument?.driveFileUrl) {
+            await db.pSBRegistration.update({
+                where: { id: registration.id },
+                data: {
+                    pasFotoUrl: pasFotoDocument.driveFileUrl,
+                },
+            }).catch((error) => {
+                console.error('Failed to backfill pasFotoUrl from PAS_FOTO document:', error);
+            });
+        }
+
+        const data: AdminPSBCardData = {
+            registrationNumber: registration.registrationNumber,
+            namaLengkap: registration.namaLengkap,
+            unitName: registration.unit.name,
+            grade: registration.grade || undefined,
+            jenisSantri: registration.jenisSantri || undefined,
+            jenisKelamin: registration.jenisKelamin || undefined,
+            pasFotoUrl: resolvedPasFotoUrl,
+            tahunAjaran: '2026/2027',
+        };
+
+        await logAuditEvent('REGENERATE_PSB_CARD', {
+            resourceType: 'PSBRegistration',
+            resourceId: registration.id,
+            resourceName: registration.registrationNumber,
+            details: `Generate ulang kartu oleh ${session.user.email || session.user.id}`,
+            success: true,
+        }).catch((error) => {
+            console.error('Failed to write audit log for regenerate success:', error);
+        });
+
+        return {
+            success: true,
+            message: 'Data kartu berhasil disiapkan',
+            data,
+        };
+    } catch (error) {
+        console.error('Error getting admin card regenerate data:', error);
+        return {
+            success: false,
+            message: 'Terjadi kesalahan saat menyiapkan data kartu',
+        };
     }
 }
 

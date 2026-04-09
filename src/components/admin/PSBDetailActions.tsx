@@ -15,7 +15,8 @@ import {
     RefreshCw,
     Database,
     FileSpreadsheet,
-    Link2
+    Link2,
+    IdCard
 } from 'lucide-react';
 import {
     updatePSBStatus,
@@ -24,8 +25,11 @@ import {
     syncDocumentsFromDrive,
     syncRegistrationToSpreadsheet,
     updateDriveFolderUrl,
+    getAdminCardRegenerateData,
+    type AdminPSBCardData,
     PSBStatus
 } from '@/actions/psb-actions';
+import RegistrationCard, { type RegistrationCardHandle } from '@/components/psb/RegistrationCard';
 
 interface PSBDetailActionsProps {
     registrationId: string;
@@ -64,6 +68,7 @@ export default function PSBDetailActions({
 }: PSBDetailActionsProps) {
     const router = useRouter();
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const regenerateCardRef = useRef<RegistrationCardHandle>(null);
 
     // Check if we have a Drive folder (either from ID or URL)
     const hasDriveFolder = !!(driveFolderId || driveFolderUrl);
@@ -94,6 +99,17 @@ export default function PSBDetailActions({
     // Message state
     const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
     const [uploadMessage, setUploadMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+    const [isRegeneratingCard, setIsRegeneratingCard] = useState(false);
+    const [regenerateMessage, setRegenerateMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+    const [regenerateCardData, setRegenerateCardData] = useState<AdminPSBCardData | null>(null);
+
+    const waitForRegenerateCard = async (timeoutMs: number = 2000) => {
+        const startTime = Date.now();
+        while (!regenerateCardRef.current && Date.now() - startTime < timeoutMs) {
+            await new Promise((resolve) => setTimeout(resolve, 50));
+        }
+        return regenerateCardRef.current;
+    };
 
     const handleUpdateStatus = async () => {
         setIsUpdating(true);
@@ -264,6 +280,55 @@ export default function PSBDetailActions({
         setIsSavingDriveUrl(false);
     };
 
+    const handleRegenerateCard = async () => {
+        setIsRegeneratingCard(true);
+        setRegenerateMessage(null);
+
+        try {
+            const result = await getAdminCardRegenerateData(registrationId);
+
+            if (!result.success || !result.data) {
+                setRegenerateMessage({
+                    type: 'error',
+                    text: result.message || 'Gagal menyiapkan data kartu',
+                });
+                return;
+            }
+
+            setRegenerateCardData(result.data);
+
+            const cardHandle = await waitForRegenerateCard();
+            if (!cardHandle) {
+                setRegenerateMessage({
+                    type: 'error',
+                    text: 'Gagal menyiapkan kartu untuk diunduh. Silakan coba lagi.',
+                });
+                return;
+            }
+
+            const downloadSuccess = await cardHandle.downloadCard();
+
+            if (downloadSuccess) {
+                setRegenerateMessage({
+                    type: 'success',
+                    text: `Kartu ${result.data.registrationNumber} berhasil digenerate dan diunduh`,
+                });
+            } else {
+                setRegenerateMessage({
+                    type: 'error',
+                    text: 'Proses generate berhasil, tetapi download kartu gagal. Silakan coba lagi.',
+                });
+            }
+        } catch (error) {
+            setRegenerateMessage({
+                type: 'error',
+                text: error instanceof Error ? error.message : 'Terjadi kesalahan saat generate kartu',
+            });
+        } finally {
+            setIsRegeneratingCard(false);
+        }
+    };
+
     return (
         <div className="space-y-6">
             {/* Status Update */}
@@ -341,6 +406,33 @@ export default function PSBDetailActions({
                             </>
                         )}
                     </button>
+
+                    <button
+                        onClick={handleRegenerateCard}
+                        disabled={isRegeneratingCard}
+                        className="w-full px-4 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    >
+                        {isRegeneratingCard ? (
+                            <>
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                                Menggenerate Kartu...
+                            </>
+                        ) : (
+                            <>
+                                <IdCard className="w-4 h-4" />
+                                Generate Ulang Kartu
+                            </>
+                        )}
+                    </button>
+
+                    {regenerateMessage && (
+                        <div className={`p-3 rounded-lg text-sm ${regenerateMessage.type === 'success'
+                            ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                            : 'bg-red-50 text-red-800 border border-red-200'
+                            }`}>
+                            {regenerateMessage.text}
+                        </div>
+                    )}
                 </div>
             </div>
 
@@ -585,6 +677,24 @@ export default function PSBDetailActions({
                     </button>
                 )}
             </div>
+
+            {/* Off-screen card renderer used for admin regenerate-download */}
+            {regenerateCardData && (
+                <div className="fixed top-0 pointer-events-none" style={{ left: '-9999px' }} aria-hidden="true">
+                    <RegistrationCard
+                        ref={regenerateCardRef}
+                        registrationNumber={regenerateCardData.registrationNumber}
+                        namaLengkap={regenerateCardData.namaLengkap}
+                        unitName={regenerateCardData.unitName}
+                        grade={regenerateCardData.grade}
+                        jenisSantri={regenerateCardData.jenisSantri}
+                        jenisKelamin={regenerateCardData.jenisKelamin}
+                        pasFotoUrl={regenerateCardData.pasFotoUrl}
+                        tahunAjaran={regenerateCardData.tahunAjaran}
+                        showDownloadButton={false}
+                    />
+                </div>
+            )}
         </div>
     );
 }

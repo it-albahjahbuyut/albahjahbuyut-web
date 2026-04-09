@@ -1,9 +1,13 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { forwardRef, useCallback, useImperativeHandle, useRef, useState } from 'react';
 import { Download, Loader2, CheckCircle2 } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import html2canvas from 'html2canvas-pro';
+
+export interface RegistrationCardHandle {
+    downloadCard: () => Promise<boolean>;
+}
 
 interface RegistrationCardProps {
     registrationNumber: string;
@@ -14,9 +18,10 @@ interface RegistrationCardProps {
     jenisKelamin?: string;
     pasFotoUrl?: string; // URL or base64
     tahunAjaran?: string;
+    showDownloadButton?: boolean;
 }
 
-export default function RegistrationCard({
+const RegistrationCard = forwardRef<RegistrationCardHandle, RegistrationCardProps>(function RegistrationCard({
     registrationNumber,
     namaLengkap,
     unitName,
@@ -24,7 +29,8 @@ export default function RegistrationCard({
     jenisSantri,
     pasFotoUrl,
     tahunAjaran = '2026/2027',
-}: RegistrationCardProps) {
+    showDownloadButton = true,
+}: RegistrationCardProps, ref) {
     const cardRef = useRef<HTMLDivElement>(null);
     const [isDownloading, setIsDownloading] = useState(false);
     const [downloadSuccess, setDownloadSuccess] = useState(false);
@@ -32,8 +38,8 @@ export default function RegistrationCard({
     // Generate status check URL for QR code
     const statusCheckUrl = `https://albahjahbuyut.com/psb/status?no=${registrationNumber}`;
 
-    const handleDownload = async () => {
-        if (!cardRef.current) return;
+    const handleDownload = useCallback(async (): Promise<boolean> => {
+        if (!cardRef.current) return false;
 
         setIsDownloading(true);
         setDownloadSuccess(false);
@@ -59,12 +65,18 @@ export default function RegistrationCard({
 
             setDownloadSuccess(true);
             setTimeout(() => setDownloadSuccess(false), 3000);
+            return true;
         } catch (error) {
             console.error('Error downloading card:', error);
+            return false;
         } finally {
             setIsDownloading(false);
         }
-    };
+    }, [registrationNumber]);
+
+    useImperativeHandle(ref, () => ({
+        downloadCard: handleDownload,
+    }), [handleDownload]);
 
     // Determine unit badge color - using hex values to avoid color function issues
     const getUnitColor = (unit: string) => {
@@ -331,34 +343,37 @@ export default function RegistrationCard({
                 </div>
             </div>
 
-            {/* Download Button - Full width on mobile */}
-            <div className="flex justify-center px-4">
-                <button
-                    onClick={handleDownload}
-                    disabled={isDownloading}
-                    className={`w-full max-w-[340px] flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold text-sm transition-all duration-300 ${downloadSuccess
-                        ? 'bg-emerald-100 text-emerald-700 border-2 border-emerald-200'
-                        : 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white hover:from-emerald-700 hover:to-teal-700 shadow-lg hover:shadow-xl'
-                        }`}
-                >
-                    {isDownloading ? (
-                        <>
-                            <Loader2 className="w-5 h-5 animate-spin" />
-                            Menyiapkan Kartu...
-                        </>
-                    ) : downloadSuccess ? (
-                        <>
-                            <CheckCircle2 className="w-5 h-5" />
-                            Kartu Berhasil Diunduh!
-                        </>
-                    ) : (
-                        <>
-                            <Download className="w-5 h-5" />
-                            Download Kartu Peserta
-                        </>
-                    )}
-                </button>
-            </div>
+            {showDownloadButton && (
+                <div className="flex justify-center px-4">
+                    <button
+                        onClick={handleDownload}
+                        disabled={isDownloading}
+                        className={`w-full max-w-85 flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold text-sm transition-all duration-300 ${downloadSuccess
+                            ? 'bg-emerald-100 text-emerald-700 border-2 border-emerald-200'
+                            : 'bg-linear-to-r from-emerald-600 to-teal-600 text-white hover:from-emerald-700 hover:to-teal-700 shadow-lg hover:shadow-xl'
+                            }`}
+                    >
+                        {isDownloading ? (
+                            <>
+                                <Loader2 className="w-5 h-5 animate-spin" />
+                                Menyiapkan Kartu...
+                            </>
+                        ) : downloadSuccess ? (
+                            <>
+                                <CheckCircle2 className="w-5 h-5" />
+                                Kartu Berhasil Diunduh!
+                            </>
+                        ) : (
+                            <>
+                                <Download className="w-5 h-5" />
+                                Download Kartu Peserta
+                            </>
+                        )}
+                    </button>
+                </div>
+            )}
         </div>
     );
-}
+});
+
+export default RegistrationCard;

@@ -29,6 +29,7 @@ export type AuditAction =
     | 'UPDATE_UNIT'
     | 'DELETE_UNIT'
     | 'UPDATE_SETTINGS'
+    | 'REGENERATE_PSB_CARD'
     | 'SUSPICIOUS_ACTIVITY';
 
 export interface AuditLogEntry {

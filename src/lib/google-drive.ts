@@ -20,7 +20,7 @@ const isGoogleDriveConfigured = () => {
 };
 
 // Lazy initialization of auth and drive
-let auth: any = null; // Typing loosely to avoid complex OAuth2Client types without import
+let auth: InstanceType<typeof google.auth.OAuth2> | null = null;
 let drive: ReturnType<typeof google.drive> | null = null;
 
 const initGoogleDrive = () => {
@@ -31,7 +31,6 @@ const initGoogleDrive = () => {
 
     if (!auth) {
         // Menggunakan OAuth 2.0 Client
-        const { google } = require('googleapis');
         const oauth2Client = new google.auth.OAuth2(
             GOOGLE_CLIENT_ID,
             GOOGLE_CLIENT_SECRET,
@@ -88,7 +87,6 @@ export async function createRegistrationFolder(
     registrationNumber: string,
     unitSlug?: string
 ): Promise<FolderResult> {
-    const date = new Date().toISOString().split('T')[0];
     const sanitizedName = namaSantri.replace(/[^a-zA-Z0-9\s]/g, '').replace(/\s+/g, '_');
     const folderName = `${sanitizedName}_${registrationNumber}`;
 
@@ -470,6 +468,48 @@ export async function listFilesInFolder(folderId: string): Promise<DriveFileInfo
     } catch (error) {
         console.error('Error listing files in Drive folder:', error);
         return [];
+    }
+}
+
+/**
+ * Download a Google Drive file and return as data URL.
+ * Useful for client-side card rendering that needs CORS-safe image sources.
+ */
+export async function getDriveFileAsDataUrl(
+    fileId: string,
+    mimeTypeHint?: string
+): Promise<string | null> {
+    if (!fileId || fileId.startsWith('local_') || fileId.startsWith('supabase_')) {
+        return null;
+    }
+
+    if (!initGoogleDrive() || !drive) {
+        return null;
+    }
+
+    try {
+        const response = await drive.files.get(
+            {
+                fileId,
+                alt: 'media',
+                supportsAllDrives: true,
+            },
+            {
+                responseType: 'arraybuffer',
+            }
+        );
+
+        const fileBuffer = Buffer.from(response.data as ArrayBuffer);
+        const contentTypeHeader = response.headers?.['content-type'];
+        const mimeType =
+            (Array.isArray(contentTypeHeader) ? contentTypeHeader[0] : contentTypeHeader) ||
+            mimeTypeHint ||
+            'image/jpeg';
+
+        return `data:${mimeType};base64,${fileBuffer.toString('base64')}`;
+    } catch (error) {
+        console.error('Error downloading Drive file as data URL:', error);
+        return null;
     }
 }
 

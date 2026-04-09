@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { SVGProps } from "react";
 import { db } from "@/lib/db";
 import {
     CheckCircle2,
@@ -15,7 +16,6 @@ import {
 import { FadeIn, FadeInStagger } from "@/components/animations/FadeIn";
 import { FAQSection } from "@/components/psb/FAQSection";
 import { AgendaSection } from "@/components/psb/AgendaSection";
-import { GallerySection } from "@/components/psb/GallerySection";
 import { OptimizedImage } from "@/components/ui/OptimizedImage";
 
 export const metadata = {
@@ -86,7 +86,7 @@ export default async function PSBPage() {
                         priority
                     />
                 </div>
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-emerald-950/90" />
+                <div className="absolute inset-0 bg-linear-to-b from-transparent to-emerald-950/90" />
 
                 <div className="relative z-10 container mx-auto px-4 text-center">
                     <FadeIn delay={0.2}>
@@ -102,7 +102,7 @@ export default async function PSBPage() {
                     </FadeIn>
                     <FadeIn delay={0.6}>
                         <p className="text-emerald-100/80 font-serif italic text-lg max-w-3xl mx-auto mb-6">
-                            Mari bergabung menjadi generasi Qur'ani berakhlak mulia bersama Al-Bahjah Buyut.
+                            Mari bergabung menjadi generasi Qur&apos;ani berakhlak mulia bersama Al-Bahjah Buyut.
                         </p>
                     </FadeIn>
                     <FadeIn delay={0.8}>
@@ -229,13 +229,13 @@ export default async function PSBPage() {
                                     </h3>
                                     <div className="space-y-0">
                                         <div className="border-l-2 border-emerald-500 pl-6 pb-6 relative">
-                                            <div className="absolute top-[2px] -left-[7px] w-3 h-3 rounded-full bg-emerald-500 ring-4 ring-white" />
+                                            <div className="absolute top-0.5 -left-1.75 w-3 h-3 rounded-full bg-emerald-500 ring-4 ring-white" />
                                             <div className="font-bold text-emerald-950 text-base">Gelombang 1</div>
                                             <div className="text-emerald-600 font-medium text-sm mt-0.5">April 2026 M</div>
                                             <div className="text-slate-400 text-xs mt-0.5">Syawwal-Dzulqaidah 1447 H</div>
                                         </div>
                                         <div className="border-l-2 border-slate-200 pl-6 relative">
-                                            <div className="absolute top-[2px] -left-[7px] w-3 h-3 rounded-full bg-slate-300 ring-4 ring-white" />
+                                            <div className="absolute top-0.5 -left-1.75 w-3 h-3 rounded-full bg-slate-300 ring-4 ring-white" />
                                             <div className="font-bold text-emerald-950 text-base">Gelombang 2</div>
                                             <div className="text-emerald-600 font-medium text-sm mt-0.5">Mei 2026 M</div>
                                             <div className="text-slate-400 text-xs mt-0.5">Dzulqaidah-Dzulhijjah 1447 H</div>
@@ -245,7 +245,7 @@ export default async function PSBPage() {
                             </FadeIn>
 
                             <FadeIn delay={0.4}>
-                                <div className="bg-gradient-to-br from-emerald-900 to-emerald-950 rounded-2xl p-6 text-white relative overflow-hidden">
+                                <div className="bg-linear-to-br from-emerald-900 to-emerald-950 rounded-2xl p-6 text-white relative overflow-hidden">
                                     <div className="absolute top-0 right-0 p-8 opacity-10">
                                         <GraduationCap size={100} />
                                     </div>
@@ -276,7 +276,7 @@ export default async function PSBPage() {
                         {units.map((unit) => (
                             <FadeIn key={unit.id}>
                                 <div className="bg-white rounded-[2rem] p-8 shadow-xl shadow-slate-200/50 border border-slate-100 hover:border-gold-300 hover:shadow-2xl hover:shadow-gold-500/10 transition-all duration-300 flex flex-col h-full group relative overflow-hidden">
-                                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-gold-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                    <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-emerald-500 to-gold-400 opacity-0 group-hover:opacity-100 transition-opacity" />
                                     <div className="mb-6">
                                         <div className="text-2xl font-bold text-emerald-950 group-hover:text-emerald-700 transition-colors">{unit.name}</div>
                                         <div className="h-1 w-12 bg-slate-100 mt-3 rounded-full group-hover:bg-gold-400 transition-colors duration-300" />
@@ -638,7 +638,7 @@ export default async function PSBPage() {
     );
 }
 
-function GlobeIcon(props: any) {
+function GlobeIcon(props: SVGProps<SVGSVGElement>) {
     return (
         <svg
             {...props}
