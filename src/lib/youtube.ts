@@ -13,15 +13,22 @@ export interface YouTubeVideo {
     videoUrl: string;
 }
 
-// Channel IDs for Buya Yahya & Al-Bahjah TV
+// Tiga channel resmi Al-Bahjah:
+// 1. Buya Yahya Official
+// 2. Al-Bahjah TV
+// 3. ASAH TV (Abah Sayf Abu Hanifah - juga dari Al-Bahjah)
 const YOUTUBE_CHANNELS = [
     {
-        id: 'UC8sByvdOwl_YOXd90XHrVCA', // Al-Bahjah TV (from .env)
+        id: 'UCmP5IibF7u8i9Y7slriwz5g', // Buya Yahya Official
+        name: 'Buya Yahya'
+    },
+    {
+        id: 'UC50vyjmknAf3nMvOr37gm1Q', // Al-Bahjah TV
         name: 'Al-Bahjah TV'
     },
     {
-        id: 'UCkmjSqKa0M-9F7eCKAumMGw', // Buya Yahya Official Channel
-        name: 'Buya Yahya'
+        id: 'UC8sByvdOwl_YOXd90XHrVCA', // ASAH TV (Abah Sayf Abu Hanifah)
+        name: 'ASAH TV - Abah Sayf'
     }
 ];
 

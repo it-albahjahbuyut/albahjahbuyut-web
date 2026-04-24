@@ -60,27 +60,36 @@ Thumbnail: ${v.thumbnailUrl}
 
     const systemPrompt = videos.length > 0
         ? `Anda adalah editor newsletter profesional untuk LPD Al-Bahjah Buyut (pondok pesantren Islami).
-Tugas: Buat newsletter ${newsletterType} yang menarik berdasarkan video terbaru dari Buya Yahya / Al-Bahjah TV.
+Tugas: Buat newsletter ${newsletterType} berdasarkan video terbaru dari Buya Yahya / Al-Bahjah TV.
 
-Konten Video Terbaru:
+Data Video Terbaru (HANYA gunakan informasi dari sini, JANGAN mengarang isi video):
 ${videoContext}
 
-Instruksi Penting:
-1. **Subject**: Menarik, singkat (maks 65 karakter), clickbait Islami sopan, bisa pakai emoji di awal
+⚠️ ATURAN KRITIS - WAJIB DIIKUTI:
+1. HANYA tulis hal yang memang tersirat dari JUDUL dan DESKRIPSI video di atas
+2. JANGAN mengarang detail isi ceramah, dalil, atau poin yang tidak ada di deskripsi
+3. Jika deskripsi singkat/tidak informatif, fokus pada TEMA dari judulnya saja
+4. SELALU cantumkan kalimat: "Tonton video lengkapnya untuk mendapatkan ilmu yang utuh"
+5. SELALU sertakan link video asli agar subscriber bisa verifikasi sendiri
+
+Instruksi Konten:
+1. **Subject**: Menarik, singkat (maks 65 karakter), bisa pakai emoji
 2. **Konten Newsletter** harus berisi:
-   - Salam pembuka yang hangat dengan sapaan "Assalamu'alaikum warahmatullahi wabarakatuh"
+   - Salam pembuka: "Assalamu'alaikum warahmatullahi wabarakatuh"
    - Muqaddimah singkat (1-2 kalimat)
-   - Ringkasan inti dari video utama (3-4 poin utama dengan <ul><li>)
-   - 1-2 mutiara hikmah yang relevan dalam <blockquote>
-   - Ajakan menonton video lengkap dengan tombol/link: ${primaryVideo?.videoUrl}
-   - Jika ada thumbnail yang bagus, sertakan: <img src="${primaryVideo?.thumbnailUrl}" alt="${primaryVideo?.title}">
-   - Pengingat kegiatan majelis rutin Al-Bahjah Buyut
+   - Thumbnail video: <img src="${primaryVideo?.thumbnailUrl}" alt="${primaryVideo?.title}">
+   - Judul video yang disorot: <strong>"${primaryVideo?.title}"</strong>
+   - Poin-poin tema berdasarkan judul (3-4 poin, jujur bahwa ini TEMA bukan transkripsi)
+   - Ajakan menonton: <a href="${primaryVideo?.videoUrl}">▶ Tonton Video Lengkapnya di YouTube</a>
+   - 1 mutiara hikmah Islami yang relevan dengan TEMA judul dalam <blockquote>
+   - Info video lainnya jika ada (sebut judulnya saja + linknya)
+   - Pengingat majelis rutin Al-Bahjah Buyut
    - Link donasi: <a href="${BASE_URL}/infaq">Dukung Dakwah Kami</a>
    - Penutup dengan doa & salam
 3. **Domain**: HANYA gunakan ${BASE_URL} untuk link internal
 4. **Format**: HTML sederhana (<p>, <strong>, <ul>, <li>, <a>, <blockquote>, <img>)
-5. **Bahasa**: Indonesia yang hangat, akrab, dan Islami modern
-6. **Panjang**: 400-600 kata
+5. **Bahasa**: Indonesia yang hangat, Islami modern
+6. **Panjang**: 350-500 kata
 
 Berikan jawaban dalam format JSON murni:
 {"subject": "...", "content": "... HTML content ..."}`
@@ -117,7 +126,11 @@ Berikan jawaban dalam format JSON murni:
             });
 
             const text = response.text || '';
-            const jsonStr = text.replace(/```json\s*|\s*```/g, '').trim();
+            // Strip markdown code fences if present
+            let jsonStr = text.replace(/```json\s*|\s*```/g, '').trim();
+            // If model added conversational text before/after JSON, extract the {...} block
+            const jsonMatch = jsonStr.match(/\{[\s\S]*"subject"[\s\S]*"content"[\s\S]*\}/);
+            if (jsonMatch) jsonStr = jsonMatch[0];
             const data = JSON.parse(jsonStr);
 
             return {
