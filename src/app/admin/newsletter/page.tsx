@@ -73,11 +73,54 @@ export default async function NewsletterPage() {
                     </div>
                 ) : (
                     <div className="divide-y divide-gray-100">
-                        {history.map((item) => (
-                            <div key={item.id} className="py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+                        {history.map((item) => {
+                            const historyItem = item as any;
+                            const isAuto = historyItem.source === 'auto';
+                            const status = historyItem.status || 'sent';
+                            const hasYouTube = !!historyItem.youtubeVideoId;
+
+                            return (
+                            <div key={item.id} className="py-4 flex flex-col md:flex-row md:items-start md:justify-between gap-2">
                                 <div className="flex-1 min-w-0">
+                                    <div className="flex items-center gap-2 mb-1 flex-wrap">
+                                        {/* Source badge */}
+                                        {isAuto ? (
+                                            <span className="inline-flex items-center gap-1 bg-violet-100 text-violet-700 text-xs px-2 py-0.5 rounded-full font-semibold">
+                                                <Sparkles className="w-3 h-3" />
+                                                Otomatis
+                                            </span>
+                                        ) : (
+                                            <span className="inline-flex items-center gap-1 bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded-full font-semibold">
+                                                Manual
+                                            </span>
+                                        )}
+                                        {/* Status badge */}
+                                        {status === 'failed' && (
+                                            <span className="bg-red-100 text-red-700 text-xs px-2 py-0.5 rounded-full font-semibold">Gagal</span>
+                                        )}
+                                        {status === 'skipped' && (
+                                            <span className="bg-yellow-100 text-yellow-700 text-xs px-2 py-0.5 rounded-full font-semibold">Dilewati</span>
+                                        )}
+                                        {/* YouTube badge */}
+                                        {hasYouTube && (
+                                            <a
+                                                href={`https://youtube.com/watch?v=${historyItem.youtubeVideoId}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="inline-flex items-center gap-1 bg-red-50 text-red-600 text-xs px-2 py-0.5 rounded-full font-semibold hover:bg-red-100 transition-colors"
+                                            >
+                                                ▶ YT Ref
+                                            </a>
+                                        )}
+                                    </div>
                                     <p className="font-semibold text-gray-900 truncate">{item.subject}</p>
-                                    <p className="text-sm text-gray-500 truncate">{item.contentPreview}...</p>
+                                    {hasYouTube && historyItem.youtubeTitle && (
+                                        <p className="text-xs text-gray-400 truncate mt-0.5">📺 {historyItem.youtubeTitle}</p>
+                                    )}
+                                    <p className="text-sm text-gray-500 truncate mt-1">{item.contentPreview}...</p>
+                                    {historyItem.errorLog && (
+                                        <p className="text-xs text-red-500 mt-1 truncate">⚠️ {historyItem.errorLog}</p>
+                                    )}
                                 </div>
                                 <div className="flex items-center gap-4 text-sm text-gray-500 shrink-0">
                                     <span className="bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-full font-medium">
@@ -93,7 +136,8 @@ export default async function NewsletterPage() {
                                     })}</span>
                                 </div>
                             </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 )}
             </div>

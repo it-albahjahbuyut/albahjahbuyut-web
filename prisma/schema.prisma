@@ -451,7 +451,14 @@ model NewsletterHistory {
   contentPreview String   @db.Text // Preview konten (disimpan sebagai plain text)
   recipientCount Int      // Jumlah penerima
   sentAt         DateTime @default(now())
-  sentBy         String?  // ID admin yang mengirim (opsional)
+  sentBy         String?  // ID admin yang mengirim (null = otomatis)
+
+  // Automation tracking
+  source         String   @default("manual") // "manual" | "auto"
+  status         String   @default("sent")   // "sent" | "failed" | "skipped"
+  youtubeVideoId String?  // ID video YouTube yang jadi referensi (jika dari YouTube)
+  youtubeTitle   String?  // Judul video YouTube referensi
+  errorLog       String?  @db.Text // Log error jika pengiriman gagal
 
   @@map("newsletter_history")
 }
