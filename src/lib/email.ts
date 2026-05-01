@@ -14,12 +14,11 @@ export function isEmailConfigured(): boolean {
 
 // ... (keep interface and getStatusEmailContent as is, we are replacing the top block and the function below)
 
-// Email templates for different statuses
 interface StatusEmailData {
     namaLengkap: string;
     registrationNumber: string;
     unitName: string;
-    status: 'VERIFIED' | 'ACCEPTED' | 'REJECTED';
+    status: 'RECEIVED' | 'VERIFIED' | 'ACCEPTED' | 'REJECTED';
     notes?: string;
 }
 
@@ -32,6 +31,23 @@ function getStatusEmailContent(data: StatusEmailData): { subject: string; html: 
     const BASE_URL = getAppUrl();
 
     const statusInfo = {
+        RECEIVED: {
+            title: 'Pendaftaran Berhasil Diterima',
+            params: {
+                bgColor: '#F0FDF4', // Emerald 50
+                borderColor: '#BBF7D0', // Emerald 200
+                textColor: '#166534', // Emerald 800
+            },
+            message: `
+                <p style="margin: 0 0 16px 0;">Terima kasih Ayah/Bunda telah melakukan pendaftaran calon santri di <strong>Al-Bahjah Buyut</strong>.</p>
+                <p style="margin: 0 0 16px 0;">Kami informasikan bahwa data pendaftaran atas nama <strong>${namaLengkap}</strong> untuk unit <strong>${unitName}</strong> telah berhasil kami terima dengan nomor pendaftaran di bawah ini.</p>
+                <p style="margin: 0;">Saat ini berkas pendaftaran Anda sedang dalam antrean untuk diperiksa oleh panitia PSB kami.</p>
+            `,
+            nextStep: {
+                title: 'Langkah Selanjutnya',
+                text: 'Panitia akan memeriksa kelengkapan berkas Anda. Jika dokumen dinyatakan lengkap, Anda akan menerima email konfirmasi "Terverifikasi". Anda juga dapat mengecek status pendaftaran secara berkala melalui website kami.'
+            }
+        },
         VERIFIED: {
             title: 'Berkas Terverifikasi',
             params: {
@@ -273,6 +289,7 @@ function getStatusEmailContent(data: StatusEmailData): { subject: string; html: 
     `;
 
     const subjectMap = {
+        RECEIVED: `📩 Pendaftaran PSB Al-Bahjah Buyut Diterima - ${registrationNumber}`,
         VERIFIED: `✔ Berkas Pendaftaran Telah Terverifikasi - PSB Al-Bahjah Buyut`,
         ACCEPTED: `🎉 Selamat! Ananda Diterima di Al-Bahjah Buyut`,
         REJECTED: `Pengumuman Hasil Seleksi PSB Al-Bahjah Buyut`,

@@ -426,6 +426,33 @@ async function processUploadsInBackground(
             // spreadsheetSynced remains false, can be retried later
         }
 
+        // STEP 4: Kirim Email Konfirmasi Pendaftaran (Background)
+        if (formData.emailOrangTua) {
+            try {
+                const { sendStatusEmail } = await import('@/lib/email');
+                const emailResult = await sendStatusEmail(formData.emailOrangTua, {
+                    namaLengkap: formData.namaLengkap,
+                    registrationNumber: registrationNumber,
+                    unitName: formData.unitName,
+                    status: 'RECEIVED',
+                });
+
+                if (emailResult.success && emailResult.id) {
+                    console.log(`[Background] Confirmation email sent for ${registrationNumber}`);
+                    // Update email tracking info
+                    await db.pSBRegistration.update({
+                        where: { id: registrationId },
+                        data: {
+                            lastEmailId: emailResult.id,
+                            emailStatus: 'sent'
+                        }
+                    });
+                }
+            } catch (emailError) {
+                console.error(`[Background] Failed to send confirmation email for ${registrationNumber}:`, emailError);
+            }
+        }
+
     } catch (error) {
         console.error(`[Background] Upload failed for ${registrationNumber}:`, error);
 

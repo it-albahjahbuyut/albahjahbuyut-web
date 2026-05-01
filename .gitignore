@@ -54,3 +54,5 @@ public/uploads/psb/*
 !public/uploads/psb/.gitkeep
 
 testsprite_tests
+
+/scripts
