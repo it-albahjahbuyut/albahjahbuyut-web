@@ -114,7 +114,7 @@ export function Footer() {
                             <li className="flex items-center gap-3">
                                 <Phone className="h-5 w-5 shrink-0 text-gold-400" />
                                 <a
-                                    href="https://wa.me/6289676539390"
+                                    href="https://wa.me/6282318611707"
                                     className="text-sm text-emerald-100/80 transition-colors hover:text-gold-400"
                                 >
                                     +62 823-1861-1707

@@ -270,7 +270,7 @@ function getStatusEmailContent(data: StatusEmailData): { subject: string; html: 
                     <tr>
                         <td style="padding: 32px; background-color: #f8fafc; border-top: 1px solid #e2e8f0; text-align: center;">
                             <p style="margin: 0 0 12px 0; font-size: 13px; color: #64748b; font-family: 'Plus Jakarta Sans', Helvetica, Arial, sans-serif;">
-                                Butuh bantuan? Hubungi kami melalui <a href="https://wa.me/628123456789" style="color: ${BRAND_COLOR}; text-decoration: underline; font-weight: 600;">WhatsApp</a> atau <a href="mailto:psb@albahjahbuyut.com" style="color: ${BRAND_COLOR}; text-decoration: underline; font-weight: 600;">Email</a>
+                                Butuh bantuan? Hubungi kami melalui <a href="https://wa.me/6289676539390" style="color: ${BRAND_COLOR}; text-decoration: underline; font-weight: 600;">WhatsApp</a> atau <a href="mailto:psb@albahjahbuyut.com" style="color: ${BRAND_COLOR}; text-decoration: underline; font-weight: 600;">Email</a>
                             </p>
                             <p style="margin: 0; font-family: 'Plus Jakarta Sans', Helvetica, Arial, sans-serif; font-size: 12px; color: #94a3b8;">
                                 © 2026 Al-Bahjah Buyut. All rights reserved.<br>
@@ -289,9 +289,9 @@ function getStatusEmailContent(data: StatusEmailData): { subject: string; html: 
     `;
 
     const subjectMap = {
-        RECEIVED: `📩 Pendaftaran PSB Al-Bahjah Buyut Diterima - ${registrationNumber}`,
-        VERIFIED: `✔ Berkas Pendaftaran Telah Terverifikasi - PSB Al-Bahjah Buyut`,
-        ACCEPTED: `🎉 Selamat! Ananda Diterima di Al-Bahjah Buyut`,
+        RECEIVED: `Pendaftaran PSB Al-Bahjah Buyut Diterima - ${registrationNumber}`,
+        VERIFIED: `Berkas Pendaftaran Telah Terverifikasi - PSB Al-Bahjah Buyut`,
+        ACCEPTED: `Selamat! Ananda Diterima di Al-Bahjah Buyut`,
         REJECTED: `Pengumuman Hasil Seleksi PSB Al-Bahjah Buyut`,
     };
 
